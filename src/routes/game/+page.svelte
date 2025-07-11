@@ -4,7 +4,8 @@
 	import Svelecte from 'svelecte'
 
 	const mapNames = ["Red", "Yellow", "Green"]
-	let choices = $state(["", "", ""]);
+	let guesses = $state(["", "", ""]);
+	let test = $state("");
 	let floatingTexts = $state([]);
 	const MAX_ROUNDS = 15;
 	const MEDIUM_START_ROUND = 7;
@@ -12,7 +13,10 @@
 	const EASY_STRING = "Easy";
 	const MEDIUM_STRING = "Medium";
 	const HARD_STRING = "Hard";
-
+	const INCORRECT = "incorrect";
+	const ALMOST_CORRECT = "almost_correct";
+	const CORRECT = "correct";
+	
 	let gameInfo = $state({
 		currentRound : 1,
 		currentTry : 0,
@@ -23,7 +27,7 @@
 	});
 
 	const responses = {
-		"incorrect" : [
+		[INCORRECT] : [
 			"No", 
 			"Nope",
 			"Nuh-uh",
@@ -39,13 +43,13 @@
 			"You're kidding, right?",
 			"Yikes",
 		],
-		"almost_correct" : [
+		[ALMOST_CORRECT] : [
 			"Almost!", 
 			"So close...", 
 			"Getting warmer...", 
 			"Not quite...",
 		],
-		"correct" : [
+		[CORRECT] : [
 			"Wow!", 
 			"Good job!", 
 			"Good boy!", 
@@ -59,7 +63,7 @@
 	}
 
 	
-	function createFloatingText(guessCategory, event) {
+	function createFloatingText(guessCategory, event) {		
 		const buttonRect = event.target.getBoundingClientRect();
 		const containerRect = event.target.closest('.guess-box').getBoundingClientRect();
 		const top = buttonRect.top - containerRect.top;
@@ -67,39 +71,63 @@
 		
 		const id = Math.random();
 		const possibleTexts = responses[guessCategory];
+
 		const floatingText = possibleTexts[Math.floor(Math.random() * possibleTexts.length)];
 		floatingTexts.push({id, top, text: floatingText});		
 
 		setTimeout(() => {
 			floatingTexts = floatingTexts.filter(t => t.id !== id);
+			let failText = document.getElementById("failText");
+			if (!failText) {
+				return;
+			}
+			if (guessCategory === INCORRECT) {
+				failText.style.color = "red";
+			} else if (guessCategory === ALMOST_CORRECT) {
+				failText.style.color = "yellow";
+			} else if (guessCategory === CORRECT) {
+				failText.style.color = "green";
+			}
 		}, 10);
 	}
 
 	function submitGuess(event) {
-		console.log($state.snapshot(choices));
-		if (!choices[gameInfo.currentTry]) {
-			//return;
+		console.log($state.snapshot(guesses));
+		if (!guesses[gameInfo.currentTry]) {
+			return;
 		}
 		
 		// submit choices[currentTry]
 		// If correct, calculate points according to guess, ++completedRounds,
 		// transition to end screen
 
-		createFloatingText("incorrect", event);		
-		document.getElementById("guess" + currentTry).disabled = true;
+		if (guesses[gameInfo.currentTry] === "Red") {
+			createFloatingText(INCORRECT, event);			
+		} else if (guesses[gameInfo.currentTry] === "Yellow") {
+			createFloatingText(ALMOST_CORRECT, event);
+		} else if (guesses[gameInfo.currentTry] === "Green") {
+			createFloatingText(CORRECT, event);
+			gameInfo.currentScore += 3 - gameInfo.currentTry;
+		}
+		//document.getElementById("guess" + gameInfo.currentTry).disabled = true;
 		if (gameInfo.currentTry < 2) {
 			++gameInfo.currentTry;
-			document.getElementById("guess" + gameInfo.currentTry).disabled = false;
+			//document.getElementById("guess" + gameInfo.currentTry).disabled = false;
 			return;
-		} 
+		}
 
 		// We're done, transition to end screen
 		++gameInfo.failedRounds;
 		++gameInfo.currentRound;
-		if (gameInfo.currentRound >= MEDIUM_START_ROUND) {
-			// Load medium diff pic, then reset round UI
-		} else if (gameInfo.currentRound >= HARD_LIMIT_ROUND) {
-			// Load hard diff pic, then reset round UI
+		if (gameInfo.currentRound > MAX_ROUNDS) {
+			// End the game!
+			return;
+		}
+		gameInfo.currentTry = 0;		
+		if (gameInfo.currentRound >= HARD_LIMIT_ROUND) {
+			gameInfo.currentDifficulty = HARD_STRING;
+		} else if (gameInfo.currentRound >= MEDIUM_START_ROUND) {
+			gameInfo.currentDifficulty = MEDIUM_STRING;
 		} else {
 			// Load easy diff pic, then reset round UI
 		}
@@ -118,10 +146,10 @@
 	<hr>
 	<h2>Round {gameInfo.currentRound}/15<br>Difficulty: {gameInfo.currentDifficulty}</h2>
 
-	<div class="guess-box">		
-		<Svelecte class="guess-text" id="guess0" options={mapNames} placeholder="First Guess" />
-		<Svelecte class="guess-text" id="guess1" options={mapNames} disabled placeholder="Second Guess" />
-		<Svelecte class="guess-text" id="guess2" options={mapNames} disabled placeholder="Third Guess" />
+	<div class="guess-box">
+		<Svelecte class="guess-text" options={mapNames} bind:value={guesses[0]} placeholder="First Guess" />
+		<Svelecte class="guess-text" options={mapNames} bind:value={guesses[1]} placeholder="Second Guess" />
+		<Svelecte class="guess-text" options={mapNames} bind:value={guesses[2]} placeholder="Third Guess" />
 		{#each floatingTexts as t(t.id)}
 			<div id="failFly" out:fly={{y: -100, duration: 2500}}>
 				<div id="failText" out:fade={{duration: 5000}}>
@@ -181,14 +209,8 @@ h1 {
 	transform: translateX(-50%);
 	left: 50%;
 	margin-top: 80px;
-	
+	font-size: larger;
+	-webkit-text-stroke: 0.02em black;
 }
-
-#failText {
-	color: red;
-	-webkit-text-stroke: 0.04em black;
-
-}
-
 
 </style>
