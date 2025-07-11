@@ -1,21 +1,22 @@
 <script lang="ts">
-	import Header from './Header.svelte';
 	import '../app.css';
+	import github from '$lib/images/github.svg';
 
 	let { children } = $props();
 </script>
 
 <div class="app">
-	<Header />
 
 	<main>
 		{@render children()}
 	</main>
 
 	<footer>
-		<p>
-			visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to learn about SvelteKit
-		</p>
+		<div class="corner">
+			<a href="https://github.com/sveltejs/kit">
+				<img src={github} alt="GitHub" />
+			</a>
+		</div>
 	</footer>
 </div>
 
@@ -40,13 +41,32 @@
 	footer {
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
+		justify-content: space-between;
 		align-items: center;
 		padding: 12px;
 	}
 
 	footer a {
 		font-weight: bold;
+	}
+
+	.corner {
+		width: 3em;
+		height: 3em;
+	}
+
+	.corner a {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: 100%;
+	}
+
+	.corner img {
+		width: 2em;
+		height: 2em;
+		object-fit: contain;
 	}
 
 	@media (min-width: 480px) {
