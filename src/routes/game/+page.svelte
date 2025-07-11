@@ -4,14 +4,8 @@
 	import Svelecte from 'svelecte'
 
 	const mapNames = ["Red", "Yellow", "Green"]
-	let choices = ["", "", ""]
-	let { choice = $bindable() } = $props();
-	let currentTry = $state(0)
-	let successfulRounds = $state(0);
-	let failedRounds = $state(0);
-	let floatingTexts = $state([""]);
-	let currentRound = $derived(1 + $state.snapshot(successfulRounds) + $state.snapshot(failedRounds));
-	let currentDifficulty = "Easy";
+	let choices = $state(["", "", ""]);
+	let floatingTexts = $state([]);
 	const MAX_ROUNDS = 15;
 	const MEDIUM_START_ROUND = 7;
 	const HARD_LIMIT_ROUND = 12;
@@ -19,81 +13,101 @@
 	const MEDIUM_STRING = "Medium";
 	const HARD_STRING = "Hard";
 
+	let gameInfo = $state({
+		currentRound : 1,
+		currentTry : 0,
+		successfulRounds : 0,
+		failedRounds : 0,
+		currentDifficulty : EASY_STRING,
+		currentScore : 0
+	});
 
+	const responses = {
+		"incorrect" : [
+			"No", 
+			"Nope",
+			"Nuh-uh",
+			"Nahhh", 
+			"Hell no", 
+			"What?!", 
+			"Ain't no way",
+			"Come on...",
+			"Oof",
+			"Euuuuuugh",
+			"What da helly?",
+			"You're better than this",
+			"You're kidding, right?",
+			"Yikes",
+		],
+		"almost_correct" : [
+			"Almost!", 
+			"So close...", 
+			"Getting warmer...", 
+			"Not quite...",
+		],
+		"correct" : [
+			"Wow!", 
+			"Good job!", 
+			"Good boy!", 
+			"You did it!", 
+			"The GOAT!", 
+			"Splendid!",
+			"Nice!!!",
+			"Correct!",
+			"You're right!",
+		]
+	}
 
-	const RedMessages = [
-		"No", 
-		"Nope",
-		"Nuh-uh",
-		"Nahhh", 
-		"Hell no", 
-		"What?!", 
-		"Ain't no way",
-		"Come on...",
-		"Oof",
-		"Euuuuuugh",
-		"What da helly?",
-		"You're better than this",
-		"You're kidding, right?",
-		"Yikes",
-	];
-	const YellowMessages = [
-		"Almost!", 
-		"So close...", 
-		"Getting warmer...", 
-		"Not quite...",
-	];
-	const GreenMessages = [
-		"Wow!", 
-		"Good job!", 
-		"Good boy!", 
-		"You did it!", 
-		"The GOAT!", 
-		"Splendid!",
-		"Nice!!!",
-		"Correct!",
-		"You're right!"
-	];
-
-	function submitGuess(event) {
-		console.log($state.snapshot(choices));
-		if (!choices[currentTry]) {
-			//return;
-		}
-		
-		// submit choices[currentTry]
-		// If correct, calculate points according to guess, ++completedRounds,
-		// transition to end screen		
-
+	
+	function createFloatingText(guessCategory, event) {
 		const buttonRect = event.target.getBoundingClientRect();
 		const containerRect = event.target.closest('.guess-box').getBoundingClientRect();
 		const top = buttonRect.top - containerRect.top;
 		console.log(top);
 		
 		const id = Math.random();
-		const floatingText = RedMessages[Math.floor(Math.random() * RedMessages.length)];
+		const possibleTexts = responses[guessCategory];
+		const floatingText = possibleTexts[Math.floor(Math.random() * possibleTexts.length)];
 		floatingTexts.push({id, top, text: floatingText});		
 
 		setTimeout(() => {
 			floatingTexts = floatingTexts.filter(t => t.id !== id);
 		}, 10);
+	}
 
+	function submitGuess(event) {
+		console.log($state.snapshot(choices));
+		if (!choices[gameInfo.currentTry]) {
+			//return;
+		}
 		
+		// submit choices[currentTry]
+		// If correct, calculate points according to guess, ++completedRounds,
+		// transition to end screen
+
+		createFloatingText("incorrect", event);		
 		document.getElementById("guess" + currentTry).disabled = true;
-		if (currentTry < 2) {
-			++currentTry;
-			document.getElementById("guess" + currentTry).disabled = false;
+		if (gameInfo.currentTry < 2) {
+			++gameInfo.currentTry;
+			document.getElementById("guess" + gameInfo.currentTry).disabled = false;
 			return;
 		} 
 
 		// We're done, transition to end screen
-		++failedRounds;
-		//if (currentRound > )
+		++gameInfo.failedRounds;
+		++gameInfo.currentRound;
+		if (gameInfo.currentRound >= MEDIUM_START_ROUND) {
+			// Load medium diff pic, then reset round UI
+		} else if (gameInfo.currentRound >= HARD_LIMIT_ROUND) {
+			// Load hard diff pic, then reset round UI
+		} else {
+			// Load easy diff pic, then reset round UI
+		}
 	}
 </script>
 
 <svelte:head>
-	<title>STRAFTGUESSR ROUND {currentRound}/15</title>
+	<title>STRAFTGUESSR ROUND {gameInfo.currentRound}/15</title>
 	<meta name="description" content="A STRAFTGUESSR game" />
 </svelte:head>
 
@@ -102,7 +116,7 @@
 	<hr>
 	<img src={pic} alt="An alt text" />
 	<hr>
-	<h2>Round {currentRound}/15<br>Difficulty: {currentDifficulty}</h2>
+	<h2>Round {gameInfo.currentRound}/15<br>Difficulty: {gameInfo.currentDifficulty}</h2>
 
 	<div class="guess-box">		
 		<Svelecte class="guess-text" id="guess0" options={mapNames} placeholder="First Guess" />
@@ -172,7 +186,8 @@ h1 {
 
 #failText {
 	color: red;
-	-webkit-text-stroke: 0.05em black;
+	-webkit-text-stroke: 0.04em black;
+
 }
 
 
