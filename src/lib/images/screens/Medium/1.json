@@ -1,0 +1,5 @@
+{
+    "correct" : "Green",
+    "almost_correct" : ["Yellow"],
+    "explanation" : "Explantion for medium map.<br>HTML supported-"
+}
