@@ -1,10 +1,10 @@
 <script>
 	import {fly, fade} from 'svelte/transition'
-	import pic from '$lib/images/Untitled.png'	
 	import Svelecte from 'svelecte'
 
 	const mapNames = ["Red", "Yellow", "Green"]
 	let floatingTexts = $state([]);
+	let currentImg = $state("");
 	const MAX_ROUNDS = 15;
 	const MEDIUM_START_ROUND = 7;
 	const HARD_LIMIT_ROUND = 12;
@@ -63,9 +63,32 @@
 			currentScore : 0,
 			roundOver : false,
 			gameOver : false,
-			guesses : (["", "", ""])
+			guesses : (["", "", ""]),
+			completedQuestions : {},
+			currentQuestion: {}
 		};
+
+		loadPic();
 	}	
+
+	async function loadPic() {
+		let rounds;
+		switch (gameInfo.currentDifficulty) {
+			case EASY_STRING: rounds = import.meta.glob("$lib/images/screens/Easy/*.json"); break;
+			case MEDIUM_STRING: rounds = import.meta.glob("$lib/images/screens/Medium/*.json"); break;
+			case HARD_STRING: rounds = import.meta.glob("$lib/images/screens/Hard/*.json"); break;
+		}
+		let fileURI = "";
+		do {
+			fileURI = Object.keys(rounds)[Math.floor(Math.random() * Object.keys(rounds).length)];
+			console.log(fileURI);
+			let json = await import(/* @vite-ignore */ fileURI);			
+			currentImg = fileURI.substring(0, fileURI.lastIndexOf(".")) + ".jpg";
+			gameInfo.currentQuestion = json.default;
+			gameInfo.currentQuestion.uri = fileURI;
+			console.log(gameInfo.currentQuestion);
+		} while (fileURI in gameInfo.completedQuestions);
+	}
 	
 	function createFloatingText(guessCategory, event) {		
 		const buttonRect = event.target.getBoundingClientRect();
@@ -156,7 +179,7 @@
 <div class="game-box">
 	<h1>WHAT MAP IS THIS?</h1>
 	<hr>
-	<img src={pic} alt="An alt text" />
+	<img src={currentImg} alt="Game screenshot" />
 	<hr>
 	<h2>Round {gameInfo.currentRound}/{MAX_ROUNDS}<br>Difficulty: {gameInfo.currentDifficulty}</h2>
 
