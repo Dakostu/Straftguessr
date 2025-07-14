@@ -1,4 +1,5 @@
 <script>
+	import {draggable} from "@neodrag/svelte"
 	import {fly, fade} from 'svelte/transition'
 	import Svelecte from 'svelecte'
 
@@ -218,7 +219,7 @@
 		</button>
 	</div>
 	{#if revealEnding}
-	<div class="game-box" id="answer-box" in:fade out:fade>
+	<div class="game-box" use:draggable id="answer-box" in:fade out:fade>
 		<h1>Answer:<br>{gameInfo.currentQuestion.correct}</h1>
 		<hr>
 		<h2>{gameInfo.currentQuestion.explanation}</h2>
@@ -229,7 +230,7 @@
 	</div>
 	{/if}
 	{#if gameInfo.gameOver}
-	<div class="game-box" id="answer-box" in:fade out:fade>
+	<div class="game-box" use:draggable id="answer-box" in:fade out:fade>
 		<h1>Finished!</h1>
 		<hr>
 		<h2>You got {gameInfo.successfulRounds} out of 15 questions right!<br>Your score: {gameInfo.currentScore}</h2>
@@ -297,6 +298,8 @@ h1 {
 	width: 40%;
 	border-radius: 8%;
 	background-color: black;
+	cursor: move;
+	user-select: none;
 }
 
 </style>
