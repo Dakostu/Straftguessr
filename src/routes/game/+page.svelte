@@ -33,6 +33,7 @@
 			"You're better than this",
 			"You're kidding, right?",
 			"Yikes",
+			"learn"
 		],
 		[ALMOST_CORRECT_STRING] : [
 			"Almost!", 
@@ -92,7 +93,6 @@
 		const buttonRect = event.target.getBoundingClientRect();
 		const containerRect = event.target.closest('.guess-box').getBoundingClientRect();
 		const top = buttonRect.top - containerRect.top;
-		console.log(top);
 		
 		const id = Math.random();
 		const possibleTexts = responses[guessCategory];
@@ -121,27 +121,28 @@
 			return;
 		}
 		
-		console.log(gameInfo.guesses[gameInfo.currentTry]);
-		console.log(gameInfo.currentQuestion.almost_correct);
-		console.log(gameInfo.currentQuestion.correct);
+		let guessboxes = document.getElementsByClassName("svelecte");
 		if (gameInfo.currentQuestion.almost_correct.includes(gameInfo.guesses[gameInfo.currentTry])) {
 			createFloatingText(ALMOST_CORRECT_STRING, event);
+			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: yellow;";
 		} else if (gameInfo.currentQuestion.correct.includes(gameInfo.guesses[gameInfo.currentTry])) {
 			createFloatingText(CORRECT_STRING, event);
+			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: green;";
 			gameInfo.currentScore += 3 - gameInfo.currentTry;
 			gameInfo.roundOver = true;
-			gameInfo.completedQuestions[gameInfo.currentQuestion.fileURI] = "";
+			gameInfo.completedQuestions[gameInfo.currentQuestion.fileURI] = null;
 			++gameInfo.successfulRounds;
 			return;
 		} else {
-			createFloatingText(INCORRECT_STRING, event);			
+			createFloatingText(INCORRECT_STRING, event);
+			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: red;";
 		}
 		if (gameInfo.currentTry < 2) {
 			++gameInfo.currentTry;
 			return;
 		}
 		gameInfo.roundOver = true;
-		gameInfo.completedQuestions[gameInfo.currentQuestion.fileURI] = "";
+		gameInfo.completedQuestions[gameInfo.currentQuestion.fileURI] = null;
 		++gameInfo.failedRounds;
 	}
 
@@ -160,7 +161,16 @@
 		} else if (gameInfo.currentRound >= MEDIUM_START_ROUND) {
 			gameInfo.currentDifficulty = MEDIUM_STRING;
 		}
+		resetGuessBoxes();
 		loadPic();
+	}
+
+	function resetGuessBoxes() {
+		gameInfo.guesses= ["", "", ""];
+		let guessboxes = document.getElementsByClassName("svelecte");
+		for (let box of guessboxes) {
+			box.style = "";
+		}
 	}
 
 	startNewGame();
@@ -179,9 +189,9 @@
 	<h2>Round {gameInfo.currentRound}/{MAX_ROUNDS}<br>Difficulty: {gameInfo.currentDifficulty}</h2>
 
 	<div class="guess-box">
-		<Svelecte class="guess-text" options={mapNames} bind:value={gameInfo.guesses[0]} placeholder="First Guess" />
-		<Svelecte class="guess-text" options={mapNames} bind:value={gameInfo.guesses[1]} placeholder="Second Guess" />
-		<Svelecte class="guess-text" options={mapNames} bind:value={gameInfo.guesses[2]} placeholder="Third Guess" />
+		<Svelecte options={mapNames} bind:value={gameInfo.guesses[0]} disabled={gameInfo.currentTry!=0 || gameInfo.roundOver} placeholder="1st Guess" />
+		<Svelecte options={mapNames} bind:value={gameInfo.guesses[1]} disabled={gameInfo.currentTry!=1 || gameInfo.roundOver} placeholder="2nd Guess" />
+		<Svelecte options={mapNames} bind:value={gameInfo.guesses[2]} disabled={gameInfo.currentTry!=2 || gameInfo.roundOver} placeholder="3rd Guess" />
 		{#each floatingTexts as t(t.id)}
 			<div id="failFly" out:fly={{y: -100, duration: 2500}}>
 				<div id="failText" out:fade={{duration: 5000}}>
@@ -197,7 +207,7 @@
 	<div class="game-box" id="answer-box" in:fade={{duration:1000}} out:fade>
 		<h1>Answer:<br>{gameInfo.currentQuestion.correct}</h1>
 		<hr>
-		<h2>{@html gameInfo.currentQuestion.explanation}</h2>
+		<h2>{gameInfo.currentQuestion.explanation}</h2>
 		<hr>
 		<button id="nextRoundButton" onclick={startNextRound}>
 			NEXT ROUND
@@ -218,22 +228,22 @@
 </div>
 
 <style>	
-h1 {
-	margin: 1% auto
-}
 
-:global(.guess-text) {	
-	--sv-bg: var(--black);	
-	--sv-disabled-bg: var(--black);
-	--sv-control-bg: var(--black);	
+:global(.svelecte) {
+	--sv-bg: var(--black);
+	--sv-disabled-bg: gray;
+	--sv-control-bg: var(--black);
 	--sv-border: 1px solid var(--straftat-green);
 	--sv-dropdown-selected-bg: var(--black);
-	--sv-dropdown-border: var(--straftat-green);	
-	
+	--sv-dropdown-border: var(--straftat-green);
+	--sv-dropdown-active-bg: var(--straftat-green);
+	--sv-dropdown-active-border: var(--straftat-green);
+	color-scheme: dark;
 }
 
-:global(.guess-text):disabled {
-	--sv-border: 10px solid var(--straftat-green);
+
+h1 {
+	margin: 1% auto
 }
 
 .game-box {
