@@ -241,7 +241,6 @@
 	color-scheme: dark;
 }
 
-
 h1 {
 	margin: 1% auto
 }
@@ -261,7 +260,6 @@ h1 {
 
 .guess-box {
 	display: flex;
-	
 	flex-direction: column;
 	justify-content: center;
 	margin: 1% 30%;
@@ -272,8 +270,8 @@ h1 {
 	transform: translateX(-50%);
 	left: 50%;
 	margin-top: 80px;
-	font-size: larger;
-	-webkit-text-stroke: 0.02em black;
+	font-size: x-large;
+	-webkit-text-stroke: 0.05em black;
 }
 
 #answer-box {
