@@ -141,11 +141,11 @@
 			//document.getElementById("guess" + gameInfo.currentTry).disabled = false;
 			return;
 		}
-		setTimeout(() => {
+		//setTimeout(() => {
 			gameInfo.roundOver = true;
 			// We're done, transition to end screen
 			++gameInfo.failedRounds;		
-		}, 500);
+		//}, 500);
 	}
 
 	function startNextRound() {
@@ -199,7 +199,7 @@
 		</button>
 	</div>
 	{#if gameInfo.roundOver}
-	<div class="game-box" id="answer-box" in:fade out:fade>
+	<div class="game-box" id="answer-box" in:fade={{duration:1000}} out:fade>
 		<h1>Answer:<br>answer</h1>
 		<hr>
 		<h2>I'm explaining the answer here.</h2>
