@@ -117,6 +117,16 @@
 		}, 10);
 	}
 
+	function submitGuessKeyDown(event) {
+		if (!gameInfo.guesses[gameInfo.currentTry]) {
+			return;
+		}
+		submitGuess(event);
+		let guessboxes = document.getElementById("guess" + gameInfo.currentTry);
+		console.log(guessboxes);
+		guessboxes.focus();
+	}
+
 	function submitGuess(event) {
 		if (!gameInfo.guesses[gameInfo.currentTry]) {
 			return;
@@ -193,9 +203,9 @@
 	<h2>Round {gameInfo.currentRound}/{MAX_ROUNDS}<br>Difficulty: {gameInfo.currentDifficulty}</h2>
 
 	<div class="guess-box">
-		<Svelecte options={mapNames} bind:value={gameInfo.guesses[0]} disabled={gameInfo.currentTry!=0 || gameInfo.roundOver} placeholder="1st Guess" />
-		<Svelecte options={mapNames} bind:value={gameInfo.guesses[1]} disabled={gameInfo.currentTry!=1 || gameInfo.roundOver} placeholder="2nd Guess" />
-		<Svelecte options={mapNames} bind:value={gameInfo.guesses[2]} disabled={gameInfo.currentTry!=2 || gameInfo.roundOver} placeholder="3rd Guess" />
+		<Svelecte inputId="guess0" options={mapNames} bind:value={gameInfo.guesses[0]} onEnterKey={submitGuessKeyDown} disabled={gameInfo.currentTry!=0 || gameInfo.roundOver} placeholder="1st Guess" />
+		<Svelecte inputId="guess1" options={mapNames} bind:value={gameInfo.guesses[1]} onEnterKey={submitGuessKeyDown} disabled={gameInfo.currentTry!=1 || gameInfo.roundOver} placeholder="2nd Guess" />
+		<Svelecte inputId="guess2" options={mapNames} bind:value={gameInfo.guesses[2]} onEnterKey={submitGuessKeyDown} disabled={gameInfo.currentTry!=2 || gameInfo.roundOver} placeholder="3rd Guess" />
 		{#each floatingTexts as t(t.id)}
 			<div id="failFly" out:fly={{y: -100, duration: 2500}}>
 				<div id="failText" out:fade={{duration: 5000}}>
@@ -242,6 +252,8 @@
 	--sv-dropdown-border: var(--straftat-green);
 	--sv-dropdown-active-bg: var(--straftat-green);
 	--sv-dropdown-active-border: var(--straftat-green);
+	--sv-icon-color: var(--straftat-green);
+	--sv-item-btn-bg: blue;
 	color-scheme: dark;
 }
 

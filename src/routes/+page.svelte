@@ -29,12 +29,11 @@
 	<h2 in:fade={{duration:500}}>
 		15 screenshots.<br />3 tries per screenshot.<br />Can you guess the STRAFTAT map based on the screenshot?
 	</h2>
-	
-	<h1 in:fade={{duration:500}}>
-		<button id="startButton" onclick={startGame} disabled={gameStarted}>
+	<button in:fade={{duration:500}} id="startButton" onclick={startGame} disabled={gameStarted}>
+		<h1 style="color:black;">
 			START
-		</button>
-	</h1>
+		</h1>
+	</button>
 	{/if}
 </section>
 {#if gameStarted}
