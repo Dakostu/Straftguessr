@@ -5,6 +5,7 @@
 	const mapNames = ["Red", "Yellow", "Green"]
 	let floatingTexts = $state([]);
 	let currentImg = $state("");
+	let revealEnding = $state(false);
 	const MAX_ROUNDS = 15;
 	const MEDIUM_START_ROUND = 7;
 	const HARD_LIMIT_ROUND = 12;
@@ -130,6 +131,7 @@
 			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: green;";
 			gameInfo.currentScore += 3 - gameInfo.currentTry;
 			gameInfo.roundOver = true;
+			setTimeout(() => {revealEnding = true}, 500);
 			gameInfo.completedQuestions[gameInfo.currentQuestion.fileURI] = null;
 			++gameInfo.successfulRounds;
 			return;
@@ -142,11 +144,13 @@
 			return;
 		}
 		gameInfo.roundOver = true;
+		setTimeout(() => {revealEnding = true}, 500);
 		gameInfo.completedQuestions[gameInfo.currentQuestion.fileURI] = null;
 		++gameInfo.failedRounds;
 	}
 
 	function startNextRound() {
+		revealEnding = false;
 		gameInfo.roundOver = false;
 		if (gameInfo.currentRound + 1 > MAX_ROUNDS) {
 			setTimeout(() => {
@@ -203,13 +207,13 @@
 			LOCK IN
 		</button>
 	</div>
-	{#if gameInfo.roundOver}
-	<div class="game-box" id="answer-box" in:fade={{duration:1000}} out:fade>
+	{#if revealEnding}
+	<div class="game-box" id="answer-box" in:fade out:fade>
 		<h1>Answer:<br>{gameInfo.currentQuestion.correct}</h1>
 		<hr>
 		<h2>{gameInfo.currentQuestion.explanation}</h2>
 		<hr>
-		<button id="nextRoundButton" onclick={startNextRound}>
+		<button id="nextRoundButton" onclick={startNextRound} disabled={gameInfo.revealEnding}>
 			NEXT ROUND
 		</button>
 	</div>
