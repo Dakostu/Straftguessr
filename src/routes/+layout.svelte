@@ -13,7 +13,7 @@
 
 	<footer>
 		<div class="corner">
-			<a href="https://github.com/sveltejs/kit">
+			<a href="https://github.com/Dakostu/Straftguessr">
 				<img src={github} alt="GitHub" />
 			</a>
 		</div>
