@@ -11,14 +11,14 @@
 	const EASY_STRING = "Easy";
 	const MEDIUM_STRING = "Medium";
 	const HARD_STRING = "Hard";
-	const INCORRECT = "incorrect";
-	const ALMOST_CORRECT = "almost_correct";
-	const CORRECT = "correct";
+	const INCORRECT_STRING = "incorrect";
+	const ALMOST_CORRECT_STRING = "almost_correct";
+	const CORRECT_STRING = "correct";
 	
 	let gameInfo = $state({});
 
 	const responses = {
-		[INCORRECT] : [
+		[INCORRECT_STRING] : [
 			"No", 
 			"Nope",
 			"Nuh-uh",
@@ -34,13 +34,13 @@
 			"You're kidding, right?",
 			"Yikes",
 		],
-		[ALMOST_CORRECT] : [
+		[ALMOST_CORRECT_STRING] : [
 			"Almost!", 
 			"So close...", 
 			"Getting warmer...", 
 			"Not quite...",
 		],
-		[CORRECT] : [
+		[CORRECT_STRING] : [
 			"Wow!", 
 			"Good job!", 
 			"Good boy!", 
@@ -80,14 +80,12 @@
 		}
 		let fileURI = "";
 		do {
-			fileURI = Object.keys(rounds)[Math.floor(Math.random() * Object.keys(rounds).length)];
-			console.log(fileURI);
-			let json = await import(/* @vite-ignore */ fileURI);			
-			currentImg = fileURI.substring(0, fileURI.lastIndexOf(".")) + ".jpg";
-			gameInfo.currentQuestion = json.default;
-			gameInfo.currentQuestion.uri = fileURI;
-			console.log(gameInfo.currentQuestion);
+			fileURI = Object.keys(rounds)[Math.floor(Math.random() * Object.keys(rounds).length)];			
 		} while (fileURI in gameInfo.completedQuestions);
+		currentImg = fileURI.substring(0, fileURI.lastIndexOf(".")) + ".jpg";
+		let json = await import(/* @vite-ignore */ fileURI);						
+		gameInfo.currentQuestion = json.default;
+		gameInfo.currentQuestion.fileURI = fileURI;
 	}
 	
 	function createFloatingText(guessCategory, event) {		
@@ -108,11 +106,11 @@
 			if (!failText) {
 				return;
 			}
-			if (guessCategory === INCORRECT) {
+			if (guessCategory === INCORRECT_STRING) {
 				failText.style.color = "red";
-			} else if (guessCategory === ALMOST_CORRECT) {
+			} else if (guessCategory === ALMOST_CORRECT_STRING) {
 				failText.style.color = "yellow";
-			} else if (guessCategory === CORRECT) {
+			} else if (guessCategory === CORRECT_STRING) {
 				failText.style.color = "green";
 			}
 		}, 10);
@@ -123,29 +121,28 @@
 			return;
 		}
 		
-		// submit choices[currentTry]
-		// If correct, calculate points according to guess, ++completedRounds,
-		// transition to end screen
-
-		if (gameInfo.guesses[gameInfo.currentTry] === "Red") {
-			createFloatingText(INCORRECT, event);			
-		} else if (gameInfo.guesses[gameInfo.currentTry] === "Yellow") {
-			createFloatingText(ALMOST_CORRECT, event);
-		} else if (gameInfo.guesses[gameInfo.currentTry] === "Green") {
-			createFloatingText(CORRECT, event);
+		console.log(gameInfo.guesses[gameInfo.currentTry]);
+		console.log(gameInfo.currentQuestion.almost_correct);
+		console.log(gameInfo.currentQuestion.correct);
+		if (gameInfo.currentQuestion.almost_correct.includes(gameInfo.guesses[gameInfo.currentTry])) {
+			createFloatingText(ALMOST_CORRECT_STRING, event);
+		} else if (gameInfo.currentQuestion.correct.includes(gameInfo.guesses[gameInfo.currentTry])) {
+			createFloatingText(CORRECT_STRING, event);
 			gameInfo.currentScore += 3 - gameInfo.currentTry;
+			gameInfo.roundOver = true;
+			gameInfo.completedQuestions[gameInfo.currentQuestion.fileURI] = "";
+			++gameInfo.successfulRounds;
+			return;
+		} else {
+			createFloatingText(INCORRECT_STRING, event);			
 		}
-		//document.getElementById("guess" + gameInfo.currentTry).disabled = true;
 		if (gameInfo.currentTry < 2) {
 			++gameInfo.currentTry;
-			//document.getElementById("guess" + gameInfo.currentTry).disabled = false;
 			return;
 		}
-		//setTimeout(() => {
-			gameInfo.roundOver = true;
-			// We're done, transition to end screen
-			++gameInfo.failedRounds;		
-		//}, 500);
+		gameInfo.roundOver = true;
+		gameInfo.completedQuestions[gameInfo.currentQuestion.fileURI] = "";
+		++gameInfo.failedRounds;
 	}
 
 	function startNextRound() {
@@ -162,10 +159,8 @@
 			gameInfo.currentDifficulty = HARD_STRING;
 		} else if (gameInfo.currentRound >= MEDIUM_START_ROUND) {
 			gameInfo.currentDifficulty = MEDIUM_STRING;
-		} else {
-			// Load easy diff pic, then reset round UI
 		}
-
+		loadPic();
 	}
 
 	startNewGame();
@@ -200,9 +195,9 @@
 	</div>
 	{#if gameInfo.roundOver}
 	<div class="game-box" id="answer-box" in:fade={{duration:1000}} out:fade>
-		<h1>Answer:<br>answer</h1>
+		<h1>Answer:<br>{gameInfo.currentQuestion.correct}</h1>
 		<hr>
-		<h2>I'm explaining the answer here.</h2>
+		<h2>{@html gameInfo.currentQuestion.explanation}</h2>
 		<hr>
 		<button id="nextRoundButton" onclick={startNextRound}>
 			NEXT ROUND
