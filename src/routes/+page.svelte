@@ -27,7 +27,11 @@
 	</h1>
 
 	<h2 in:fade={{duration:500}}>
-		15 screenshots.<br />3 tries per screenshot.<br />Can you guess the STRAFTAT map based on the screenshot?
+		15 screenshots.
+		<br />
+		3 tries per screenshot.
+		<br />
+		Can you guess the <a target="_blank" href="https://store.steampowered.com/app/2386720/STRAFTAT/">STRAFTAT</a> map based on the screenshot?
 	</h2>
 	<button in:fade={{duration:500}} id="startButton" onclick={startGame} disabled={gameStarted}>
 		<h1 style="color:black;">
