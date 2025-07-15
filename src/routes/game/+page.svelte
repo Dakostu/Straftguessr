@@ -1,6 +1,7 @@
 <script>
 	import {draggable} from "@neodrag/svelte"
 	import {fly, fade} from 'svelte/transition'
+	import {Lightbox} from 'svelte-lightbox'
 	import Svelecte from 'svelecte'
 
 	const mapNames = ["Red", "Yellow", "Green"]
@@ -199,7 +200,9 @@
 <div class="game-box">
 	<h1>WHAT MAP IS THIS?</h1>
 	<hr>
-	<img src={currentImg} alt="Game screenshot" />
+	<Lightbox enableClickToClose={true} showCloseButton={false}>
+		<img src={currentImg} alt="Game screenshot" />
+	</Lightbox>
 	<hr>
 	<h2>Round {gameInfo.currentRound}/{MAX_ROUNDS}<br>Difficulty: {gameInfo.currentDifficulty}</h2>
 
@@ -255,6 +258,10 @@
 	--sv-dropdown-active-border: var(--straftat-green);
 	--sv-icon-color: var(--straftat-green);
 	color-scheme: dark;
+}
+
+:global(.svelte-lightbox-main) {
+	cursor: zoom-out;
 }
 
 h1 {
