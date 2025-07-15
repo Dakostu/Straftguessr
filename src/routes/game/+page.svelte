@@ -162,13 +162,13 @@
 
 	function startNextRound() {
 		revealEnding = false;
-		gameInfo.roundOver = false;
 		if (gameInfo.currentRound + 1 > MAX_ROUNDS) {
 			setTimeout(() => {
 				gameInfo.gameOver = true;
 			}, 200);
 			return;
 		}
+		gameInfo.roundOver = false;
 		++gameInfo.currentRound;
 		gameInfo.currentTry = 0;		
 		if (gameInfo.currentRound >= HARD_LIMIT_ROUND) {
@@ -204,9 +204,9 @@
 	<h2>Round {gameInfo.currentRound}/{MAX_ROUNDS}<br>Difficulty: {gameInfo.currentDifficulty}</h2>
 
 	<div class="guess-box">
-		<Svelecte inputId="guess0" options={mapNames} bind:value={gameInfo.guesses[0]} onEnterKey={submitGuessKeyDown} disabled={gameInfo.currentTry!=0 || gameInfo.roundOver} placeholder="1st Guess" />
-		<Svelecte inputId="guess1" options={mapNames} bind:value={gameInfo.guesses[1]} onEnterKey={submitGuessKeyDown} disabled={gameInfo.currentTry!=1 || gameInfo.roundOver} placeholder="2nd Guess" />
-		<Svelecte inputId="guess2" options={mapNames} bind:value={gameInfo.guesses[2]} onEnterKey={submitGuessKeyDown} disabled={gameInfo.currentTry!=2 || gameInfo.roundOver} placeholder="3rd Guess" />
+		<Svelecte inputId="guess0" options={mapNames} bind:value={gameInfo.guesses[0]} onEnterKey={submitGuessKeyDown} disabled={gameInfo.currentTry!=0 || gameInfo.roundOver || gameInfo.gameOver} placeholder="1st Guess" />
+		<Svelecte inputId="guess1" options={mapNames} bind:value={gameInfo.guesses[1]} onEnterKey={submitGuessKeyDown} disabled={gameInfo.currentTry!=1 || gameInfo.roundOver || gameInfo.gameOver} placeholder="2nd Guess" />
+		<Svelecte inputId="guess2" options={mapNames} bind:value={gameInfo.guesses[2]} onEnterKey={submitGuessKeyDown} disabled={gameInfo.currentTry!=2 || gameInfo.roundOver || gameInfo.gameOver} placeholder="3rd Guess" />
 		{#each floatingTexts as t(t.id)}
 			<div id="failFly" out:fly={{y: -100, duration: 2500}}>
 				<div id="failText" out:fade={{duration: 5000}}>
@@ -214,7 +214,7 @@
 				</div>
 			</div>
 		{/each}
-		<button id="guessButton" onclick={submitGuess} disabled={gameInfo.roundOver && !gameInfo.gameOver}>
+		<button id="guessButton" onclick={submitGuess} disabled={!gameInfo.guesses[gameInfo.currentTry] || gameInfo.roundOver || gameInfo.gameOver}>
 			LOCK IN
 		</button>
 	</div>
@@ -233,7 +233,7 @@
 	<div class="game-box" use:draggable id="answer-box" in:fade out:fade>
 		<h1>Finished!</h1>
 		<hr>
-		<h2>You got {gameInfo.successfulRounds} out of 15 questions right!<br>Your score: {gameInfo.currentScore}</h2>
+		<h2>You got {gameInfo.successfulRounds} out of {MAX_ROUNDS} questions right!<br>Your score: {gameInfo.currentScore}</h2>
 		<hr>
 		<button id="nextRoundButton" onclick={startNewGame}>
 			NEW GAME
