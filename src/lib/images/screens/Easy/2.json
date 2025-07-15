@@ -1,5 +1,5 @@
 {
-    "correct" : "Green",
+    "correct" : ["Green"],
     "almost_correct" : ["Yellow"],
     "explanation" : "Explantion for easy map.<br>HTML supported-"
 }
