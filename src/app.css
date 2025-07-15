@@ -4,6 +4,9 @@
 		'Gontserrat', sans-serif;
 	--font-mono: monospace;	
 	--straftat-green: #46ff4f;
+	--incorrect: red;
+	--almost-correct: yellow;
+	--correct: green;
 	--black: black;
 	--color-text: darkgray;
 	--column-width: 42rem;
@@ -15,7 +18,6 @@
 @font-face {
     font-family: 'Gontserrat';
     font-style: italic;
-    font-weight: 500;
     src: url('/fonts/Gontserrat-MediumItalic.ttf');    
 }
 
@@ -30,12 +32,9 @@ body {
 h1,
 h2,
 p {
-	font-weight: 400;
+	font-weight: 500;
 }
 
-h1 {
-	color: var(--straftat-green);
-}
 
 h2 {
 	color: white;
@@ -55,13 +54,14 @@ a:hover {
 }
 
 h1 {
-	font-size: 2rem;
+	font-size: 3rem;
 	text-align: center;
+	color: var(--straftat-green);
 }
 
 h2 {
 	text-align: center;
-	font-size: 1rem;
+	font-size: larger;
 }
 
 pre {
