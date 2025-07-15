@@ -109,11 +109,11 @@
 				return;
 			}
 			if (guessCategory === INCORRECT_STRING) {
-				failText.style.color = "red";
+				failText.style.color = "var(--incorrect)";
 			} else if (guessCategory === ALMOST_CORRECT_STRING) {
-				failText.style.color = "yellow";
+				failText.style.color = "var(--almost-correct)";
 			} else if (guessCategory === CORRECT_STRING) {
-				failText.style.color = "green";
+				failText.style.color = "var(--correct)";
 			}
 		}, 10);
 	}
@@ -136,10 +136,10 @@
 		let guessboxes = document.getElementsByClassName("svelecte");
 		if (gameInfo.currentQuestion.almost_correct.includes(gameInfo.guesses[gameInfo.currentTry])) {
 			createFloatingText(ALMOST_CORRECT_STRING, event);
-			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: yellow;";
+			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: var(--almost-correct);";
 		} else if (gameInfo.currentQuestion.correct.includes(gameInfo.guesses[gameInfo.currentTry])) {
 			createFloatingText(CORRECT_STRING, event);
-			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: green;";
+			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: var(--correct);";
 			gameInfo.currentScore += 3 - gameInfo.currentTry;
 			gameInfo.roundOver = true;
 			setTimeout(() => {revealEnding = true}, 500);
@@ -148,7 +148,7 @@
 			return;
 		} else {
 			createFloatingText(INCORRECT_STRING, event);
-			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: red;";
+			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: var(--incorrect);";
 		}
 		if (gameInfo.currentTry < 2) {
 			++gameInfo.currentTry;
@@ -209,7 +209,7 @@
 		<Svelecte inputId="guess2" options={mapNames} bind:value={gameInfo.guesses[2]} onEnterKey={submitGuessKeyDown} disabled={gameInfo.currentTry!=2 || gameInfo.roundOver || gameInfo.gameOver} placeholder="3rd Guess" />
 		{#each floatingTexts as t(t.id)}
 			<div id="failFly" out:fly={{y: -100, duration: 2500}}>
-				<div id="failText" out:fade={{duration: 5000}}>
+				<div id="failText" in:fade={{duration:20}} out:fade={{duration: 7000}}>
 				{t.text}
 				</div>
 			</div>
@@ -254,12 +254,12 @@
 	--sv-dropdown-active-bg: var(--straftat-green);
 	--sv-dropdown-active-border: var(--straftat-green);
 	--sv-icon-color: var(--straftat-green);
-	--sv-item-btn-bg: blue;
 	color-scheme: dark;
 }
 
 h1 {
-	margin: 1% auto
+	margin: 1% auto;
+	font-size: 3rem;
 }
 
 .game-box {
@@ -287,7 +287,7 @@ h1 {
 	transform: translateX(-50%);
 	left: 50%;
 	margin-top: 80px;
-	font-size: x-large;
+	font-size: xx-large;
 	-webkit-text-stroke: 0.05em black;
 }
 
