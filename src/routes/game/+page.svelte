@@ -7,7 +7,7 @@
 	const mapNames = ["Red", "Yellow", "Green"]
 	let floatingTexts = $state([]);
 	let currentImg = $state("");
-	let revealEnding = $state(false);
+	let revealSolution = $state(false);
 	const MAX_ROUNDS = 15;
 	const MEDIUM_START_ROUND = 7;
 	const HARD_LIMIT_ROUND = 12;
@@ -36,7 +36,8 @@
 			"You're better than this",
 			"You're kidding, right?",
 			"Yikes",
-			"learn"
+			"learn",
+			"Yeah... no.",
 		],
 		[ALMOST_CORRECT_STRING] : [
 			"Almost!", 
@@ -54,6 +55,8 @@
 			"Nice!!!",
 			"Correct!",
 			"You're right!",
+			"That's the one!",
+			"HOLYYYYYYYY",
 		]
 	}
 
@@ -124,6 +127,7 @@
 			return;
 		}
 		submitGuess(event);
+		// WTF???
 		let guessboxes = document.getElementById("guess" + gameInfo.currentTry);
 		console.log(guessboxes);
 		guessboxes.focus();
@@ -143,7 +147,7 @@
 			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: var(--correct);";
 			gameInfo.currentScore += 3 - gameInfo.currentTry;
 			gameInfo.roundOver = true;
-			setTimeout(() => {revealEnding = true}, 500);
+			setTimeout(() => {revealSolution = true}, 500);
 			gameInfo.completedQuestions[gameInfo.currentQuestion.fileURI] = null;
 			++gameInfo.successfulRounds;
 			return;
@@ -156,13 +160,13 @@
 			return;
 		}
 		gameInfo.roundOver = true;
-		setTimeout(() => {revealEnding = true}, 500);
+		setTimeout(() => {revealSolution = true}, 500);
 		gameInfo.completedQuestions[gameInfo.currentQuestion.fileURI] = null;
 		++gameInfo.failedRounds;
 	}
 
 	function startNextRound() {
-		revealEnding = false;
+		revealSolution = false;
 		if (gameInfo.currentRound + 1 > MAX_ROUNDS) {
 			setTimeout(() => {
 				gameInfo.gameOver = true;
@@ -198,7 +202,7 @@
 </svelte:head>
 
 <div class="game-box">
-	<h1>WHAT MAP IS THIS?</h1>
+	<h1>WHAT STRAFTAT MAP IS THIS?</h1>
 	<hr>
 	<Lightbox enableClickToClose={true} showCloseButton={false}>
 		<img src={currentImg} alt="Game screenshot" />
@@ -212,7 +216,7 @@
 		<Svelecte inputId="guess2" options={mapNames} bind:value={gameInfo.guesses[2]} onEnterKey={submitGuessKeyDown} disabled={gameInfo.currentTry!=2 || gameInfo.roundOver || gameInfo.gameOver} placeholder="3rd Guess" />
 		{#each floatingTexts as t(t.id)}
 			<div id="failFly" out:fly={{y: -100, duration: 2500}}>
-				<div id="failText" in:fade={{duration:20}} out:fade={{duration: 7000}}>
+				<div id="failText" out:fade={{duration: 7000}}>
 				{t.text}
 				</div>
 			</div>
@@ -221,7 +225,7 @@
 			LOCK IN
 		</button>
 	</div>
-	{#if revealEnding}
+	{#if revealSolution}
 	<div class="game-box" use:draggable id="answer-box" in:fade out:fade>
 		<h1>Answer:<br>{gameInfo.currentQuestion.correct}</h1>
 		<hr>
@@ -265,8 +269,14 @@
 }
 
 h1 {
-	margin: 1% auto;
+	margin: 1% 5%;
 	font-size: 3rem;
+}
+
+@media (max-width: 720px) {
+	h1 {
+		font-size: 2rem;
+	}
 }
 
 .game-box {
@@ -295,7 +305,7 @@ h1 {
 	left: 50%;
 	margin-top: 80px;
 	font-size: xx-large;
-	-webkit-text-stroke: 0.05em black;
+	-webkit-text-stroke: 0.06em black;
 }
 
 #answer-box {
