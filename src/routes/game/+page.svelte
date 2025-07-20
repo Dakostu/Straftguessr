@@ -379,22 +379,31 @@
 		};
 
 		loadPic();
-	}	
+	}
 
 	async function loadPic() {
-		let rounds;
 		switch (gameInfo.currentDifficulty) {
-			case EASY_STRING: rounds = import.meta.glob("$lib/images/screens/Easy/*.json"); break;
+			/*case EASY_STRING: rounds = import.meta.glob("$lib/images/screens/Easy/*.json"); break;
 			case MEDIUM_STRING: rounds = import.meta.glob("$lib/images/screens/Medium/*.json"); break;
-			case HARD_STRING: rounds = import.meta.glob("$lib/images/screens/Hard/*.json"); break;
+			case HARD_STRING: rounds = import.meta.glob("$lib/images/screens/Hard/*.json"); break;*/		
 		}
+
+		const urlsObj = await fetch('/fetch-pics');
+		if (!urlsObj.ok) {
+			console.error(urlsObj.statusText);
+			return;
+		}
+
+		const rounds = await urlsObj.json();
 		let fileURI = "";
+		
 		do {
-			fileURI = Object.keys(rounds)[Math.floor(Math.random() * Object.keys(rounds).length)];			
+			fileURI = rounds.urls[Math.floor(Math.random() * Object.keys(rounds.urls).length)];			
 		} while (fileURI in gameInfo.completedQuestions);
 		currentImg = fileURI.substring(0, fileURI.lastIndexOf(".")) + ".jpg";
-		let json = await import(/* @vite-ignore */ fileURI);						
+		let json = await import(/* @vite-ignore */ fileURI);
 		gameInfo.currentQuestion = json.default;
+		console.log(gameInfo.currentQuestion);
 		gameInfo.currentQuestion.fileURI = fileURI;
 	}
 	
@@ -437,15 +446,13 @@
 	}
 
 	function submitGuess(event) {
-		if (!gameInfo.guesses[gameInfo.currentTry]) {
+		let guess = gameInfo.guesses[gameInfo.currentTry];
+		if (!guess) {
 			return;
 		}
 		
 		let guessboxes = document.getElementsByClassName("svelecte");
-		if (gameInfo.currentQuestion.almost_correct.includes(gameInfo.guesses[gameInfo.currentTry])) {
-			createFloatingText(ALMOST_CORRECT_STRING, event);
-			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: var(--almost-correct);";
-		} else if (gameInfo.currentQuestion.correct.includes(gameInfo.guesses[gameInfo.currentTry])) {
+		if (gameInfo.currentQuestion.correct.includes(guess)) {
 			createFloatingText(CORRECT_STRING, event);
 			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: var(--correct);";
 			gameInfo.currentScore += 3 - gameInfo.currentTry;
@@ -454,6 +461,9 @@
 			gameInfo.completedQuestions[gameInfo.currentQuestion.fileURI] = null;
 			++gameInfo.successfulRounds;
 			return;
+		} else if (gameInfo.currentQuestion.correct.indexOf(guess.substring(0, fileURI.indexOf("_"))) == 0) {			
+			createFloatingText(ALMOST_CORRECT_STRING, event);
+			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: var(--almost-correct);";
 		} else {
 			createFloatingText(INCORRECT_STRING, event);
 			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: var(--incorrect);";
