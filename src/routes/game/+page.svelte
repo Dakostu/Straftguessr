@@ -389,6 +389,7 @@
 			currentQuestion: {}
 		};
 
+		resetGuessBoxes();
 		loadPic();
 	}
 
