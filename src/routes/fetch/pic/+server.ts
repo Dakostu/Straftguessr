@@ -1,11 +1,12 @@
 import {list} from '@vercel/blob'
 import type { RequestHandler } from '@sveltejs/kit';
 
-export const GET: RequestHandler = async () => {
+export const GET: RequestHandler = async ({url}) => {
   try {
-    const { blobs } = await list({prefix: "screens/"});
-    let urls = blobs.map(blob => blob.url).filter((url) => url.endsWith("json"));
-    return new Response(JSON.stringify({ urls }), {
+    const urlString = url.searchParams.get('url');    
+    const { blobs } = await list({prefix: "screens" + urlString});
+    let singleUrl = blobs.map(imgUrl => imgUrl.url);
+    return new Response(JSON.stringify(singleUrl), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',

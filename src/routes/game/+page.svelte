@@ -381,6 +381,7 @@
 			failedRounds : 0,
 			currentDifficulty : EASY_STRING,
 			currentScore : 0,
+			fileURICache : [],
 			roundOver : false,
 			gameOver : false,
 			guesses : (["", "", ""]),
@@ -393,25 +394,24 @@
 
 	async function loadPic() {
 		loading = true;
-		switch (gameInfo.currentDifficulty) {
-			/*case EASY_STRING: rounds = import.meta.glob("$lib/images/screens/Easy/*.json"); break;
-			case MEDIUM_STRING: rounds = import.meta.glob("$lib/images/screens/Medium/*.json"); break;
-			case HARD_STRING: rounds = import.meta.glob("$lib/images/screens/Hard/*.json"); break;*/		
+		if (gameInfo.fileURICache.length === 0) {
+			const urlsObj = await fetch('/fetch/jsons?diff=' + gameInfo.currentDifficulty);
+			if (!urlsObj.ok) {
+				console.error(urlsObj.statusText);
+				return;
+			}
+			gameInfo.fileURICache = await urlsObj.json();
 		}
 
-		const urlsObj = await fetch('/fetch/pics');
-		if (!urlsObj.ok) {
-			console.error(urlsObj.statusText);
-			return;
-		}
-
-		const rounds = await urlsObj.json();
 		let fileURI = "";
 		
 		do {
-			fileURI = rounds.urls[Math.floor(Math.random() * Object.keys(rounds.urls).length)];
+			fileURI = gameInfo.fileURICache[Math.floor(Math.random() * Object.keys(gameInfo.fileURICache).length)];
 		} while (fileURI in gameInfo.completedQuestions);
-		currentImg = fileURI.substring(0, fileURI.lastIndexOf(".")) + ".jpg";
+		let fileName = fileURI.substring(fileURI.lastIndexOf('/'));
+		let imgURL = fileName.substring(0, fileName.lastIndexOf('.')) + ".jpg";
+		let fullImgURL = await fetch('/fetch/pic?url=' + imgURL);
+		currentImg = await fullImgURL.json();
 		let json = await fetch('/fetch/json?url=' + fileURI);
 		gameInfo.currentQuestion = await json.json();
 		gameInfo.currentQuestion.fileURI = fileURI;
@@ -502,8 +502,10 @@
 		gameInfo.currentTry = 0;		
 		if (gameInfo.currentRound >= HARD_LIMIT_ROUND) {
 			gameInfo.currentDifficulty = HARD_STRING;
+			gameInfo.fileURICache = [];
 		} else if (gameInfo.currentRound >= MEDIUM_START_ROUND) {
 			gameInfo.currentDifficulty = MEDIUM_STRING;
+			gameInfo.fileURICache = [];
 		}
 		resetGuessBoxes();
 		loadPic();
