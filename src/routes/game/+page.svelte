@@ -7,6 +7,16 @@
 	let floatingTexts = $state([]);
 	let currentImg = $state("");
 	let revealSolution = $state(false);
+	let loading = $state(true);
+	let loadingStringDots = $state("");
+	const incrLoadingStringDots = () => (
+		(loadingStringDots.length === 4) ? loadingStringDots = "" : loadingStringDots += '.'
+	);
+	let dots;
+	$derived: {
+		clearInterval(dots);
+		setInterval(incrLoadingStringDots, 150);
+	}
 	const MAX_ROUNDS = 15;
 	const MEDIUM_START_ROUND = 7;
 	const HARD_LIMIT_ROUND = 12;
@@ -382,6 +392,7 @@
 	}
 
 	async function loadPic() {
+		loading = true;
 		switch (gameInfo.currentDifficulty) {
 			/*case EASY_STRING: rounds = import.meta.glob("$lib/images/screens/Easy/*.json"); break;
 			case MEDIUM_STRING: rounds = import.meta.glob("$lib/images/screens/Medium/*.json"); break;
@@ -404,6 +415,7 @@
 		let json = await fetch('/fetch/json?url=' + fileURI);
 		gameInfo.currentQuestion = await json.json();
 		gameInfo.currentQuestion.fileURI = fileURI;
+		loading = false;
 	}
 	
 	function createFloatingText(guessCategory, event) {		
@@ -516,9 +528,13 @@
 <div class="game-box">
 	<h1>WHAT STRAFTAT MAP IS THIS?</h1>
 	<hr>
-	<Lightbox enableClickToClose={true} showCloseButton={false}>
-		<img src={currentImg} alt="Game screenshot" />
-	</Lightbox>
+	{#if loading}
+		<h2>Loading screenshot{loadingStringDots}</h2>
+	{:else if !loading}
+		<Lightbox enableClickToClose={true} showCloseButton={false}>
+			<img src={currentImg} alt="Game screenshot" />
+		</Lightbox>
+	{/if}
 	<hr>
 	<h2>Round {gameInfo.currentRound}/{MAX_ROUNDS}<br>Difficulty: {gameInfo.currentDifficulty}</h2>
 
