@@ -2,11 +2,12 @@ import {list} from '@vercel/blob'
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({url}) => {
+  console.log(url);
   try {
-    const urlString = url.searchParams.get('url');
-    const json = await fetch(urlString);
-    const jsonData = await json.json();
-    return new Response(JSON.stringify(jsonData), {
+    const diffString = url.searchParams.get('diff');
+    const { blobs } = await list({prefix: "infos/" + diffString});
+    let urls = blobs.map(blob => blob.url).filter((url) => url.endsWith("json"));
+    return new Response(JSON.stringify(urls), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
