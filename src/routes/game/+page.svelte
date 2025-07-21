@@ -388,7 +388,7 @@
 			case HARD_STRING: rounds = import.meta.glob("$lib/images/screens/Hard/*.json"); break;*/		
 		}
 
-		const urlsObj = await fetch('/fetch-pics');
+		const urlsObj = await fetch('/fetch/pics');
 		if (!urlsObj.ok) {
 			console.error(urlsObj.statusText);
 			return;
@@ -398,12 +398,11 @@
 		let fileURI = "";
 		
 		do {
-			fileURI = rounds.urls[Math.floor(Math.random() * Object.keys(rounds.urls).length)];			
+			fileURI = rounds.urls[Math.floor(Math.random() * Object.keys(rounds.urls).length)];
 		} while (fileURI in gameInfo.completedQuestions);
 		currentImg = fileURI.substring(0, fileURI.lastIndexOf(".")) + ".jpg";
-		let json = await import(/* @vite-ignore */ fileURI);
-		gameInfo.currentQuestion = json.default;
-		console.log(gameInfo.currentQuestion);
+		let json = await fetch('/fetch/json?url=' + fileURI);
+		gameInfo.currentQuestion = await json.json();
 		gameInfo.currentQuestion.fileURI = fileURI;
 	}
 	
@@ -440,9 +439,9 @@
 		}
 		submitGuess(event);
 		// WTF???
-		let guessboxes = document.getElementById("guess" + gameInfo.currentTry);
-		console.log(guessboxes);
-		guessboxes.focus();
+		// TODO: Move on to next guessbox upon pressing Enter
+		// let guessboxes = document.getElementById("guess" + gameInfo.currentTry);
+		// guessboxes.focus();
 	}
 
 	function submitGuess(event) {
@@ -451,7 +450,7 @@
 			return;
 		}
 		
-		let guessboxes = document.getElementsByClassName("svelecte");
+		let guessboxes = document.getElementsByClassName("svelecte");		
 		if (gameInfo.currentQuestion.correct.includes(guess)) {
 			createFloatingText(CORRECT_STRING, event);
 			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: var(--correct);";
@@ -461,7 +460,7 @@
 			gameInfo.completedQuestions[gameInfo.currentQuestion.fileURI] = null;
 			++gameInfo.successfulRounds;
 			return;
-		} else if (gameInfo.currentQuestion.correct.indexOf(guess.substring(0, fileURI.indexOf("_"))) == 0) {			
+		} else if (gameInfo.currentQuestion.correct.some((correctMap) => correctMap.indexOf(guess.substring(0, guess.indexOf('_'))) == 0)) {
 			createFloatingText(ALMOST_CORRECT_STRING, event);
 			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: var(--almost-correct);";
 		} else {
@@ -542,7 +541,7 @@
 	<div class="game-box" use:draggable id="answer-box" in:fade out:fade>
 		<h1>Answer:<br>{gameInfo.currentQuestion.correct}</h1>
 		<hr>
-		<h2>{gameInfo.currentQuestion.explanation}</h2>
+		<h2>{gameInfo.currentQuestion.desc}</h2>
 		<hr>
 		<button id="nextRoundButton" onclick={startNextRound} disabled={gameInfo.revealEnding}>
 			NEXT ROUND
