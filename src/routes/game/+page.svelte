@@ -17,11 +17,7 @@
 	const incrLoadingStringDots = () => (
 		(loadingStringDots.length === 4) ? loadingStringDots = "" : loadingStringDots += '.'
 	);
-	let dots;
-	$derived: {
-		clearInterval(dots);
-		setInterval(incrLoadingStringDots, 150);
-	}
+	setInterval(incrLoadingStringDots, 150);
 		
 	let gameInfo = $state({});	
 	function startNewGame() {
