@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { draggable } from "@neodrag/svelte"
 	import { fly, fade } from "svelte/transition"
 	import { Lightbox } from "svelte-lightbox"
@@ -11,60 +11,62 @@
 
 	let floatingTexts = $state([]);
 	let revealSolution = $state(false);
-	let loading = $state(true);
 	let loadingStringDots = $state("");
 	const incrLoadingStringDots = () => (
 		(loadingStringDots.length === 4) ? loadingStringDots = "" : loadingStringDots += "."
 	);
 	setInterval(incrLoadingStringDots, 150);
+
+	class GameInfo {
+		currentRound = 1;
+		currentTryIndex = 0;
+		successfulRounds = 0;
+		failedRounds = 0;
+		currentDifficulty = EASY_STRING;
+		currentScore = 0;
+		fileURICache = [];
+		loading = true;
+		roundOver = false;
+		gameOver = false;
+		guesses = (["", "", ""]);
+		completedQuestions = {};
+		currentQuestion = {};
+		currentImg = "";
+	}
 		
-	let gameInfo = $state({});	
+	let currentGame = $state(new GameInfo());
 	function startNewGame() {
-		gameInfo = {
-			currentRound : 1,
-			currentTry : 0,
-			successfulRounds : 0,
-			failedRounds : 0,
-			currentDifficulty : EASY_STRING,
-			currentScore : 0,
-			fileURICache : [],
-			roundOver : false,
-			gameOver : false,
-			guesses : (["", "", ""]),
-			completedQuestions : {},
-			currentQuestion : {},
-			currentImg : "",
-		};
+		currentGame = new GameInfo();
 
 		resetGuessBoxes();
 		loadPic();
 	}
 
 	async function loadPic() {
-		loading = true;
-		gameInfo.currentImg = "";
-		if (gameInfo.fileURICache.length === 0) {
-			const urlsObj = await fetch("/fetch/jsons?diff=" + gameInfo.currentDifficulty);
+		currentGame.loading = true;
+		currentGame.currentImg = "";
+		if (currentGame.fileURICache.length === 0) {
+			const urlsObj = await fetch("/fetch/jsons?diff=" + currentGame.currentDifficulty);
 			if (!urlsObj.ok) {
 				console.error(urlsObj.statusText);
 				return;
 			}
-			gameInfo.fileURICache = await urlsObj.json();
+			currentGame.fileURICache = await urlsObj.json();
 		}
 
 		let fileURI = "";
 		
 		do {
-			fileURI = gameInfo.fileURICache[Math.floor(Math.random() * Object.keys(gameInfo.fileURICache).length)];
-		} while (fileURI in gameInfo.completedQuestions);
+			fileURI = currentGame.fileURICache[Math.floor(Math.random() * Object.keys(currentGame.fileURICache).length)];
+		} while (fileURI in currentGame.completedQuestions);
 		let fileName = fileURI.substring(fileURI.lastIndexOf("/"));
 		let imgURL = fileName.substring(0, fileName.lastIndexOf(".")) + ".jpg";
 		let fullImgURL = await fetch("/fetch/pic?url=" + imgURL);
-		gameInfo.currentImg = await fullImgURL.json();
+		currentGame.currentImg = await fullImgURL.json();
 		let json = await fetch("/fetch/json?url=" + fileURI);
-		gameInfo.currentQuestion = await json.json();
-		gameInfo.currentQuestion.fileURI = fileURI;
-		loading = false;
+		currentGame.currentQuestion = await json.json();
+		currentGame.currentQuestion.fileURI = fileURI;
+		currentGame.loading = false;
 	}
 	
 	function createFloatingText(guessCategory, event) {		
@@ -95,7 +97,7 @@
 	}
 
 	function submitGuessKeyDown(event) {
-		if (!gameInfo.guesses[gameInfo.currentTry]) {
+		if (!currentGame.guesses[currentGame.currentTryIndex]) {
 			return;
 		}
 		submitGuess(event);
@@ -106,62 +108,62 @@
 	}
 
 	function submitGuess(event) {
-		let guess = gameInfo.guesses[gameInfo.currentTry];
+		let guess = currentGame.guesses[currentGame.currentTryIndex];
 		if (!guess) {
 			return;
 		}
 		
 		let guessboxes = document.getElementsByClassName("svelecte");		
-		if (gameInfo.currentQuestion.correct.includes(guess)) {
+		if (currentGame.currentQuestion.correct.includes(guess)) {
 			createFloatingText(CORRECT_STRING, event);
-			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: var(--correct);";
-			gameInfo.currentScore += 3 - gameInfo.currentTry;
-			gameInfo.roundOver = true;
+			guessboxes[currentGame.currentTryIndex].style = "--sv-disabled-bg: var(--correct);";
+			currentGame.currentScore += 3 - currentGame.currentTryIndex;
+			currentGame.roundOver = true;
 			setTimeout(() => {revealSolution = true}, 500);
-			gameInfo.completedQuestions[gameInfo.currentQuestion.fileURI] = null;
-			++gameInfo.successfulRounds;
+			currentGame.completedQuestions[currentGame.currentQuestion.fileURI] = null;
+			++currentGame.successfulRounds;
 			return;
-		} else if (gameInfo.currentQuestion.correct.some((correctMap) => correctMap.indexOf(guess.substring(0, guess.indexOf("_"))) == 0)) {
+		} else if (currentGame.currentQuestion.correct.some((correctMap) => correctMap.indexOf(guess.substring(0, guess.indexOf("_"))) == 0)) {
 			createFloatingText(ALMOST_CORRECT_STRING, event);
-			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: var(--almost-correct);";
+			guessboxes[currentGame.currentTryIndex].style = "--sv-disabled-bg: var(--almost-correct);";
 		} else {
 			createFloatingText(INCORRECT_STRING, event);
-			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: var(--incorrect);";
+			guessboxes[currentGame.currentTryIndex].style = "--sv-disabled-bg: var(--incorrect);";
 		}
-		if (gameInfo.currentTry < 2) {
-			++gameInfo.currentTry;
+		if (currentGame.currentTryIndex < 2) {
+			++currentGame.currentTryIndex;
 			return;
 		}
-		gameInfo.roundOver = true;
+		currentGame.roundOver = true;
 		setTimeout(() => {revealSolution = true}, 500);
-		gameInfo.completedQuestions[gameInfo.currentQuestion.fileURI] = null;
-		++gameInfo.failedRounds;
+		currentGame.completedQuestions[currentGame.currentQuestion.fileURI] = null;
+		++currentGame.failedRounds;
 	}
 
 	function startNextRound() {
 		revealSolution = false;
-		if (gameInfo.currentRound + 1 > MAX_ROUNDS) {
+		if (currentGame.currentRound + 1 > MAX_ROUNDS) {
 			setTimeout(() => {
-				gameInfo.gameOver = true;
+				currentGame.gameOver = true;
 			}, 200);
 			return;
 		}
-		gameInfo.roundOver = false;
-		++gameInfo.currentRound;
-		gameInfo.currentTry = 0;		
-		if (gameInfo.currentRound >= HARD_LIMIT_ROUND) {
-			gameInfo.currentDifficulty = HARD_STRING;
-			gameInfo.fileURICache = [];
-		} else if (gameInfo.currentRound >= MEDIUM_START_ROUND) {
-			gameInfo.currentDifficulty = MEDIUM_STRING;
-			gameInfo.fileURICache = [];
+		currentGame.roundOver = false;
+		++currentGame.currentRound;
+		currentGame.currentTryIndex = 0;
+		if (currentGame.currentRound >= HARD_LIMIT_ROUND) {
+			currentGame.currentDifficulty = HARD_STRING;
+			currentGame.fileURICache = [];
+		} else if (currentGame.currentRound >= MEDIUM_START_ROUND) {
+			currentGame.currentDifficulty = MEDIUM_STRING;
+			currentGame.fileURICache = [];
 		}
 		resetGuessBoxes();
 		loadPic();
 	}
 
 	function resetGuessBoxes() {
-		gameInfo.guesses= ["", "", ""];
+		currentGame.guesses= ["", "", ""];
 		let guessboxes = document.getElementsByClassName("svelecte");
 		for (let box of guessboxes) {
 			box.style = "";
@@ -172,27 +174,27 @@
 </script>
 
 <svelte:head>
-	<title>STRAFTGUESSR ROUND {gameInfo.currentRound}/{MAX_ROUNDS}</title>
+	<title>STRAFTGUESSR ROUND {currentGame.currentRound}/{MAX_ROUNDS}</title>
 	<meta name="description" content="A STRAFTGUESSR game" />
 </svelte:head>
 
 <div class="game-box">
 	<h1>WHAT STRAFTAT MAP IS THIS?</h1>
 	<hr>
-	{#if loading}
+	{#if currentGame.loading}
 		<h2>Loading screenshot{loadingStringDots}</h2>
-	{:else if !loading}
+	{:else if !currentGame.loading}
 		<Lightbox enableClickToClose={true} showCloseButton={false}>
-			<img src={gameInfo.currentImg} alt="Game screenshot" />
+			<img src={currentGame.currentImg} alt="Game screenshot" />
 		</Lightbox>
 	{/if}
 	<hr>
-	<h2>Round {gameInfo.currentRound}/{MAX_ROUNDS}<br>Difficulty: {gameInfo.currentDifficulty}</h2>
+	<h2>Round {currentGame.currentRound}/{MAX_ROUNDS}<br>Difficulty: {currentGame.currentDifficulty}</h2>
 
 	<div class="guess-box">
-		<Svelecte inputId="guess0" options={MAP_LIST} bind:value={gameInfo.guesses[0]} onEnterKey={submitGuessKeyDown} disabled={gameInfo.currentTry!=0 || gameInfo.roundOver || gameInfo.gameOver} placeholder="1st Guess" />
-		<Svelecte inputId="guess1" options={MAP_LIST} bind:value={gameInfo.guesses[1]} onEnterKey={submitGuessKeyDown} disabled={gameInfo.currentTry!=1 || gameInfo.roundOver || gameInfo.gameOver} placeholder="2nd Guess" />
-		<Svelecte inputId="guess2" options={MAP_LIST} bind:value={gameInfo.guesses[2]} onEnterKey={submitGuessKeyDown} disabled={gameInfo.currentTry!=2 || gameInfo.roundOver || gameInfo.gameOver} placeholder="3rd Guess" />
+		<Svelecte inputId="guess0" options={MAP_LIST} bind:value={currentGame.guesses[0]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=0 || currentGame.roundOver || currentGame.gameOver} placeholder="1st Guess" />
+		<Svelecte inputId="guess1" options={MAP_LIST} bind:value={currentGame.guesses[1]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=1 || currentGame.roundOver || currentGame.gameOver} placeholder="2nd Guess" />
+		<Svelecte inputId="guess2" options={MAP_LIST} bind:value={currentGame.guesses[2]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=2 || currentGame.roundOver || currentGame.gameOver} placeholder="3rd Guess" />
 		{#each floatingTexts as t(t.id)}
 			<div id="failFly" out:fly={{y: -100, duration: 2500}}>
 				<div id="failText" out:fade={{duration: 7000}}>
@@ -200,26 +202,26 @@
 				</div>
 			</div>
 		{/each}
-		<button id="guessButton" onclick={submitGuess} disabled={!gameInfo.guesses[gameInfo.currentTry] || gameInfo.roundOver || gameInfo.gameOver}>
+		<button id="guessButton" onclick={submitGuess} disabled={!currentGame.guesses[currentGame.currentTryIndex] || currentGame.roundOver || currentGame.gameOver}>
 			LOCK IN
 		</button>
 	</div>
 	{#if revealSolution}
 	<div class="game-box" use:draggable id="answer-box" in:fade out:fade>
-		<h1>Answer:<br>{gameInfo.currentQuestion.correct}</h1>
+		<h1>Answer:<br>{currentGame.currentQuestion.correct}</h1>
 		<hr>
-		<h2>{gameInfo.currentQuestion.desc}</h2>
+		<h2>{currentGame.currentQuestion.desc}</h2>
 		<hr>
-		<button id="nextRoundButton" onclick={startNextRound} disabled={gameInfo.revealEnding}>
+		<button id="nextRoundButton" onclick={startNextRound} disabled={currentGame.revealEnding}>
 			NEXT ROUND
 		</button>
 	</div>
 	{/if}
-	{#if gameInfo.gameOver}
+	{#if currentGame.gameOver}
 	<div class="game-box" use:draggable id="answer-box" in:fade out:fade>
 		<h1>Finished!</h1>
 		<hr>
-		<h2>You got {gameInfo.successfulRounds} out of {MAX_ROUNDS} questions right!<br>Your score: {gameInfo.currentScore}</h2>
+		<h2>You got {currentGame.successfulRounds} out of {MAX_ROUNDS} questions right!<br>Your score: {currentGame.currentScore}</h2>
 		<hr>
 		<button id="nextRoundButton" onclick={startNewGame}>
 			NEW GAME
