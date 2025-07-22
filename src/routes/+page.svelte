@@ -20,7 +20,7 @@
 	}
 </script>
 
-<section>
+<div>
 	{#if startFade && !gameStarted}
 	<h1 in:fade={{duration:500}}>
 		STRAFTGUESSR
@@ -33,13 +33,15 @@
 		<br />
 		Can you guess the <a target="_blank" href="https://store.steampowered.com/app/2386720/STRAFTAT/">STRAFTAT</a> map based on the screenshot?
 	</h2>
+	<section>
 	<button in:fade={{duration:500}} id="startButton" onclick={startGame} disabled={gameStarted}>
-		<h1 style="color:black;">
+		<h2 style="color:black;font-size: 2rem;">
 			START
-		</h1>
+		</h2>
 	</button>
+	</section>
 	{/if}
-</section>
+</div>
 {#if gameStarted}
 	<div in:fade><Game /></div>
 {/if}
@@ -51,6 +53,10 @@
 		justify-content: center;
 		align-items: center;
 		flex: 0.6;
+	}
+
+	button {
+		min-width: 50%;
 	}
 	
 </style>
