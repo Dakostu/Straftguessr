@@ -2,7 +2,6 @@ import {list} from '@vercel/blob'
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({url}) => {
-  console.log(url);
   try {
     const diffString = url.searchParams.get('diff');
     const { blobs } = await list({prefix: "infos/" + diffString});
