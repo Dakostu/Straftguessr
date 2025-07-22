@@ -10,7 +10,6 @@
 	import { MAP_LIST } from '$lib/map_list'
 
 	let floatingTexts = $state([]);
-	let currentImg = $state("");
 	let revealSolution = $state(false);
 	let loading = $state(true);
 	let loadingStringDots = $state("");
@@ -33,7 +32,8 @@
 			gameOver : false,
 			guesses : (["", "", ""]),
 			completedQuestions : {},
-			currentQuestion: {}
+			currentQuestion : {},
+			currentImg : "",
 		};
 
 		resetGuessBoxes();
@@ -42,6 +42,7 @@
 
 	async function loadPic() {
 		loading = true;
+		gameInfo.currentImg = "";
 		if (gameInfo.fileURICache.length === 0) {
 			const urlsObj = await fetch('/fetch/jsons?diff=' + gameInfo.currentDifficulty);
 			if (!urlsObj.ok) {
@@ -59,7 +60,7 @@
 		let fileName = fileURI.substring(fileURI.lastIndexOf('/'));
 		let imgURL = fileName.substring(0, fileName.lastIndexOf('.')) + ".jpg";
 		let fullImgURL = await fetch('/fetch/pic?url=' + imgURL);
-		currentImg = await fullImgURL.json();
+		gameInfo.currentImg = await fullImgURL.json();
 		let json = await fetch('/fetch/json?url=' + fileURI);
 		gameInfo.currentQuestion = await json.json();
 		gameInfo.currentQuestion.fileURI = fileURI;
@@ -182,7 +183,7 @@
 		<h2>Loading screenshot{loadingStringDots}</h2>
 	{:else if !loading}
 		<Lightbox enableClickToClose={true} showCloseButton={false}>
-			<img src={currentImg} alt="Game screenshot" />
+			<img src={gameInfo.currentImg} alt="Game screenshot" />
 		</Lightbox>
 	{/if}
 	<hr>
