@@ -4,7 +4,7 @@
 </svelte:head>
 
 <script>
-	import {fade} from 'svelte/transition'
+	import {fade} from "svelte/transition"
 	import Game from "./game/+page.svelte"
 
 	let startFade = false;

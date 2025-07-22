@@ -1,20 +1,20 @@
 <script>
 	import { draggable } from "@neodrag/svelte"
-	import { fly, fade } from 'svelte/transition'
-	import { Lightbox } from 'svelte-lightbox'
-	import Svelecte from 'svelecte'
+	import { fly, fade } from "svelte/transition"
+	import { Lightbox } from "svelte-lightbox"
+	import Svelecte from "svelecte"
 	import { MAX_ROUNDS, MEDIUM_START_ROUND, HARD_LIMIT_ROUND,
 		EASY_STRING, MEDIUM_STRING, HARD_STRING,
 		INCORRECT_STRING, ALMOST_CORRECT_STRING, CORRECT_STRING,
-		RESPONSE_STRINGS} from '$lib/constants'
-	import { MAP_LIST } from '$lib/map_list'
+		RESPONSE_STRINGS} from "$lib/constants"
+	import { MAP_LIST } from "$lib/map_list"
 
 	let floatingTexts = $state([]);
 	let revealSolution = $state(false);
 	let loading = $state(true);
 	let loadingStringDots = $state("");
 	const incrLoadingStringDots = () => (
-		(loadingStringDots.length === 4) ? loadingStringDots = "" : loadingStringDots += '.'
+		(loadingStringDots.length === 4) ? loadingStringDots = "" : loadingStringDots += "."
 	);
 	setInterval(incrLoadingStringDots, 150);
 		
@@ -44,7 +44,7 @@
 		loading = true;
 		gameInfo.currentImg = "";
 		if (gameInfo.fileURICache.length === 0) {
-			const urlsObj = await fetch('/fetch/jsons?diff=' + gameInfo.currentDifficulty);
+			const urlsObj = await fetch("/fetch/jsons?diff=" + gameInfo.currentDifficulty);
 			if (!urlsObj.ok) {
 				console.error(urlsObj.statusText);
 				return;
@@ -57,11 +57,11 @@
 		do {
 			fileURI = gameInfo.fileURICache[Math.floor(Math.random() * Object.keys(gameInfo.fileURICache).length)];
 		} while (fileURI in gameInfo.completedQuestions);
-		let fileName = fileURI.substring(fileURI.lastIndexOf('/'));
-		let imgURL = fileName.substring(0, fileName.lastIndexOf('.')) + ".jpg";
-		let fullImgURL = await fetch('/fetch/pic?url=' + imgURL);
+		let fileName = fileURI.substring(fileURI.lastIndexOf("/"));
+		let imgURL = fileName.substring(0, fileName.lastIndexOf(".")) + ".jpg";
+		let fullImgURL = await fetch("/fetch/pic?url=" + imgURL);
 		gameInfo.currentImg = await fullImgURL.json();
-		let json = await fetch('/fetch/json?url=' + fileURI);
+		let json = await fetch("/fetch/json?url=" + fileURI);
 		gameInfo.currentQuestion = await json.json();
 		gameInfo.currentQuestion.fileURI = fileURI;
 		loading = false;
@@ -69,7 +69,7 @@
 	
 	function createFloatingText(guessCategory, event) {		
 		const buttonRect = event.target.getBoundingClientRect();
-		const containerRect = event.target.closest('.guess-box').getBoundingClientRect();
+		const containerRect = event.target.closest(".guess-box").getBoundingClientRect();
 		const top = buttonRect.top - containerRect.top;
 		
 		const id = Math.random();
@@ -121,7 +121,7 @@
 			gameInfo.completedQuestions[gameInfo.currentQuestion.fileURI] = null;
 			++gameInfo.successfulRounds;
 			return;
-		} else if (gameInfo.currentQuestion.correct.some((correctMap) => correctMap.indexOf(guess.substring(0, guess.indexOf('_'))) == 0)) {
+		} else if (gameInfo.currentQuestion.correct.some((correctMap) => correctMap.indexOf(guess.substring(0, guess.indexOf("_"))) == 0)) {
 			createFloatingText(ALMOST_CORRECT_STRING, event);
 			guessboxes[gameInfo.currentTry].style = "--sv-disabled-bg: var(--almost-correct);";
 		} else {

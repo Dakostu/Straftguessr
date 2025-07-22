@@ -1,6 +1,6 @@
 <script lang="ts">
-	import '../app.css';
-	import github from '$lib/images/github.svg';
+	import "../app.css";
+	import github from "$lib/images/github.svg";
 
 	let { children } = $props();
 </script>
