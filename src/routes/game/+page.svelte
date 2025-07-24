@@ -18,20 +18,20 @@
 	setInterval(incrLoadingStringDots, 150);
 
 	class GameInfo {
-		currentRound = 1;
-		currentTryIndex = 0;
-		successfulRounds = 0;
-		failedRounds = 0;
-		currentDifficulty = EASY_STRING;
-		currentScore = 0;
-		fileURICache = [];
-		loading = true;
-		roundOver = false;
-		gameOver = false;
-		guesses = (["", "", ""]);
-		completedQuestions = {};
-		currentQuestion = {};
-		currentImg = "";
+		currentRound = $state(1);
+		currentTryIndex = $state(0);
+		successfulRounds = $state(0);
+		failedRounds = $state(0);
+		currentDifficulty = $state(EASY_STRING);
+		currentScore = $state(0);
+		fileURICache = $state([]);
+		loading = $state(true);
+		roundOver = $state(false);
+		gameOver = $state(false);
+		guesses = $state(["", "", ""]);
+		completedQuestions = $state({});
+		currentQuestion = $state({});
+		currentImg = $state("");
 	}
 		
 	let currentGame = $state(new GameInfo());
