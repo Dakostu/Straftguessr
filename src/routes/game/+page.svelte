@@ -288,6 +288,8 @@ h1 {
 	border-color: var(--straftat-green);
 	border-style: solid;
 	border-width: thin;
+	padding-left: 1%;
+	padding-right: 1%;
 }
 
 .guess-box {
