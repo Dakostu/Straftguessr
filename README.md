@@ -49,3 +49,4 @@ Keep in mind that not every `Easy` screenshot has to be very easy, vice versa fo
 # Thank You
 
 * Sneaky_Kestrel for providing the `HideUI.dll`
+* Coal for providing map thumbnails
