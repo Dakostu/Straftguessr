@@ -17,6 +17,14 @@
 	);
 	setInterval(incrLoadingStringDots, 150);
 
+	function dropBoxRenderer(item, _isSelection, _inputValue) {
+		if (_isSelection) {
+			return `${item.text}`;
+		}
+
+		return `<div class="thumbnail-text"> <img src="/thumbnails/${item.text}.jpg"> ${item.text} </div>`;
+	}
+
 	class GameInfo {
 		currentRound = $state(1);
 		currentTryIndex = $state(0);
@@ -64,6 +72,7 @@
 		let fullImgURL = await fetch("/fetch/pic?url=" + imgURL);
 		currentGame.currentImg = await fullImgURL.json();
 		let json = await fetch("/fetch/json?url=" + fileURI);
+		console.log("huh?");
 		currentGame.currentQuestion = await json.json();
 		currentGame.currentQuestion.fileURI = fileURI;
 		currentGame.loading = false;
@@ -78,7 +87,7 @@
 		const possibleTexts = RESPONSE_STRINGS[guessCategory];
 
 		const floatingText = possibleTexts[Math.floor(Math.random() * possibleTexts.length)];
-		floatingTexts.push({id, top, text: floatingText});		
+		floatingTexts.push({id, text: floatingText});
 
 		setTimeout(() => {
 			floatingTexts = floatingTexts.filter(t => t.id !== id);
@@ -192,9 +201,9 @@
 	<h2>Round {currentGame.currentRound}/{MAX_ROUNDS}<br>Difficulty: {currentGame.currentDifficulty}</h2>
 
 	<div class="guess-box">
-		<Svelecte inputId="guess0" options={MAP_LIST} bind:value={currentGame.guesses[0]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=0 || currentGame.roundOver || currentGame.gameOver} placeholder="1st Guess" />
-		<Svelecte inputId="guess1" options={MAP_LIST} bind:value={currentGame.guesses[1]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=1 || currentGame.roundOver || currentGame.gameOver} placeholder="2nd Guess" />
-		<Svelecte inputId="guess2" options={MAP_LIST} bind:value={currentGame.guesses[2]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=2 || currentGame.roundOver || currentGame.gameOver} placeholder="3rd Guess" />
+		<Svelecte renderer={dropBoxRenderer} inputId="guess0" options={MAP_LIST} bind:value={currentGame.guesses[0]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=0 || currentGame.roundOver || currentGame.gameOver} placeholder="1st Guess" />
+		<Svelecte renderer={dropBoxRenderer} inputId="guess1" options={MAP_LIST} bind:value={currentGame.guesses[1]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=1 || currentGame.roundOver || currentGame.gameOver} placeholder="2nd Guess" />
+		<Svelecte renderer={dropBoxRenderer} inputId="guess2" options={MAP_LIST} bind:value={currentGame.guesses[2]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=2 || currentGame.roundOver || currentGame.gameOver} placeholder="3rd Guess" />
 		{#each floatingTexts as t(t.id)}
 			<div id="failFly" out:fly={{y: -100, duration: 2500}}>
 				<div id="failText" out:fade={{duration: 7000}}>
@@ -208,7 +217,15 @@
 	</div>
 	{#if revealSolution}
 	<div class="game-box" use:draggable id="answer-box" in:fade out:fade>
-		<h1>Answer:<br>{currentGame.currentQuestion.correct}</h1>
+		<h1>Answer:</h1>
+		<br>
+		<div class="game-box" style="border-width:0;">
+			{#each currentGame.currentQuestion.correct as mapName}
+			<div class="thumbnail-text">
+				<img src="/thumbnails/{mapName}.jpg" alt="{mapName} thumbnail"/><h2>{mapName}</h2>
+			</div>
+			{/each}
+		</div>
 		<hr>
 		<h2>{currentGame.currentQuestion.desc}</h2>
 		<hr>
@@ -280,6 +297,18 @@ h1 {
 	margin: 1% 30%;
 }
 
+:global(.thumbnail-text) {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+
+:global(.thumbnail-text img) {
+	object-fit: cover;
+	max-width: 100px;
+	user-select: none;
+}
+
 #failFly {
 	position: absolute;
 	transform: translateX(-50%);
@@ -293,7 +322,7 @@ h1 {
 	position: fixed;
 	transform: translateX(-50%);
 	left: 50%;
-	width: 40%;
+	width: 50%;
 	border-radius: 8%;
 	background-color: black;
 	cursor: move;
