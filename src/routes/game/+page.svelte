@@ -1,13 +1,14 @@
 <script lang="ts">
-	import { draggable } from "@neodrag/svelte"
-	import { fly, fade } from "svelte/transition"
-	import { Lightbox } from "svelte-lightbox"
-	import Svelecte from "svelecte"
+	import { draggable } from "@neodrag/svelte";
+	import { fly, fade } from "svelte/transition";
+	import { Lightbox } from "svelte-lightbox";
+	import { onMount } from "svelte";
+	import Svelecte from "svelecte";
 	import { MAX_ROUNDS, MEDIUM_START_ROUND, HARD_LIMIT_ROUND,
 		EASY_STRING, MEDIUM_STRING, HARD_STRING,
 		INCORRECT_STRING, ALMOST_CORRECT_STRING, CORRECT_STRING,
-		RESPONSE_STRINGS} from "$lib/constants"
-	import { MAP_LIST } from "$lib/map_list"
+		RESPONSE_STRINGS} from "$lib/constants";
+	import { MAP_LIST } from "$lib/map_list";
 
 	let floatingTexts = $state([]);
 	let revealSolution = $state(false);
@@ -24,6 +25,14 @@
 
 		return `<div class="thumbnail-text"> <img src="/thumbnails/${item.text}.jpg"> ${item.text} </div>`;
 	}
+
+	onMount(() => {
+		for (const map of MAP_LIST) {
+			const img = new Image();
+			img.src = "/thumbnails/" + map + ".jpg";
+			img.loading = "eager";
+		}
+	});
 
 	class GameInfo {
 		currentRound = $state(1);
@@ -201,7 +210,7 @@
 	<h2>Round {currentGame.currentRound}/{MAX_ROUNDS}<br>Difficulty: {currentGame.currentDifficulty}</h2>
 
 	<div class="guess-box">
-		<Svelecte renderer={dropBoxRenderer} inputId="guess0" options={MAP_LIST} bind:value={currentGame.guesses[0]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=0 || currentGame.roundOver || currentGame.gameOver} placeholder="1st Guess" />
+		<Svelecte renderer={dropBoxRenderer} inputId="guess0" options={MAP_LIST} bind:value={currentGame.guesses[0]} onEnterKey={submitGuessKeyDown} disabled={currentGame.loading || currentGame.currentTryIndex!=0 || currentGame.roundOver || currentGame.gameOver} placeholder="1st Guess" />
 		<Svelecte renderer={dropBoxRenderer} inputId="guess1" options={MAP_LIST} bind:value={currentGame.guesses[1]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=1 || currentGame.roundOver || currentGame.gameOver} placeholder="2nd Guess" />
 		<Svelecte renderer={dropBoxRenderer} inputId="guess2" options={MAP_LIST} bind:value={currentGame.guesses[2]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=2 || currentGame.roundOver || currentGame.gameOver} placeholder="3rd Guess" />
 		{#each floatingTexts as t(t.id)}
@@ -324,7 +333,7 @@ h1 {
 	position: fixed;
 	transform: translateX(-50%);
 	left: 50%;
-	width: 50%;
+	width: 40%;
 	border-radius: 8%;
 	background-color: black;
 	cursor: move;
