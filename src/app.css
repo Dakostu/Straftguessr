@@ -97,7 +97,7 @@ button:focus:not(:focus-visible) {
 
 hr {
 	width:90%;
-	color: #46ff4f;
+	border-color: #46ff4f;
 }
 
 .visually-hidden {
