@@ -158,10 +158,8 @@
 		currentGame.currentTryIndex = 0;
 		if (currentGame.currentRound >= HARD_LIMIT_ROUND) {
 			currentGame.currentDifficulty = HARD_STRING;
-			currentGame.fileURICache = [];
 		} else if (currentGame.currentRound >= MEDIUM_START_ROUND) {
 			currentGame.currentDifficulty = MEDIUM_STRING;
-			currentGame.fileURICache = [];
 		}
 		resetGuessBoxes();
 		loadPic();
@@ -211,7 +209,9 @@
 			LOCK IN
 		</button>
 	</div>
-	{#if revealSolution}
+</div>
+
+{#if revealSolution}
 	<div class="game-box answer-box" use:draggable={{cancel: "#nextRoundButton"}} in:fade out:fade>
 		<h1>Answer:</h1>
 		<br>
@@ -238,8 +238,7 @@
 			NEW GAME
 		</button>
 	</div>
-	{/if}
-</div>
+{/if}
 
 <style>	
 
@@ -251,7 +250,7 @@
 	--sv-dropdown-selected-bg: var(--black);
 	--sv-dropdown-border: var(--straftat-green);
 	--sv-dropdown-active-bg: var(--straftat-green);
-	--sv-dropdown-active-border: var(--straftat-green);
+	--sv-dropdown-active-border: var(--straftat-green);	
 	--sv-icon-color: var(--straftat-green);
 	color-scheme: dark;
 }
@@ -313,6 +312,7 @@ h1 {
 	position: fixed;
 	transform: translateX(-50%);
 	left: 50%;
+	top: 20%;
 	min-width: 40%;
 	border-radius: 8%;
 	padding-left: 3%;
@@ -334,20 +334,22 @@ h1 {
 
 	:global(.svelecte) {
 		font-size: small;
+		--sv-dropdown-width: 180px;		
 	}
 
 	#failFly {
 		font-size: large;
 	}
-
+	
 	:global(.thumbnail-text) {
 		display: flex;
 		align-items: center;
 		gap: 7px;
+		font-size: xx-small;		
 	}
 
 	:global(.answer-box .thumbnail-text h2) {
-		font-size: xx-small;
+		font-size: xx-small;		
 	}
 
 	:global(.thumbnail-text img) {
