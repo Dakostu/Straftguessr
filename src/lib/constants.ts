@@ -31,6 +31,7 @@ export const RESPONSE_STRINGS = {
         "So close...", 
         "Getting warmer...", 
         "Not quite...",
+        "Don't give up!",
     ],
     [CORRECT_STRING] : [
         "Wow!", 
