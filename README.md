@@ -2,32 +2,34 @@ This is the source code for STRAFTGUESSR, a GeoGuessr-like game where you have t
 
 **Play it here: https://straftguessr.vercel.app/**
 
-# Backend
+# Back-end
 
-This repo contains mostly the front-end code, as the back-end is currently based on Vercel Blob storage. It is possible for you to fork this project and hook it up to a separate storage with your own screenshots.
+This repo contains the front-end code and static files (screenshots and JSON files) for the back-end.
+
+* For each screenshot, there must be a corresponding JSON file (schema below) that delivers the correct answer(s) and description.
+* Both filenames of the JSON and the image files must be identical, so the game can deduce which image belongs to which JSON data.
+* There is a file `src/lib/round_list.ts` that assigns a difficulty to each round via filename. See below for each difficulty's meaning.
 
 # I Want to Submit Screenshots!
 
-Great, here's the easiest way to get your screenshots in the game:
+Great! Here's the easiest way to get your screenshots in the game:
 
 * (Optional but recommended) Install the no-HUD mod from the `HideUI.dll` file in the root folder of this repository. This allows you to disable the HUD and `Exploration Mode` text so you can have full view of whatever you're looking at. Perfect for taking screenshots.
 * Screenshots in 16:9 are recommended as to keep a constant aspect ratio throughout the game.
-* Submit a GitHub issue with the screenshots and a JSON description (schema below) of each screenshot. I will then take a look at it and if anything goes right, add it to the main Vercel Blob, making it public instantly.
-* Both filenames of the JSON and the image files should be identical, so the game can deduce which image belongs to which JSON data.
-* A map can have multiple screenshots! Go nuts, I especially want to see medium and hard screenshots!
+* Submit a GitHub pull request with the new screenshots in the subfolder `static/round_screens`, the corresponding JSON description in `static/round_infos`, and the difficulty assignment in `src/lib/round_list.ts`. I will then take a look at it and if anything goes right, approve and merge it, making it public instantly.
+* A map can have multiple screenshots! Go bananas; I especially want to see medium and hard screenshots!
 
 ## JSON Schema for STRAFTGUESSR Screenshots
 
 ```json
 {
     "correct": ["Map_Name", "Map_Name_2"],
-    "diff": "Easy"/"Medium"/"Hard",
     "desc": "A short description of whatever this screenshot is showing."
 }
 ```
 
+
 * `correct` is an array of correct answers for this screenshot, meaning that a screenshot allows for multiple correct answers.
-* `diff` is the difficulty. See below for their meaning.
 * `desc` should be a helpful descrption of the scene depicted in the screenshot.
 
 ## Difficulties & Their Meaning
