@@ -9,6 +9,7 @@
 		INCORRECT_STRING, ALMOST_CORRECT_STRING, CORRECT_STRING,
 		RESPONSE_STRINGS} from "$lib/constants";
 	import { MAP_LIST } from "$lib/map_list";
+	import { ROUNDS } from "$lib/round_list";
 
 	let floatingTexts = $state([]);
 	let revealSolution = $state(false);
@@ -41,7 +42,6 @@
 		failedRounds = $state(0);
 		currentDifficulty = $state(EASY_STRING);
 		currentScore = $state(0);
-		fileURICache = $state([]);
 		loading = $state(true);
 		roundOver = $state(false);
 		gameOver = $state(false);
@@ -61,27 +61,14 @@
 
 	async function loadPic() {
 		currentGame.loading = true;
-		currentGame.currentImg = "";
-		if (currentGame.fileURICache.length === 0) {
-			const urlsObj = await fetch("/fetch/jsons?diff=" + currentGame.currentDifficulty);
-			if (!urlsObj.ok) {
-				console.error(urlsObj.statusText);
-				return;
-			}
-			currentGame.fileURICache = await urlsObj.json();
-		}
-
+		currentGame.currentImg = "";		
 		let fileURI = "";
-		
+		const possibleRounds = ROUNDS[currentGame.currentDifficulty];
 		do {
-			fileURI = currentGame.fileURICache[Math.floor(Math.random() * Object.keys(currentGame.fileURICache).length)];
+			fileURI = possibleRounds[Math.floor(Math.random() * possibleRounds.length)];
 		} while (fileURI in currentGame.completedQuestions);
-		let fileName = fileURI.substring(fileURI.lastIndexOf("/"));
-		let imgURL = fileName.substring(0, fileName.lastIndexOf(".")) + ".jpg";
-		let fullImgURL = await fetch("/fetch/pic?url=" + imgURL);
-		currentGame.currentImg = await fullImgURL.json();
-		let json = await fetch("/fetch/json?url=" + fileURI);
-		console.log("huh?");
+		currentGame.currentImg = "round_screens/" + fileURI + ".jpg";
+		let json = await fetch("round_infos/" + fileURI + ".json");
 		currentGame.currentQuestion = await json.json();
 		currentGame.currentQuestion.fileURI = fileURI;
 		currentGame.loading = false;
