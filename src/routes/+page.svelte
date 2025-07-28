@@ -22,6 +22,7 @@
 
 <div>
 	{#if startFade && !gameStarted}
+	<section>
 	<h1 in:fade={{duration:500}}>
 		STRAFTGUESSR
 	</h1>
@@ -33,7 +34,6 @@
 		<br />
 		Can you guess the <a target="_blank" href="https://store.steampowered.com/app/2386720/STRAFTAT/">STRAFTAT</a> map based on the screenshot?
 	</h2>
-	<section>
 	<button in:fade={{duration:500}} id="startButton" onclick={startGame} disabled={gameStarted}>
 		<h2 style="color:black;font-size: 2rem;">
 			START
@@ -53,10 +53,21 @@
 		justify-content: center;
 		align-items: center;
 		flex: 0.6;
+		padding-left: 5%;
+		padding-right: 5%;
 	}
 
 	button {
 		min-width: 50%;
 	}
-	
+
+	section h1{
+		font-size: 3rem;
+	}
+
+@media (max-width: 720px) {
+	section h1 {
+		font-size: 2rem;
+	}
+}
 </style>

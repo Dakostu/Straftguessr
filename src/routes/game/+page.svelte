@@ -86,7 +86,7 @@
 		floatingTexts.push({id, text: floatingText});
 
 		setTimeout(() => {
-			floatingTexts = floatingTexts.filter(t => t.id !== id);
+			floatingTexts = [];
 			let failText = document.getElementById("failText");
 			if (!failText) {
 				return;
@@ -212,16 +212,14 @@
 		</button>
 	</div>
 	{#if revealSolution}
-	<div class="game-box" use:draggable={{cancel: "#nextRoundButton"}} id="answer-box" in:fade out:fade>
+	<div class="game-box answer-box" use:draggable={{cancel: "#nextRoundButton"}} in:fade out:fade>
 		<h1>Answer:</h1>
 		<br>
-		<div class="game-box" style="border-width:0;">
-			{#each currentGame.currentQuestion.correct as mapName}
-			<div class="thumbnail-text">
-				<img src="/thumbnails/{mapName}.jpg" alt="{mapName} thumbnail"/><h2>{mapName}</h2>
-			</div>
-			{/each}
+		{#each currentGame.currentQuestion.correct as mapName}
+		<div class="thumbnail-text">
+			<img src="/thumbnails/{mapName}.jpg" alt="{mapName} thumbnail"/><h2>{mapName}</h2>
 		</div>
+		{/each}
 		<hr>
 		<h2>{currentGame.currentQuestion.desc}</h2>
 		<hr>
@@ -231,7 +229,7 @@
 	</div>
 	{/if}
 	{#if currentGame.gameOver}
-	<div class="game-box" use:draggable={{cancel: "#newGameButton"}} id="answer-box" in:fade out:fade>
+	<div class="game-box answer-box" use:draggable={{cancel: "#newGameButton"}} id="result-box" in:fade out:fade>
 		<h1>Finished!</h1>
 		<hr>
 		<h2>You got {currentGame.successfulRounds} out of {MAX_ROUNDS} questions right!<br>Your score: {currentGame.currentScore}</h2>
@@ -265,12 +263,6 @@
 h1 {
 	margin: 1% 5%;
 	font-size: 3rem;
-}
-
-@media (max-width: 720px) {
-	h1 {
-		font-size: 2rem;
-	}
 }
 
 .game-box {
@@ -314,17 +306,75 @@ h1 {
 	margin-top: 80px;
 	font-size: xx-large;
 	-webkit-text-stroke: 0.06em black;
+	text-align: center;
 }
 
-#answer-box {
+.answer-box {
 	position: fixed;
 	transform: translateX(-50%);
 	left: 50%;
-	width: 40%;
+	min-width: 40%;
 	border-radius: 8%;
+	padding-left: 3%;
+	padding-right: 3%;
 	background-color: black;
 	cursor: move;
 	user-select: none;
+}
+
+
+@media (max-width: 720px) {
+	h1 {
+		font-size: 2rem;
+	}
+
+	h2 {
+		font-size: small;
+	}
+
+	:global(.svelecte) {
+		font-size: small;
+	}
+
+	#failFly {
+		font-size: large;
+	}
+
+	:global(.thumbnail-text) {
+		display: flex;
+		align-items: center;
+		gap: 7px;
+	}
+
+	:global(.answer-box .thumbnail-text h2) {
+		font-size: xx-small;
+	}
+
+	:global(.thumbnail-text img) {
+		object-fit: cover;
+		max-width: 40px;
+		user-select: none;
+	}
+
+	:global(.answer-box .thumbnail-text img) {
+		max-width: 50px;
+	}
+}
+
+@media (min-width: 720px) and (max-width: 1920px) {
+	:global(.thumbnail-text) {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		font-size: small;
+	}
+
+	:global(.thumbnail-text img) {
+		object-fit: cover;
+		max-width: 80px;
+		user-select: none;
+
+	}
 }
 
 </style>

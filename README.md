@@ -1,4 +1,4 @@
-This is the source code for STRAFTGUESSR, a GeoGuessr-like game where you have to guess the map of the FPS [STRAFTAT](https://store.steampowered.com/app/2386720/STRAFTAT/) based on a screenshot.
+This is the source code for STRAFTGUESSR, a GeoGuessr/Wordle-like game where you have to guess the map of the FPS [STRAFTAT](https://store.steampowered.com/app/2386720/STRAFTAT/) based on a screenshot.
 
 **Play it here: https://straftguessr.vercel.app/**
 
@@ -44,7 +44,6 @@ Keep in mind that not every `Easy` screenshot has to be very easy, vice versa fo
 # TODO
 
 * Some code cleanup and refactoring
-* Polishing the UI. Namely making it more responsive for smartphones and maybe changing the textbox components.
 * Error handling
 * Add more screenshots!
 
