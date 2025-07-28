@@ -1,0 +1,6 @@
+{
+"correct": ["Adobe_02"],
+"almost_correct": ["Adobe_00", "Adobe_00_Alt", "Adobe_01", "Adobe_01_Alt", "Adobe_02_Alt"],
+"diff": "Hard",
+"desc": "These are part of the decorative cliffs at the outer edge of Adobe_02."
+}

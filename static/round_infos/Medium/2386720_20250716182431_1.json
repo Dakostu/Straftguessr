@@ -1,0 +1,5 @@
+{
+"correct": ["Arena_25"],
+"diff": "Medium",
+"desc": "This is part of the walls at each edge of the map."
+}
