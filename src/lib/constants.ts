@@ -44,5 +44,8 @@ export const RESPONSE_STRINGS = {
         "You're right!",
         "That's the one!",
         "HOLYYYYYYYY",
+        "Brilliant!",
+        "Wonderful!",
+        "I love you!",
     ]
 }
