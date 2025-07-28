@@ -14,10 +14,10 @@
 	let floatingTexts = $state([]);
 	let revealSolution = $state(false);
 	let loadingStringDots = $state("");
-	const incrLoadingStringDots = () => (
+	const addLoadingStringDots = () => (
 		(loadingStringDots.length === 4) ? loadingStringDots = "" : loadingStringDots += "."
 	);
-	setInterval(incrLoadingStringDots, 150);
+	setInterval(addLoadingStringDots, 150);
 
 	function dropBoxRenderer(item, _isSelection, _inputValue) {
 		if (_isSelection) {
@@ -77,7 +77,6 @@
 	function createFloatingText(guessCategory, event) {		
 		const buttonRect = event.target.getBoundingClientRect();
 		const containerRect = event.target.closest(".guess-box").getBoundingClientRect();
-		const top = buttonRect.top - containerRect.top;
 		
 		const id = Math.random();
 		const possibleTexts = RESPONSE_STRINGS[guessCategory];
