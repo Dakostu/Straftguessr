@@ -46,6 +46,7 @@
 		roundOver = $state(false);
 		gameOver = $state(false);
 		guesses = $state(["", "", ""]);
+		guessResults = $state([null, null, null]);
 		completedQuestions = $state({});
 		currentQuestion = $state({});
 		currentImg = $state("");
@@ -116,11 +117,10 @@
 		if (!guess) {
 			return;
 		}
-		
-		let guessboxes = document.getElementsByClassName("svelecte");		
+
 		if (currentGame.currentQuestion.correct.includes(guess)) {
+			currentGame.guessResults[currentGame.currentTryIndex] = CORRECT_STRING;
 			createFloatingText(CORRECT_STRING, event);
-			guessboxes[currentGame.currentTryIndex].style = "--sv-disabled-bg: var(--correct);";
 			currentGame.currentScore += 3 - currentGame.currentTryIndex;
 			currentGame.roundOver = true;
 			setTimeout(() => {revealSolution = true}, 500);
@@ -129,10 +129,10 @@
 			return;
 		} else if (currentGame.currentQuestion.correct.some((correctMap) => correctMap.indexOf(guess.substring(0, guess.indexOf("_"))) == 0)) {
 			createFloatingText(ALMOST_CORRECT_STRING, event);
-			guessboxes[currentGame.currentTryIndex].style = "--sv-disabled-bg: var(--almost-correct);";
+			currentGame.guessResults[currentGame.currentTryIndex] = ALMOST_CORRECT_STRING;
 		} else {
 			createFloatingText(INCORRECT_STRING, event);
-			guessboxes[currentGame.currentTryIndex].style = "--sv-disabled-bg: var(--incorrect);";
+			currentGame.guessResults[currentGame.currentTryIndex] = INCORRECT_STRING;
 		}
 		if (currentGame.currentTryIndex < 2) {
 			++currentGame.currentTryIndex;
@@ -165,11 +165,8 @@
 	}
 
 	function resetGuessBoxes() {
-		currentGame.guesses= ["", "", ""];
-		let guessboxes = document.getElementsByClassName("svelecte");
-		for (let box of guessboxes) {
-			box.style = "";
-		}
+		currentGame.guesses = ["", "", ""];
+		currentGame.guessResults = [null, null, null];
 	}
 
 	startNewGame();
@@ -194,9 +191,15 @@
 	<h2>Round {currentGame.currentRound}/{MAX_ROUNDS}<br>Difficulty: {currentGame.currentDifficulty}</h2>
 
 	<div class="guess-box">
-		<Svelecte renderer={dropBoxRenderer} inputId="guess0" options={MAP_LIST} bind:value={currentGame.guesses[0]} onEnterKey={submitGuessKeyDown} disabled={currentGame.loading || currentGame.currentTryIndex!=0 || currentGame.roundOver || currentGame.gameOver} placeholder="1st Guess" />
-		<Svelecte renderer={dropBoxRenderer} inputId="guess1" options={MAP_LIST} bind:value={currentGame.guesses[1]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=1 || currentGame.roundOver || currentGame.gameOver} placeholder="2nd Guess" />
-		<Svelecte renderer={dropBoxRenderer} inputId="guess2" options={MAP_LIST} bind:value={currentGame.guesses[2]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=2 || currentGame.roundOver || currentGame.gameOver} placeholder="3rd Guess" />
+		<div class ="guessbox-wrapper" class:correct={currentGame.guessResults[0] === CORRECT_STRING} class:incorrect={currentGame.guessResults[0] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[0] === ALMOST_CORRECT_STRING}>
+			<Svelecte renderer={dropBoxRenderer} inputId="guess0" options={MAP_LIST} bind:value={currentGame.guesses[0]} onEnterKey={submitGuessKeyDown} disabled={currentGame.loading || currentGame.currentTryIndex!=0 || currentGame.roundOver || currentGame.gameOver} placeholder="1st Guess" />
+		</div>
+		<div class ="guessbox-wrapper" class:correct={currentGame.guessResults[1] === CORRECT_STRING} class:incorrect={currentGame.guessResults[1] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[1] === ALMOST_CORRECT_STRING}>
+			<Svelecte renderer={dropBoxRenderer} inputId="guess1" options={MAP_LIST} bind:value={currentGame.guesses[1]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=1 || currentGame.roundOver || currentGame.gameOver} placeholder="2nd Guess" />
+		</div>
+		<div class ="guessbox-wrapper" class:correct={currentGame.guessResults[2] === CORRECT_STRING} class:incorrect={currentGame.guessResults[2] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[2] === ALMOST_CORRECT_STRING}>
+			<Svelecte renderer={dropBoxRenderer} inputId="guess2" options={MAP_LIST} bind:value={currentGame.guesses[2]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=2 || currentGame.roundOver || currentGame.gameOver} placeholder="3rd Guess" />
+		</div>
 		{#each floatingTexts as t(t.id)}
 			<div id="failFly" out:fly={{y: -100, duration: 2500}}>
 				<div id="failText" out:fade={{duration: 7000}}>
@@ -254,6 +257,18 @@
 	--sv-dropdown-active-border: var(--straftat-green);	
 	--sv-icon-color: var(--straftat-green);
 	color-scheme: dark;
+}
+
+:global(.guessbox-wrapper.correct .svelecte) {
+    --sv-disabled-bg: var(--correct);
+}
+
+:global(.guessbox-wrapper.incorrect .svelecte) {
+    --sv-disabled-bg: var(--incorrect);
+}
+
+:global(.guessbox-wrapper.almost-correct .svelecte) {
+    --sv-disabled-bg: var(--almost-correct);
 }
 
 :global(.svelte-lightbox-main) {
