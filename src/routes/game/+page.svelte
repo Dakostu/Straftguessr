@@ -181,7 +181,7 @@
 	<meta name="description" content="A STRAFTGUESSR game" />
 </svelte:head>
 
-<div class="game-box">
+<div class="flex-box game-box">
 	<h1>WHAT STRAFTAT MAP IS THIS?</h1>
 	<hr>
 	{#if currentGame.loading}
@@ -212,12 +212,14 @@
 </div>
 
 {#if revealSolution}
-	<div class="game-box answer-box" use:draggable={{cancel: "#nextRoundButton"}} in:fade out:fade>
+	<div class="flex-box game-box answer-box" use:draggable={{cancel: "#nextRoundButton"}} in:fade out:fade>
 		<h1>Answer:</h1>
 		<br>
 		{#each currentGame.currentQuestion.correct as mapName}
-		<div class="thumbnail-text">
-			<img src="/thumbnails/{mapName}.jpg" alt="{mapName} thumbnail"/><h2>{mapName}</h2>
+		<div class="flex-box">
+			<div class="thumbnail-text">
+				<img src="/thumbnails/{mapName}.jpg" alt="{mapName} thumbnail"/><h2>{mapName}</h2>
+			</div>
 		</div>
 		{/each}
 		<hr>
@@ -229,7 +231,7 @@
 	</div>
 	{/if}
 	{#if currentGame.gameOver}
-	<div class="game-box answer-box" use:draggable={{cancel: "#newGameButton"}} id="result-box" in:fade out:fade>
+	<div class="flex-box game-box answer-box" use:draggable={{cancel: "#newGameButton"}} in:fade out:fade>
 		<h1>Finished!</h1>
 		<hr>
 		<h2>You got {currentGame.successfulRounds} out of {MAX_ROUNDS} questions right!<br>Your score: {currentGame.currentScore}</h2>
@@ -264,13 +266,18 @@ h1 {
 	font-size: 3rem;
 }
 
-.game-box {
+.flex-box {
 	display: flex;
 	max-width: 90%;
 	flex: 0.6;
 	flex-direction: column;
 	justify-content: center;
-	margin: 0 auto;
+	margin: auto;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.game-box {
 	border-radius: 3%;
 	border-color: var(--straftat-green);
 	border-style: solid;
@@ -283,7 +290,7 @@ h1 {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	margin: 1% 30%;
+	margin: 1% 20%;
 }
 
 :global(.thumbnail-text) {
