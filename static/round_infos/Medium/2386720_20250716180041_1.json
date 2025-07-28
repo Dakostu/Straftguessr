@@ -1,0 +1,5 @@
+{
+"correct": ["Arena_13_Alt"],
+"diff": "Medium",
+"desc": "This is the view from the map's center. The lighting and hitbox reveal that this is the Alt version."
+}

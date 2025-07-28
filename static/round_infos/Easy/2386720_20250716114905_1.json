@@ -1,0 +1,6 @@
+{
+"correct": ["Adobe_01_Alt"],
+"almost_correct": ["Adobe_00", "Adobe_00_Alt", "Adobe_01"],
+"diff": "Easy",
+"desc": "This is the view from the top of the building in the center of Adobe_01_Alt. The weapon spawns reveal that this is the Alt version."
+}

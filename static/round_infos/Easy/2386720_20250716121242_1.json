@@ -1,0 +1,5 @@
+{
+"correct": ["Arena_00", "Arena_01"],
+"diff": "Easy",
+"desc": "Both Arena_00 and Arena_01 share this exact layout, weapon spawn and lighting at the edge of the map."
+}
