@@ -212,7 +212,7 @@
 		</button>
 	</div>
 	{#if revealSolution}
-	<div class="game-box" use:draggable id="answer-box" in:fade out:fade>
+	<div class="game-box" use:draggable={{cancel: "#nextRoundButton"}} id="answer-box" in:fade out:fade>
 		<h1>Answer:</h1>
 		<br>
 		<div class="game-box" style="border-width:0;">
@@ -225,18 +225,18 @@
 		<hr>
 		<h2>{currentGame.currentQuestion.desc}</h2>
 		<hr>
-		<button id="nextRoundButton" onclick={startNextRound} disabled={currentGame.revealEnding}>
+		<button id="nextRoundButton" ontouchend={startNextRound} onclick={startNextRound} disabled={currentGame.revealEnding}>
 			NEXT ROUND
 		</button>
 	</div>
 	{/if}
 	{#if currentGame.gameOver}
-	<div class="game-box" use:draggable id="answer-box" in:fade out:fade>
+	<div class="game-box" use:draggable={{cancel: "#newGameButton"}} id="answer-box" in:fade out:fade>
 		<h1>Finished!</h1>
 		<hr>
 		<h2>You got {currentGame.successfulRounds} out of {MAX_ROUNDS} questions right!<br>Your score: {currentGame.currentScore}</h2>
 		<hr>
-		<button id="nextRoundButton" onclick={startNewGame}>
+		<button id="newGameButton" ontouchend={startNewGame} onclick={startNewGame}>
 			NEW GAME
 		</button>
 	</div>
