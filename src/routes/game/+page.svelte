@@ -124,7 +124,7 @@
 			currentGame.currentScore += 3 - currentGame.currentTryIndex;
 			currentGame.roundOver = true;
 			setTimeout(() => {revealSolution = true}, 500);
-			currentGame.completedQuestions[currentGame.currentQuestion.fileURI] = null;
+			currentGame.completedQuestions[currentGame.currentQuestion.fileURI] = true;
 			++currentGame.successfulRounds;
 			return;
 		} else if (currentGame.currentQuestion.correct.some((correctMap) => correctMap.indexOf(guess.substring(0, guess.indexOf("_"))) == 0)) {
