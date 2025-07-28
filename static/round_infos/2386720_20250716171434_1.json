@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_05, Arena_05_Alt"],
+"correct": ["Arena_05", "Arena_05_Alt"],
 "diff": "Easy",
 "desc": "This view from the lowermost point of the map's center is identical in both versions of the map."
 }
