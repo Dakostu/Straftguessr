@@ -85,7 +85,6 @@
 		currentGame.currentQuestion = json.default;
 		currentGame.currentQuestion.fileURI = fileURI;
 		fileURI = fileURI.substring(fileURI.lastIndexOf("/") + 1, fileURI.lastIndexOf("."));
-		console.log(fileURI);
 		currentGame.currentImg = "round_screens/" + fileURI + ".jpg";
 		currentGame.loading = false;
 	}
