@@ -1,0 +1,61 @@
+name: Validate JSON Files
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-json:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+              
+    - name: Install jq
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y jq
+        
+    - name: Validate JSON files
+      run: |
+        JSON_FOLDER="./src/routes/game/round_infos/"
+        
+        if [ ! -d "$JSON_FOLDER" ]; then
+          echo "Folder $JSON_FOLDER does not exist"
+          exit 1
+        fi
+        
+        JSON_FILES=$(find "$JSON_FOLDER" -name "*.json" -type f)
+        
+        if [ -z "$JSON_FILES" ]; then
+          echo "No JSON files found in $JSON_FOLDER"
+          exit 0
+        fi
+        
+        echo "Found JSON files in $JSON_FOLDER:"
+        echo "$JSON_FILES"
+        echo ""
+        
+        FAILED=0
+        for file in $JSON_FILES; do
+          echo "Validating: $file"
+          
+          if jq empty "$file"; then
+            echo "$file - Valid JSON"
+          else
+            echo "$file - Invalid JSON"
+            FAILED=1
+          fi
+          
+          echo ""
+        done
+        
+        if [ $FAILED -eq 1 ]; then
+          echo "JSON validation failed"
+          exit 1
+        else
+          echo "All JSON files are valid"
+        fi
