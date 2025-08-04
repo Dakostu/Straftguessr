@@ -128,12 +128,15 @@
 	}
 
 	function submitGuess(event) {
-		let guess = currentGame.guesses[currentGame.currentTryIndex];
+		// Make guesses case-insensitive so we can be more lenient
+		// when dealing with map name string literals.
+		const guess = currentGame.guesses[currentGame.currentTryIndex].toLowerCase();
 		if (!guess) {
 			return;
 		}
+		const correct = currentGame.currentQuestion.correct.map(str => str.toLowerCase());
 
-		if (currentGame.currentQuestion.correct.includes(guess)) {
+		if (correct.includes(guess)) {
 			currentGame.guessResults[currentGame.currentTryIndex] = CORRECT_STRING;
 			createFloatingText(CORRECT_STRING, event);
 			currentGame.currentScore += 3 - currentGame.currentTryIndex;
@@ -142,7 +145,7 @@
 			currentGame.completedQuestions[currentGame.currentQuestion.fileURI] = true;
 			++currentGame.successfulRounds;
 			return;
-		} else if (currentGame.currentQuestion.correct.some((correctMap) => correctMap.indexOf(guess.substring(0, guess.indexOf("_"))) == 0)) {
+		} else if (correct.some((correctMap) => correctMap.indexOf(guess.substring(0, guess.indexOf("_"))) == 0)) {
 			createFloatingText(ALMOST_CORRECT_STRING, event);
 			currentGame.guessResults[currentGame.currentTryIndex] = ALMOST_CORRECT_STRING;
 		} else {
