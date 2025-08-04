@@ -9,7 +9,6 @@
 		INCORRECT_STRING, ALMOST_CORRECT_STRING, CORRECT_STRING,
 		RESPONSE_STRINGS} from "$lib/constants";
 	import { MAP_LIST } from "$lib/map_list";
-	import { ROUNDS } from "$lib/round_list";
 
 	let floatingTexts = $state([]);
 	let revealSolution = $state(false);
@@ -50,6 +49,7 @@
 		completedQuestions = $state({});
 		currentQuestion = $state({});
 		currentImg = $state("");
+		fileCache = $state([]);
 	}
 		
 	let currentGame = $state(new GameInfo());
@@ -63,15 +63,30 @@
 	async function loadPic() {
 		currentGame.loading = true;
 		currentGame.currentImg = "";		
-		let fileURI = "";
-		const possibleRounds = ROUNDS[currentGame.currentDifficulty];
+		let fileURI;
+		if (currentGame.fileCache.length === 0) {
+			switch (currentGame.currentDifficulty) {
+				case EASY_STRING:
+					currentGame.fileCache = import.meta.glob("./round_infos/Easy/*.json", {eager: true});
+					break;
+				case MEDIUM_STRING:
+					currentGame.fileCache = import.meta.glob("./round_infos/Medium/*.json", {eager: true});
+					break;
+				case HARD_STRING:
+					currentGame.fileCache = import.meta.glob("./round_infos/Hard/*.json", {eager: true});
+					break;
+			}
+		}
+		let fileNames = Object.keys(currentGame.fileCache);
 		do {
-			fileURI = possibleRounds[Math.floor(Math.random() * possibleRounds.length)];
+			fileURI = fileNames[Math.floor(Math.random() * fileNames.length)];
 		} while (fileURI in currentGame.completedQuestions);
-		currentGame.currentImg = "round_screens/" + fileURI + ".jpg";
-		let json = await fetch("round_infos/" + fileURI + ".json");
-		currentGame.currentQuestion = await json.json();
+		let json = await currentGame.fileCache[fileURI];
+		currentGame.currentQuestion = json.default;
 		currentGame.currentQuestion.fileURI = fileURI;
+		fileURI = fileURI.substring(fileURI.lastIndexOf("/") + 1, fileURI.lastIndexOf("."));
+		console.log(fileURI);
+		currentGame.currentImg = "round_screens/" + fileURI + ".jpg";
 		currentGame.loading = false;
 	}
 	
@@ -156,8 +171,10 @@
 		++currentGame.currentRound;
 		currentGame.currentTryIndex = 0;
 		if (currentGame.currentRound >= HARD_LIMIT_ROUND) {
+			currentGame.fileCache = [];
 			currentGame.currentDifficulty = HARD_STRING;
 		} else if (currentGame.currentRound >= MEDIUM_START_ROUND) {
+			currentGame.fileCache = [];
 			currentGame.currentDifficulty = MEDIUM_STRING;
 		}
 		resetGuessBoxes();
