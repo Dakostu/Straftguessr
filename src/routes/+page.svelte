@@ -52,9 +52,10 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		flex: 0.6;
 		padding-left: 5%;
 		padding-right: 5%;
+		min-height:80vh;
+		max-width: 90%;
 	}
 
 	button {
