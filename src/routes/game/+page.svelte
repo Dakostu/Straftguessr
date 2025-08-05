@@ -301,22 +301,23 @@ h1 {
 
 .flex-box {
 	display: flex;
-	max-width: 90%;
-	flex: 0.6;
 	flex-direction: column;
 	justify-content: center;
-	margin: auto;
-	padding-left: 20px;
-	padding-right: 20px;
+	margin: 0;
+	width: 100vw;
+	max-width: none;
 }
 
 .game-box {
-	border-radius: 3%;
+	border-radius: 30px;
 	border-color: var(--straftat-green);
 	border-style: solid;
 	border-width: thin;
-	padding-left: 1%;
-	padding-right: 1%;
+	padding-left: 20px;
+	padding-right: 20px;
+	margin:0;
+	width:100%;
+	box-sizing: border-box;
 }
 
 .guess-box {
@@ -353,8 +354,8 @@ h1 {
 	transform: translateX(-50%);
 	left: 50%;
 	top: 20%;
-	min-width: 40%;
-	border-radius: 8%;
+	max-width: 60vw;
+	border-radius: 30px;
 	padding-left: 3%;
 	padding-right: 3%;
 	background-color: black;
@@ -365,7 +366,7 @@ h1 {
 
 @media (max-width: 720px) {
 	h1 {
-		font-size: 2rem;
+		font-size: 1.5rem;
 	}
 
 	h2 {
@@ -416,6 +417,12 @@ h1 {
 		max-width: 80px;
 		user-select: none;
 
+	}
+}
+
+@media (min-width: 1920px) {
+	h1 {
+		font-size: 4rem;
 	}
 }
 
