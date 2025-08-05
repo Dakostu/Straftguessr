@@ -8,7 +8,7 @@ This repo contains the front-end code and static files (screenshots and JSON fil
 
 * For each screenshot, there must be a corresponding JSON file (schema below) that delivers the correct answer(s) and description.
 * Both filenames of the JSON and the image files must be identical, so the game can deduce which image belongs to which JSON data.
-* There is a file `src/lib/round_list.ts` that assigns a difficulty to each round via filename. See below for each difficulty's meaning.
+* The JSON files are stored according to the difficulty of the round inside the file. See below for each difficulty's meaning.
 
 # I Want to Submit Screenshots!
 
