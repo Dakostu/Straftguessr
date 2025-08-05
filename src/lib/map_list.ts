@@ -158,6 +158,7 @@ export const MAP_LIST = [
     "Dragonfly_Sewer_Alt",
     "Dragonfly_Shrine",
     "Dragonfly_Shrine_Alt",
+    "Dragonfly_Shrine_Alt_Alt",
     "Dragonfly_Space",
     "Dragonfly_Space_Alt",
     "Dragonfly_Stairway",
