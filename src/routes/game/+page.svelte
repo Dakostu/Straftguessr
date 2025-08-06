@@ -307,10 +307,6 @@ h1 {
 	max-width: none;
 }
 
-.align-center {
-	align-content: center;
-}
-
 .game-box {
 	border-radius: 20px;
 	border-color: var(--straftat-green);
