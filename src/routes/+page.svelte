@@ -54,7 +54,7 @@
 		align-items: center;
 		padding-left: 5%;
 		padding-right: 5%;
-		min-height:80vh;
+		min-height: 50vh;
 		max-width: 90%;
 	}
 

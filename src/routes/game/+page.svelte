@@ -210,13 +210,13 @@
 	<h2>Round {currentGame.currentRound}/{MAX_ROUNDS}<br>Difficulty: {currentGame.currentDifficulty}</h2>
 
 	<div class="guess-box">
-		<div class ="guessbox-wrapper" class:correct={currentGame.guessResults[0] === CORRECT_STRING} class:incorrect={currentGame.guessResults[0] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[0] === ALMOST_CORRECT_STRING}>
+		<div class="guessbox-wrapper" class:correct={currentGame.guessResults[0] === CORRECT_STRING} class:incorrect={currentGame.guessResults[0] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[0] === ALMOST_CORRECT_STRING}>
 			<Svelecte renderer={dropBoxRenderer} inputId="guess0" options={MAP_LIST} bind:value={currentGame.guesses[0]} onEnterKey={submitGuessKeyDown} disabled={currentGame.loading || currentGame.currentTryIndex!=0 || currentGame.roundOver || currentGame.gameOver} placeholder="1st Guess" />
 		</div>
-		<div class ="guessbox-wrapper" class:correct={currentGame.guessResults[1] === CORRECT_STRING} class:incorrect={currentGame.guessResults[1] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[1] === ALMOST_CORRECT_STRING}>
+		<div class="guessbox-wrapper" class:correct={currentGame.guessResults[1] === CORRECT_STRING} class:incorrect={currentGame.guessResults[1] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[1] === ALMOST_CORRECT_STRING}>
 			<Svelecte renderer={dropBoxRenderer} inputId="guess1" options={MAP_LIST} bind:value={currentGame.guesses[1]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=1 || currentGame.roundOver || currentGame.gameOver} placeholder="2nd Guess" />
 		</div>
-		<div class ="guessbox-wrapper" class:correct={currentGame.guessResults[2] === CORRECT_STRING} class:incorrect={currentGame.guessResults[2] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[2] === ALMOST_CORRECT_STRING}>
+		<div class="guessbox-wrapper" class:correct={currentGame.guessResults[2] === CORRECT_STRING} class:incorrect={currentGame.guessResults[2] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[2] === ALMOST_CORRECT_STRING}>
 			<Svelecte renderer={dropBoxRenderer} inputId="guess2" options={MAP_LIST} bind:value={currentGame.guesses[2]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=2 || currentGame.roundOver || currentGame.gameOver} placeholder="3rd Guess" />
 		</div>
 		{#each floatingTexts as t(t.id)}
@@ -304,19 +304,22 @@ h1 {
 	flex-direction: column;
 	justify-content: center;
 	margin: 0;
-	width: 100vw;
 	max-width: none;
 }
 
+.align-center {
+	align-content: center;
+}
+
 .game-box {
-	border-radius: 30px;
+	border-radius: 20px;
 	border-color: var(--straftat-green);
 	border-style: solid;
 	border-width: thin;
 	padding-left: 20px;
 	padding-right: 20px;
-	margin:0;
-	width:100%;
+	margin: 0;
+	width: 100%;
 	box-sizing: border-box;
 }
 
@@ -330,6 +333,7 @@ h1 {
 :global(.thumbnail-text) {
 	display: flex;
 	align-items: center;
+	justify-content: center;
 	gap: 15px;
 }
 
@@ -355,7 +359,6 @@ h1 {
 	left: 50%;
 	top: 20%;
 	max-width: 60vw;
-	border-radius: 30px;
 	padding-left: 3%;
 	padding-right: 3%;
 	background-color: black;
@@ -402,6 +405,10 @@ h1 {
 	:global(.answer-box .thumbnail-text img) {
 		max-width: 50px;
 	}
+
+	.guess-box {
+		margin: 1% 10%;
+	}
 }
 
 @media (min-width: 720px) and (max-width: 1920px) {
@@ -424,6 +431,11 @@ h1 {
 	h1 {
 		font-size: 4rem;
 	}
+
+	.answer-box {
+		max-width: 45vw;
+	}
+
 }
 
 </style>
