@@ -35,6 +35,15 @@
 		}
 	});
 
+	const handleButtonTouchMove = (e) => {
+		if (window.scrollY === 0) {
+			// Prevent accidentally reloading the page
+			// when pressing a button and pulling the page.
+			// It's annoying.
+			e.preventDefault();
+		}
+	}
+
 	class RoundInfo {
 		infoJSON = $state({});
 		img = $state("");
@@ -220,8 +229,8 @@
 <svelte:window on:keydown={handleGlobalKeydown} />
 
 {#if currentGame.loading}
-<div class="answer-box" in:fade={{duration:1500}}>
-	<h1>LOADING SCREENSHOT{loadingStringDots}</h1>
+<div class="answer-box">
+	<h2 in:fade={{duration:1500}}>Loading screenshot{loadingStringDots}</h2>
 </div>
 {:else if !currentGame.loading}
 	<div class="flex-box game-box" in:fade={{duration:200}}>
@@ -241,7 +250,7 @@
 					<br>Map name has {currentGame.roundInfo.infoJSON.correct[0].length} characters
 				{/if}
 			</h2>
-			<button id="hintButton" onclick={getAHint} disabled={currentGame.roundInfo.tryIndex === 2 || currentGame.hintsRemaining === 0 || currentGame.roundInfo.hintsUsed === MAX_HINTS_PER_ROUND || currentGame.roundOver || currentGame.gameOver}>
+			<button id="hintButton" onclick={getAHint} ontouchmove={handleButtonTouchMove} disabled={currentGame.roundInfo.tryIndex === 2 || currentGame.hintsRemaining === 0 || currentGame.roundInfo.hintsUsed === MAX_HINTS_PER_ROUND || currentGame.roundOver || currentGame.gameOver}>
 				GIVE ME A HINT ({currentGame.hintsRemaining}/{HINTS_PER_GAME})
 			</button>
 		</div>
@@ -292,7 +301,8 @@
 			<button
 				id="guessButton"
 				onclick={submitGuess}
-				disabled={!currentGame.guesses[currentGame.roundInfo.tryIndex] || currentGame.roundOver || currentGame.gameOver}
+				ontouchmove={handleButtonTouchMove}
+				disabled={!currentGame.guesses[currentGame.roundInfo.tryIndex] || currentGame.roundOver || currentGame.gameOver}				
 			>
 				LOCK IN
 			</button>
@@ -313,7 +323,7 @@
 			<hr>
 			<h2>{currentGame.roundInfo.infoJSON.desc}</h2>
 			<hr>
-			<button id="nextRoundButton" ontouchend={startNextRound} onclick={startNextRound} disabled={currentGame.revealEnding}>
+			<button id="nextRoundButton" ontouchmove={handleButtonTouchMove} onclick={startNextRound} disabled={currentGame.revealEnding}>
 				NEXT ROUND
 			</button>
 		</div>
@@ -324,7 +334,7 @@
 			<hr>
 			<h2>You got {currentGame.successfulRounds} out of {MAX_ROUNDS} questions right!<br>Your score: {currentGame.currentScore}</h2>
 			<hr>
-			<button id="newGameButton" ontouchend={startNewGame} onclick={startNewGame}>
+			<button id="newGameButton" ontouchmove={handleButtonTouchMove} onclick={startNewGame}>
 				NEW GAME
 			</button>
 		</div>
