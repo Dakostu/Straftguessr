@@ -5,6 +5,7 @@
 	import { onMount } from "svelte";
 	import Svelecte from "svelecte";
 	import { MAX_ROUNDS, MEDIUM_START_ROUND, HARD_LIMIT_ROUND,
+		HINTS_PER_GAME, MAX_HINTS_PER_ROUND,
 		EASY_STRING, MEDIUM_STRING, HARD_STRING,
 		INCORRECT_STRING, ALMOST_CORRECT_STRING, CORRECT_STRING,
 		RESPONSE_STRINGS} from "$lib/constants";
@@ -34,9 +35,17 @@
 		}
 	});
 
+	class RoundInfo {
+		infoJSON = $state({});
+		img = $state("");
+		hintsUsed = $state(0);
+		fileURI = $state("");
+		tryIndex = $state(0);
+	}
+
 	class GameInfo {
-		currentRound = $state(1);
-		currentTryIndex = $state(0);
+		roundNumber = $state(1);
+		roundInfo = $state(new RoundInfo());
 		successfulRounds = $state(0);
 		failedRounds = $state(0);
 		currentDifficulty = $state(EASY_STRING);
@@ -45,11 +54,10 @@
 		roundOver = $state(false);
 		gameOver = $state(false);
 		guesses = $state(["", "", ""]);
-		guessResults = $state([null, null, null]);
+		guessResults = $state(["", "", ""]);
 		completedQuestions = $state({});
-		currentQuestion = $state({});
-		currentImg = $state("");
 		fileCache = $state([]);
+		hintsRemaining = $state(HINTS_PER_GAME);
 	}
 		
 	let currentGame = $state(new GameInfo());
@@ -62,7 +70,6 @@
 
 	async function loadPic() {
 		currentGame.loading = true;
-		currentGame.currentImg = "";		
 		let fileURI;
 		if (currentGame.fileCache.length === 0) {
 			switch (currentGame.currentDifficulty) {
@@ -82,10 +89,10 @@
 			fileURI = fileNames[Math.floor(Math.random() * fileNames.length)];
 		} while (fileURI in currentGame.completedQuestions);
 		let json = await currentGame.fileCache[fileURI];
-		currentGame.currentQuestion = json.default;
-		currentGame.currentQuestion.fileURI = fileURI;
+		currentGame.roundInfo.infoJSON = json.default;
+		currentGame.roundInfo.fileURI = fileURI;
 		fileURI = fileURI.substring(fileURI.lastIndexOf("/") + 1, fileURI.lastIndexOf("."));
-		currentGame.currentImg = "round_screens/" + fileURI + ".jpg";
+		currentGame.roundInfo.img = "round_screens/" + fileURI + ".jpg";
 		currentGame.loading = false;
 	}
 	
@@ -116,66 +123,68 @@
 	}
 
 	function submitGuessKeyDown(event) {
-		if (!currentGame.guesses[currentGame.currentTryIndex]) {
+		if (!currentGame.guesses[currentGame.roundInfo.tryIndex]) {
 			return;
 		}
 		submitGuess(event);
-		// WTF???
-		// TODO: Move on to next guessbox upon pressing Enter
-		// let guessboxes = document.getElementById("guess" + gameInfo.currentTry);
-		// guessboxes.focus();
 	}
 
 	function submitGuess(event) {
 		// Make guesses case-insensitive so we can be more lenient
 		// when dealing with map name string literals.
-		const guess = currentGame.guesses[currentGame.currentTryIndex].toLowerCase();
+		const guess = currentGame.guesses[currentGame.roundInfo.tryIndex].toLowerCase();
 		if (!guess) {
 			return;
 		}
-		const correct = currentGame.currentQuestion.correct.map(str => str.toLowerCase());
+		const correct = currentGame.roundInfo.infoJSON.correct.map(str => str.toLowerCase());
 
 		if (correct.includes(guess)) {
-			currentGame.guessResults[currentGame.currentTryIndex] = CORRECT_STRING;
+			currentGame.guessResults[currentGame.roundInfo.tryIndex] = CORRECT_STRING;
 			createFloatingText(CORRECT_STRING, event);
-			currentGame.currentScore += 3 - currentGame.currentTryIndex;
+			currentGame.currentScore += 3 - currentGame.roundInfo.tryIndex;
 			currentGame.roundOver = true;
 			setTimeout(() => {revealSolution = true}, 500);
-			currentGame.completedQuestions[currentGame.currentQuestion.fileURI] = true;
+			currentGame.completedQuestions[currentGame.roundInfo.infoJSON.fileURI] = true;
 			++currentGame.successfulRounds;
 			return;
 		} else if (correct.some((correctMap) => correctMap.indexOf(guess.substring(0, guess.indexOf("_"))) == 0)) {
 			createFloatingText(ALMOST_CORRECT_STRING, event);
-			currentGame.guessResults[currentGame.currentTryIndex] = ALMOST_CORRECT_STRING;
+			currentGame.guessResults[currentGame.roundInfo.tryIndex] = ALMOST_CORRECT_STRING;
 		} else {
 			createFloatingText(INCORRECT_STRING, event);
-			currentGame.guessResults[currentGame.currentTryIndex] = INCORRECT_STRING;
+			currentGame.guessResults[currentGame.roundInfo.tryIndex] = INCORRECT_STRING;
 		}
-		if (currentGame.currentTryIndex < 2) {
-			++currentGame.currentTryIndex;
+		if (currentGame.roundInfo.tryIndex < 2) {
+			++currentGame.roundInfo.tryIndex;
 			return;
 		}
 		currentGame.roundOver = true;
 		setTimeout(() => {revealSolution = true}, 500);
-		currentGame.completedQuestions[currentGame.currentQuestion.fileURI] = null;
+		currentGame.completedQuestions[currentGame.roundInfo.fileURI] = null;
 		++currentGame.failedRounds;
+	}
+
+	function getAHint() {
+		--currentGame.hintsRemaining;
+		++currentGame.roundInfo.hintsUsed;
+		++currentGame.roundInfo.tryIndex;
 	}
 
 	function startNextRound() {
 		revealSolution = false;
-		if (currentGame.currentRound + 1 > MAX_ROUNDS) {
+		if (currentGame.roundNumber + 1 > MAX_ROUNDS) {
 			setTimeout(() => {
 				currentGame.gameOver = true;
 			}, 200);
 			return;
 		}
 		currentGame.roundOver = false;
-		++currentGame.currentRound;
-		currentGame.currentTryIndex = 0;
-		if (currentGame.currentRound >= HARD_LIMIT_ROUND) {
+		++currentGame.roundNumber;
+		currentGame.roundInfo = new RoundInfo();
+		if (currentGame.roundNumber >= HARD_LIMIT_ROUND) {
 			currentGame.fileCache = [];
 			currentGame.currentDifficulty = HARD_STRING;
-		} else if (currentGame.currentRound >= MEDIUM_START_ROUND) {
+		} else if (currentGame.roundNumber >= MEDIUM_START_ROUND) {
 			currentGame.fileCache = [];
 			currentGame.currentDifficulty = MEDIUM_STRING;
 		}
@@ -192,7 +201,7 @@
 </script>
 
 <svelte:head>
-	<title>STRAFTGUESSR ROUND {currentGame.currentRound}/{MAX_ROUNDS}</title>
+	<title>STRAFTGUESSR ROUND {currentGame.roundNumber}/{MAX_ROUNDS}</title>
 	<meta name="description" content="A STRAFTGUESSR game" />
 </svelte:head>
 
@@ -203,21 +212,57 @@
 		<h2>Loading screenshot{loadingStringDots}</h2>
 	{:else if !currentGame.loading}
 		<Lightbox enableClickToClose={true} showCloseButton={false}>
-			<img src={currentGame.currentImg} alt="Game screenshot" />
+			<img src={currentGame.roundInfo.img} alt="Game screenshot" />
 		</Lightbox>
 	{/if}
 	<hr>
-	<h2>Round {currentGame.currentRound}/{MAX_ROUNDS}<br>Difficulty: {currentGame.currentDifficulty}</h2>
+	<h2>Round {currentGame.roundNumber}/{MAX_ROUNDS}
+		<br>Difficulty: {currentGame.currentDifficulty}
+		{#if currentGame.roundInfo.hintsUsed > 0}
+		<br> Map name starts with {currentGame.roundInfo.infoJSON.correct[0][0]}
+		{/if}
+		{#if currentGame.roundInfo.hintsUsed > 1}
+		<br>Map name has {currentGame.roundInfo.infoJSON.correct[0].length} characters
+		{/if}
+	</h2>
 
 	<div class="guess-box">
 		<div class="guessbox-wrapper" class:correct={currentGame.guessResults[0] === CORRECT_STRING} class:incorrect={currentGame.guessResults[0] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[0] === ALMOST_CORRECT_STRING}>
-			<Svelecte renderer={dropBoxRenderer} inputId="guess0" options={MAP_LIST} bind:value={currentGame.guesses[0]} onEnterKey={submitGuessKeyDown} disabled={currentGame.loading || currentGame.currentTryIndex!=0 || currentGame.roundOver || currentGame.gameOver} placeholder="1st Guess" />
+			<Svelecte
+				renderer={dropBoxRenderer}
+				inputId="guess0"
+				options={MAP_LIST}
+				bind:value={currentGame.guesses[0]}
+				onEnterKey={submitGuessKeyDown}
+				disabled={currentGame.loading
+					|| currentGame.roundInfo.tryIndex != 0
+					|| currentGame.roundOver
+					|| currentGame.gameOver}
+				placeholder="1st Guess" />
 		</div>
 		<div class="guessbox-wrapper" class:correct={currentGame.guessResults[1] === CORRECT_STRING} class:incorrect={currentGame.guessResults[1] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[1] === ALMOST_CORRECT_STRING}>
-			<Svelecte renderer={dropBoxRenderer} inputId="guess1" options={MAP_LIST} bind:value={currentGame.guesses[1]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=1 || currentGame.roundOver || currentGame.gameOver} placeholder="2nd Guess" />
+			<Svelecte
+				renderer={dropBoxRenderer}
+				inputId="guess1"
+				options={MAP_LIST}
+				bind:value={currentGame.guesses[1]}
+				onEnterKey={submitGuessKeyDown}
+				disabled={currentGame.roundInfo.tryIndex != 1
+					|| currentGame.roundOver
+					|| currentGame.gameOver}
+				placeholder="2nd Guess" />
 		</div>
 		<div class="guessbox-wrapper" class:correct={currentGame.guessResults[2] === CORRECT_STRING} class:incorrect={currentGame.guessResults[2] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[2] === ALMOST_CORRECT_STRING}>
-			<Svelecte renderer={dropBoxRenderer} inputId="guess2" options={MAP_LIST} bind:value={currentGame.guesses[2]} onEnterKey={submitGuessKeyDown} disabled={currentGame.currentTryIndex!=2 || currentGame.roundOver || currentGame.gameOver} placeholder="3rd Guess" />
+			<Svelecte
+				renderer={dropBoxRenderer}
+				inputId="guess2"
+				options={MAP_LIST}
+				bind:value={currentGame.guesses[2]}
+				onEnterKey={submitGuessKeyDown}
+				disabled={currentGame.roundInfo.tryIndex!=2
+					|| currentGame.roundOver
+					|| currentGame.gameOver}
+				placeholder="3rd Guess" />
 		</div>
 		{#each floatingTexts as t(t.id)}
 			<div id="failFly" out:fly={{y: -100, duration: 2500}}>
@@ -226,7 +271,10 @@
 				</div>
 			</div>
 		{/each}
-		<button id="guessButton" onclick={submitGuess} disabled={!currentGame.guesses[currentGame.currentTryIndex] || currentGame.roundOver || currentGame.gameOver}>
+		<button id="hintButton" onclick={getAHint} disabled={currentGame.roundInfo.tryIndex === 2 || currentGame.hintsRemaining === 0 || currentGame.roundInfo.hintsUsed === MAX_HINTS_PER_ROUND || currentGame.roundOver || currentGame.gameOver}>
+			GIVE ME A HINT ({currentGame.hintsRemaining}/{HINTS_PER_GAME})
+		</button>
+		<button id="guessButton" onclick={submitGuess} disabled={!currentGame.guesses[currentGame.roundInfo.tryIndex] || currentGame.roundOver || currentGame.gameOver}>
 			LOCK IN
 		</button>
 	</div>
@@ -236,7 +284,7 @@
 	<div class="flex-box game-box answer-box" use:draggable={{cancel: "#nextRoundButton"}} in:fade out:fade>
 		<h1>Answer:</h1>
 		<br>
-		{#each currentGame.currentQuestion.correct as mapName}
+		{#each currentGame.roundInfo.infoJSON.correct as mapName}
 		<div class="flex-box">
 			<div class="thumbnail-text">
 				<img src="/thumbnails/{mapName}.jpg" alt="{mapName} thumbnail"/><h2>{mapName}</h2>
@@ -244,7 +292,7 @@
 		</div>
 		{/each}
 		<hr>
-		<h2>{currentGame.currentQuestion.desc}</h2>
+		<h2>{currentGame.roundInfo.infoJSON.desc}</h2>
 		<hr>
 		<button id="nextRoundButton" ontouchend={startNextRound} onclick={startNextRound} disabled={currentGame.revealEnding}>
 			NEXT ROUND

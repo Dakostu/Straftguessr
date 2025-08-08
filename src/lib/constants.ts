@@ -7,6 +7,8 @@ export const HARD_STRING = "Hard";
 export const INCORRECT_STRING = "incorrect";
 export const ALMOST_CORRECT_STRING = "almost_correct";
 export const CORRECT_STRING = "correct";
+export const HINTS_PER_GAME = 3;
+export const MAX_HINTS_PER_ROUND = 2;
 export const RESPONSE_STRINGS = {
     [INCORRECT_STRING] : [
         "No", 
