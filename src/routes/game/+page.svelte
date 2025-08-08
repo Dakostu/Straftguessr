@@ -92,8 +92,19 @@
 		currentGame.roundInfo.infoJSON = json.default;
 		currentGame.roundInfo.fileURI = fileURI;
 		fileURI = fileURI.substring(fileURI.lastIndexOf("/") + 1, fileURI.lastIndexOf("."));
-		currentGame.roundInfo.img = "round_screens/" + fileURI + ".jpg";
-		currentGame.loading = false;
+		const imgURI = "round_screens/" + fileURI + ".jpg";
+		const img = new Image();
+		img.onload = () => {
+			currentGame.roundInfo.img = imgURI;
+			currentGame.loading = false;
+		};
+		img.onerror = () => {
+			console.error("Failed to load image:", imgURI);
+			console.error("Loading new image instead");
+			loadPic();
+			return;
+		}
+		img.src = imgURI;
 	}
 	
 	function createFloatingText(guessCategory) {
@@ -210,114 +221,116 @@
 
 <svelte:window on:keydown={handleGlobalKeydown} />
 
-<div class="flex-box game-box">
-	<h1>WHAT STRAFTAT MAP IS THIS?</h1>
-	<hr>
-	{#if currentGame.loading}
-		<h2>Loading screenshot{loadingStringDots}</h2>
-	{:else if !currentGame.loading}
-		<Lightbox enableClickToClose={true} showCloseButton={false}>
-			<img src={currentGame.roundInfo.img} alt="Game screenshot" />
-		</Lightbox>
-	{/if}
-	<hr>
-	<div class="sub-ui-element-box">
-		<h2>Round {currentGame.roundNumber}/{MAX_ROUNDS}
-			<br>Difficulty: {currentGame.currentDifficulty}
-			{#if currentGame.roundInfo.hintsUsed > 0}
-			<br> Map name starts with {currentGame.roundInfo.infoJSON.correct[0][0]}
-			{/if}
-			{#if currentGame.roundInfo.hintsUsed > 1}
-			<br>Map name has {currentGame.roundInfo.infoJSON.correct[0].length} characters
-			{/if}
-		</h2>
-		<button id="hintButton" onclick={getAHint} disabled={currentGame.roundInfo.tryIndex === 2 || currentGame.hintsRemaining === 0 || currentGame.roundInfo.hintsUsed === MAX_HINTS_PER_ROUND || currentGame.roundOver || currentGame.gameOver}>
-			GIVE ME A HINT ({currentGame.hintsRemaining}/{HINTS_PER_GAME})
-		</button>
-	</div>
-	<hr>
+{#if currentGame.loading}
+<div class="answer-box">
+	<h1 in:fade>LOADING SCREENSHOT{loadingStringDots}</h1>
+</div>
+{:else if !currentGame.loading}
+	<div class="flex-box game-box" in:fade={{duration:200}}>
+		<h1>WHAT STRAFTAT MAP IS THIS?</h1>
+		<hr>
+			<Lightbox enableClickToClose={true} showCloseButton={false}>
+				<img src={currentGame.roundInfo.img} alt="Game screenshot" />
+			</Lightbox>
+		<hr>
+		<div class="sub-ui-element-box">
+			<h2>Round {currentGame.roundNumber}/{MAX_ROUNDS}
+				<br>Difficulty: {currentGame.currentDifficulty}
+				{#if currentGame.roundInfo.hintsUsed > 0}
+					<br>Map name starts with {currentGame.roundInfo.infoJSON.correct[0][0]}
+				{/if}
+				{#if currentGame.roundInfo.hintsUsed > 1}
+					<br>Map name has {currentGame.roundInfo.infoJSON.correct[0].length} characters
+				{/if}
+			</h2>
+			<button id="hintButton" onclick={getAHint} disabled={currentGame.roundInfo.tryIndex === 2 || currentGame.hintsRemaining === 0 || currentGame.roundInfo.hintsUsed === MAX_HINTS_PER_ROUND || currentGame.roundOver || currentGame.gameOver}>
+				GIVE ME A HINT ({currentGame.hintsRemaining}/{HINTS_PER_GAME})
+			</button>
+		</div>
+		<hr>
 
-	<div class="sub-ui-element-box">
-		<div class="guessbox-wrapper" class:correct={currentGame.guessResults[0] === CORRECT_STRING} class:incorrect={currentGame.guessResults[0] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[0] === ALMOST_CORRECT_STRING}>
-			<Svelecte
-				renderer={dropBoxRenderer}
-				inputId="guess0"
-				options={MAP_LIST}
-				bind:value={currentGame.guesses[0]}
-				disabled={currentGame.loading
-					|| currentGame.roundInfo.tryIndex != 0
-					|| currentGame.roundOver
-					|| currentGame.gameOver}
-				placeholder="1st Guess" />
+		<div class="sub-ui-element-box">
+			<div class="guessbox-wrapper" class:correct={currentGame.guessResults[0] === CORRECT_STRING} class:incorrect={currentGame.guessResults[0] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[0] === ALMOST_CORRECT_STRING}>
+				<Svelecte
+					renderer={dropBoxRenderer}
+					inputId="guess0"
+					options={MAP_LIST}
+					bind:value={currentGame.guesses[0]}
+					disabled={currentGame.loading
+						|| currentGame.roundInfo.tryIndex != 0
+						|| currentGame.roundOver
+						|| currentGame.gameOver}
+					placeholder="1st Guess" />
+			</div>
+			<div class="guessbox-wrapper" class:correct={currentGame.guessResults[1] === CORRECT_STRING} class:incorrect={currentGame.guessResults[1] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[1] === ALMOST_CORRECT_STRING}>
+				<Svelecte
+					renderer={dropBoxRenderer}
+					inputId="guess1"
+					options={MAP_LIST}
+					bind:value={currentGame.guesses[1]}
+					disabled={currentGame.roundInfo.tryIndex != 1
+						|| currentGame.roundOver
+						|| currentGame.gameOver}
+					placeholder="2nd Guess" />
+			</div>
+			<div class="guessbox-wrapper" class:correct={currentGame.guessResults[2] === CORRECT_STRING} class:incorrect={currentGame.guessResults[2] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[2] === ALMOST_CORRECT_STRING}>
+				<Svelecte
+					renderer={dropBoxRenderer}
+					inputId="guess2"
+					options={MAP_LIST}
+					bind:value={currentGame.guesses[2]}
+					disabled={currentGame.roundInfo.tryIndex!=2
+						|| currentGame.roundOver
+						|| currentGame.gameOver}
+					placeholder="3rd Guess" />
+			</div>
+			{#each floatingTexts as t(t.id)}
+				<div id="failFly" out:fly={{y: -100, duration: 2500}}>
+					<div id="failText" out:fade={{duration: 7000}}>
+					{t.text}
+					</div>
+				</div>
+			{/each}
+			<button
+				id="guessButton"
+				onclick={submitGuess}
+				disabled={!currentGame.guesses[currentGame.roundInfo.tryIndex] || currentGame.roundOver || currentGame.gameOver}
+			>
+				LOCK IN
+			</button>
 		</div>
-		<div class="guessbox-wrapper" class:correct={currentGame.guessResults[1] === CORRECT_STRING} class:incorrect={currentGame.guessResults[1] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[1] === ALMOST_CORRECT_STRING}>
-			<Svelecte
-				renderer={dropBoxRenderer}
-				inputId="guess1"
-				options={MAP_LIST}
-				bind:value={currentGame.guesses[1]}
-				disabled={currentGame.roundInfo.tryIndex != 1
-					|| currentGame.roundOver
-					|| currentGame.gameOver}
-				placeholder="2nd Guess" />
-		</div>
-		<div class="guessbox-wrapper" class:correct={currentGame.guessResults[2] === CORRECT_STRING} class:incorrect={currentGame.guessResults[2] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[2] === ALMOST_CORRECT_STRING}>
-			<Svelecte
-				renderer={dropBoxRenderer}
-				inputId="guess2"
-				options={MAP_LIST}
-				bind:value={currentGame.guesses[2]}
-				disabled={currentGame.roundInfo.tryIndex!=2
-					|| currentGame.roundOver
-					|| currentGame.gameOver}
-				placeholder="3rd Guess" />
-		</div>
-		{#each floatingTexts as t(t.id)}
-			<div id="failFly" out:fly={{y: -100, duration: 2500}}>
-				<div id="failText" out:fade={{duration: 7000}}>
-				{t.text}
+	</div>
+
+	{#if revealSolution}
+		<div class="flex-box game-box answer-box" use:draggable={{cancel: "#nextRoundButton"}} in:fade out:fade>
+			<h1>Answer:</h1>
+			<br>
+			{#each currentGame.roundInfo.infoJSON.correct as mapName}
+			<div class="flex-box">
+				<div class="thumbnail-text">
+					<img src="/thumbnails/{mapName}.jpg" alt="{mapName} thumbnail"/><h2>{mapName}</h2>
 				</div>
 			</div>
-		{/each}
-		<button
-			id="guessButton"
-			onclick={submitGuess}
-			disabled={!currentGame.guesses[currentGame.roundInfo.tryIndex] || currentGame.roundOver || currentGame.gameOver}
-		>
-			LOCK IN
-		</button>
-	</div>
-</div>
-
-{#if revealSolution}
-	<div class="flex-box game-box answer-box" use:draggable={{cancel: "#nextRoundButton"}} in:fade out:fade>
-		<h1>Answer:</h1>
-		<br>
-		{#each currentGame.roundInfo.infoJSON.correct as mapName}
-		<div class="flex-box">
-			<div class="thumbnail-text">
-				<img src="/thumbnails/{mapName}.jpg" alt="{mapName} thumbnail"/><h2>{mapName}</h2>
-			</div>
+			{/each}
+			<hr>
+			<h2>{currentGame.roundInfo.infoJSON.desc}</h2>
+			<hr>
+			<button id="nextRoundButton" ontouchend={startNextRound} onclick={startNextRound} disabled={currentGame.revealEnding}>
+				NEXT ROUND
+			</button>
 		</div>
-		{/each}
-		<hr>
-		<h2>{currentGame.roundInfo.infoJSON.desc}</h2>
-		<hr>
-		<button id="nextRoundButton" ontouchend={startNextRound} onclick={startNextRound} disabled={currentGame.revealEnding}>
-			NEXT ROUND
-		</button>
-	</div>
+		{/if}
+		{#if currentGame.gameOver}
+		<div class="flex-box game-box answer-box" use:draggable={{cancel: "#newGameButton"}} in:fade out:fade>
+			<h1>Finished!</h1>
+			<hr>
+			<h2>You got {currentGame.successfulRounds} out of {MAX_ROUNDS} questions right!<br>Your score: {currentGame.currentScore}</h2>
+			<hr>
+			<button id="newGameButton" ontouchend={startNewGame} onclick={startNewGame}>
+				NEW GAME
+			</button>
+		</div>
 	{/if}
-	{#if currentGame.gameOver}
-	<div class="flex-box game-box answer-box" use:draggable={{cancel: "#newGameButton"}} in:fade out:fade>
-		<h1>Finished!</h1>
-		<hr>
-		<h2>You got {currentGame.successfulRounds} out of {MAX_ROUNDS} questions right!<br>Your score: {currentGame.currentScore}</h2>
-		<hr>
-		<button id="newGameButton" ontouchend={startNewGame} onclick={startNewGame}>
-			NEW GAME
-		</button>
-	</div>
 {/if}
 
 <style>	
