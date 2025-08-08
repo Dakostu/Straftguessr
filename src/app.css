@@ -81,7 +81,7 @@ button {
 	background-color: var(--straftat-green);
 	border-radius: 45%;
 	border-color: var(--straftat-green);
-	margin: 2% 2%;
+	margin: 1rem 1rem;
 }
 
 button:focus:not(:focus-visible) {

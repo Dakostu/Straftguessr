@@ -3,6 +3,8 @@
 	<meta name="description" content="STRAFTGUESSR" />
 </svelte:head>
 
+<svelte:window on:keydown={handleGlobalKeydown} />
+
 <script>
 	import {fade} from "svelte/transition"
 	import Game from "./game/+page.svelte"
@@ -17,6 +19,13 @@
 		setTimeout(() => {
 			gameStarted = true;
 		}, 10);
+	}
+
+	function handleGlobalKeydown(event) {
+		if (event.key != "Enter") {
+			return;
+		}
+		startGame();
 	}
 </script>
 

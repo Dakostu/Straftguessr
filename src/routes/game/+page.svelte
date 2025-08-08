@@ -96,10 +96,7 @@
 		currentGame.loading = false;
 	}
 	
-	function createFloatingText(guessCategory, event) {		
-		const buttonRect = event.target.getBoundingClientRect();
-		const containerRect = event.target.closest(".guess-box").getBoundingClientRect();
-		
+	function createFloatingText(guessCategory) {
 		const id = Math.random();
 		const possibleTexts = RESPONSE_STRINGS[guessCategory];
 
@@ -122,14 +119,7 @@
 		}, 10);
 	}
 
-	function submitGuessKeyDown(event) {
-		if (!currentGame.guesses[currentGame.roundInfo.tryIndex]) {
-			return;
-		}
-		submitGuess(event);
-	}
-
-	function submitGuess(event) {
+	function submitGuess() {
 		// Make guesses case-insensitive so we can be more lenient
 		// when dealing with map name string literals.
 		const guess = currentGame.guesses[currentGame.roundInfo.tryIndex].toLowerCase();
@@ -140,7 +130,7 @@
 
 		if (correct.includes(guess)) {
 			currentGame.guessResults[currentGame.roundInfo.tryIndex] = CORRECT_STRING;
-			createFloatingText(CORRECT_STRING, event);
+			createFloatingText(CORRECT_STRING);
 			currentGame.currentScore += 3 - currentGame.roundInfo.tryIndex;
 			currentGame.roundOver = true;
 			setTimeout(() => {revealSolution = true}, 500);
@@ -148,10 +138,10 @@
 			++currentGame.successfulRounds;
 			return;
 		} else if (correct.some((correctMap) => correctMap.indexOf(guess.substring(0, guess.indexOf("_"))) == 0)) {
-			createFloatingText(ALMOST_CORRECT_STRING, event);
+			createFloatingText(ALMOST_CORRECT_STRING);
 			currentGame.guessResults[currentGame.roundInfo.tryIndex] = ALMOST_CORRECT_STRING;
 		} else {
-			createFloatingText(INCORRECT_STRING, event);
+			createFloatingText(INCORRECT_STRING);
 			currentGame.guessResults[currentGame.roundInfo.tryIndex] = INCORRECT_STRING;
 		}
 		if (currentGame.roundInfo.tryIndex < 2) {
@@ -197,6 +187,19 @@
 		currentGame.guessResults = [null, null, null];
 	}
 
+	function handleGlobalKeydown(event) {
+		if (event.key != "Enter") {
+			return;
+		}
+		if (revealSolution) {
+			startNextRound();
+		} else if (currentGame.gameOver) {
+			startNewGame();
+		} else if (!currentGame.loading && !currentGame.roundOver && currentGame.guesses[currentGame.roundInfo.tryIndex]) {
+			submitGuess();
+		}
+	}
+
 	startNewGame();
 </script>
 
@@ -204,6 +207,8 @@
 	<title>STRAFTGUESSR ROUND {currentGame.roundNumber}/{MAX_ROUNDS}</title>
 	<meta name="description" content="A STRAFTGUESSR game" />
 </svelte:head>
+
+<svelte:window on:keydown={handleGlobalKeydown} />
 
 <div class="flex-box game-box">
 	<h1>WHAT STRAFTAT MAP IS THIS?</h1>
@@ -216,24 +221,29 @@
 		</Lightbox>
 	{/if}
 	<hr>
-	<h2>Round {currentGame.roundNumber}/{MAX_ROUNDS}
-		<br>Difficulty: {currentGame.currentDifficulty}
-		{#if currentGame.roundInfo.hintsUsed > 0}
-		<br> Map name starts with {currentGame.roundInfo.infoJSON.correct[0][0]}
-		{/if}
-		{#if currentGame.roundInfo.hintsUsed > 1}
-		<br>Map name has {currentGame.roundInfo.infoJSON.correct[0].length} characters
-		{/if}
-	</h2>
+	<div class="sub-ui-element-box">
+		<h2>Round {currentGame.roundNumber}/{MAX_ROUNDS}
+			<br>Difficulty: {currentGame.currentDifficulty}
+			{#if currentGame.roundInfo.hintsUsed > 0}
+			<br> Map name starts with {currentGame.roundInfo.infoJSON.correct[0][0]}
+			{/if}
+			{#if currentGame.roundInfo.hintsUsed > 1}
+			<br>Map name has {currentGame.roundInfo.infoJSON.correct[0].length} characters
+			{/if}
+		</h2>
+		<button id="hintButton" onclick={getAHint} disabled={currentGame.roundInfo.tryIndex === 2 || currentGame.hintsRemaining === 0 || currentGame.roundInfo.hintsUsed === MAX_HINTS_PER_ROUND || currentGame.roundOver || currentGame.gameOver}>
+			GIVE ME A HINT ({currentGame.hintsRemaining}/{HINTS_PER_GAME})
+		</button>
+	</div>
+	<hr>
 
-	<div class="guess-box">
+	<div class="sub-ui-element-box">
 		<div class="guessbox-wrapper" class:correct={currentGame.guessResults[0] === CORRECT_STRING} class:incorrect={currentGame.guessResults[0] === INCORRECT_STRING} class:almost-correct={currentGame.guessResults[0] === ALMOST_CORRECT_STRING}>
 			<Svelecte
 				renderer={dropBoxRenderer}
 				inputId="guess0"
 				options={MAP_LIST}
 				bind:value={currentGame.guesses[0]}
-				onEnterKey={submitGuessKeyDown}
 				disabled={currentGame.loading
 					|| currentGame.roundInfo.tryIndex != 0
 					|| currentGame.roundOver
@@ -246,7 +256,6 @@
 				inputId="guess1"
 				options={MAP_LIST}
 				bind:value={currentGame.guesses[1]}
-				onEnterKey={submitGuessKeyDown}
 				disabled={currentGame.roundInfo.tryIndex != 1
 					|| currentGame.roundOver
 					|| currentGame.gameOver}
@@ -258,7 +267,6 @@
 				inputId="guess2"
 				options={MAP_LIST}
 				bind:value={currentGame.guesses[2]}
-				onEnterKey={submitGuessKeyDown}
 				disabled={currentGame.roundInfo.tryIndex!=2
 					|| currentGame.roundOver
 					|| currentGame.gameOver}
@@ -271,10 +279,11 @@
 				</div>
 			</div>
 		{/each}
-		<button id="hintButton" onclick={getAHint} disabled={currentGame.roundInfo.tryIndex === 2 || currentGame.hintsRemaining === 0 || currentGame.roundInfo.hintsUsed === MAX_HINTS_PER_ROUND || currentGame.roundOver || currentGame.gameOver}>
-			GIVE ME A HINT ({currentGame.hintsRemaining}/{HINTS_PER_GAME})
-		</button>
-		<button id="guessButton" onclick={submitGuess} disabled={!currentGame.guesses[currentGame.roundInfo.tryIndex] || currentGame.roundOver || currentGame.gameOver}>
+		<button
+			id="guessButton"
+			onclick={submitGuess}
+			disabled={!currentGame.guesses[currentGame.roundInfo.tryIndex] || currentGame.roundOver || currentGame.gameOver}
+		>
 			LOCK IN
 		</button>
 	</div>
@@ -367,7 +376,7 @@ h1 {
 	box-sizing: border-box;
 }
 
-.guess-box {
+.sub-ui-element-box {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -450,8 +459,12 @@ h1 {
 		max-width: 50px;
 	}
 
-	.guess-box {
+	.sub-ui-element-box {
 		margin: 1% 10%;
+	}
+
+	button {
+		font-size: 0.8rem;
 	}
 }
 
@@ -477,9 +490,8 @@ h1 {
 	}
 
 	.answer-box {
-		max-width: 45vw;
+		max-width: 40vw;
 	}
-
 }
 
 </style>
