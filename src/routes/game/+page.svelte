@@ -220,8 +220,8 @@
 <svelte:window on:keydown={handleGlobalKeydown} />
 
 {#if currentGame.loading}
-<div class="answer-box">
-	<h1 in:fade>LOADING SCREENSHOT{loadingStringDots}</h1>
+<div class="answer-box" in:fade={{duration:1500}}>
+	<h1>LOADING SCREENSHOT{loadingStringDots}</h1>
 </div>
 {:else if !currentGame.loading}
 	<div class="flex-box game-box" in:fade={{duration:200}}>
