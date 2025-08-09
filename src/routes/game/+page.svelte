@@ -64,7 +64,6 @@
 		gameOver = $state(false);
 		guesses = $state(["", "", ""]);
 		guessResults = $state(["", "", ""]);
-		completedQuestions = $state({});
 		fileCache = $state([]);
 		hintsRemaining = $state(HINTS_PER_GAME);
 	}
@@ -94,12 +93,11 @@
 			}
 		}
 		let fileNames = Object.keys(currentGame.fileCache);
-		do {
-			fileURI = fileNames[Math.floor(Math.random() * fileNames.length)];
-		} while (fileURI in currentGame.completedQuestions);
+		fileURI = fileNames[Math.floor(Math.random() * fileNames.length)];
 		let json = await currentGame.fileCache[fileURI];
 		currentGame.roundInfo.infoJSON = json.default;
 		currentGame.roundInfo.fileURI = fileURI;
+		delete currentGame.fileCache[fileURI];
 		fileURI = fileURI.substring(fileURI.lastIndexOf("/") + 1, fileURI.lastIndexOf("."));
 		const imgURI = "round_screens/" + fileURI + ".jpg";
 		const img = new Image();
@@ -152,7 +150,6 @@
 			currentGame.currentScore += 3 - currentGame.roundInfo.tryIndex;
 			currentGame.roundOver = true;
 			setTimeout(() => {revealSolution = true}, 500);
-			currentGame.completedQuestions[currentGame.roundInfo.infoJSON.fileURI] = true;
 			++currentGame.successfulRounds;
 			return;
 		} else if (correctMaps.some((correctMap) => correctMap.indexOf(guess.substring(0, guess.indexOf("_"))) == 0)) {
@@ -168,7 +165,6 @@
 		}
 		currentGame.roundOver = true;
 		setTimeout(() => {revealSolution = true}, 500);
-		currentGame.completedQuestions[currentGame.roundInfo.fileURI] = null;
 		++currentGame.failedRounds;
 	}
 
