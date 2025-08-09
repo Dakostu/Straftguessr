@@ -27,6 +27,7 @@ export const RESPONSE_STRINGS = {
         "Yikes",
         "learn",
         "Yeah... no.",
+        "YOU BIG BABY!!!",
     ],
     [ALMOST_CORRECT_STRING] : [
         "Almost!", 
