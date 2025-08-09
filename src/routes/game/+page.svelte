@@ -262,6 +262,7 @@
 					renderer={dropBoxRenderer}
 					inputId="guess0"
 					options={MAP_LIST}
+					highlightFirstItem={false}
 					bind:value={currentGame.guesses[0]}
 					disabled={currentGame.loading
 						|| currentGame.roundInfo.tryIndex != 0
@@ -274,6 +275,7 @@
 					renderer={dropBoxRenderer}
 					inputId="guess1"
 					options={MAP_LIST}
+					highlightFirstItem={false}
 					bind:value={currentGame.guesses[1]}
 					disabled={currentGame.roundInfo.tryIndex != 1
 						|| currentGame.roundOver
@@ -285,6 +287,7 @@
 					renderer={dropBoxRenderer}
 					inputId="guess2"
 					options={MAP_LIST}
+					highlightFirstItem={false}
 					bind:value={currentGame.guesses[2]}
 					disabled={currentGame.roundInfo.tryIndex!=2
 						|| currentGame.roundOver
