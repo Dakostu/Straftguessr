@@ -68,7 +68,7 @@
 	}
 
 	button {
-		min-width: 50%;
+		min-width: 70%;
 	}
 
 	section h1{
@@ -78,6 +78,10 @@
 @media (max-width: 720px) {
 	section h1 {
 		font-size: 2rem;
+	}
+
+	button {
+		min-width: 80%;
 	}
 }
 </style>
