@@ -27,7 +27,7 @@
 		loadingStringDots.length === 4 ? (loadingStringDots = '') : (loadingStringDots += '.');
 	setInterval(addLoadingStringDots, 150);
 
-	function dropBoxRenderer(item, _isSelection, _inputValue) {
+	function dropBoxRenderer(item: any, _isSelection: any, _inputValue: any): string {
 		if (_isSelection) {
 			return `${item.text}`;
 		}
@@ -35,7 +35,7 @@
 		return `<div class="thumbnail-text"> <img src="/thumbnails/${item.text}.jpg"> ${item.text} </div>`;
 	}
 
-	onMount(() => {
+	onMount((): void => {
 		for (const map of MAP_LIST) {
 			const img = new Image();
 			img.src = '/thumbnails/' + map + '.jpg';
@@ -43,7 +43,7 @@
 		}
 	});
 
-	const handleButtonTouchMove = (e) => {
+	const handleButtonTouchMove = (e: Event) => {
 		if (window.scrollY === 0) {
 			// Prevent accidentally reloading the page
 			// when pressing a button and pulling the page.
@@ -77,14 +77,14 @@
 	}
 
 	let currentGame = $state(new GameInfo());
-	function startNewGame() {
+	function startNewGame(): void {
 		currentGame = new GameInfo();
 
 		resetGuessBoxes();
 		loadPic();
 	}
 
-	async function loadPic() {
+	async function loadPic(): Promise<void> {
 		currentGame.loading = true;
 		let fileURI;
 		if (currentGame.fileCache.length === 0) {
@@ -122,14 +122,14 @@
 		img.src = imgURI;
 	}
 
-	function createFloatingText(guessCategory) {
+	function createFloatingText(guessCategory: string) {
 		const id = Math.random();
 		const possibleTexts = RESPONSE_STRINGS[guessCategory];
 
 		const floatingText = possibleTexts[Math.floor(Math.random() * possibleTexts.length)];
 		floatingTexts.push({ id, text: floatingText });
 
-		setTimeout(() => {
+		setTimeout((): void => {
 			floatingTexts = [];
 			let failText = document.getElementById('failText');
 			if (!failText) {
@@ -145,7 +145,7 @@
 		}, 10);
 	}
 
-	function submitGuess() {
+	function submitGuess(): void {
 		const guess = currentGame.guesses[currentGame.roundInfo.tryIndex];
 		if (!guess) {
 			return;
@@ -157,7 +157,7 @@
 			createFloatingText(CORRECT_STRING);
 			currentGame.currentScore += 3 - currentGame.roundInfo.tryIndex;
 			currentGame.roundOver = true;
-			setTimeout(() => {
+			setTimeout((): void => {
 				revealSolution = true;
 			}, 500);
 			++currentGame.successfulRounds;
@@ -178,22 +178,22 @@
 			return;
 		}
 		currentGame.roundOver = true;
-		setTimeout(() => {
+		setTimeout((): void => {
 			revealSolution = true;
 		}, 500);
 		++currentGame.failedRounds;
 	}
 
-	function getAHint() {
+	function getAHint(): void {
 		--currentGame.hintsRemaining;
 		++currentGame.roundInfo.hintsUsed;
 		++currentGame.roundInfo.tryIndex;
 	}
 
-	function startNextRound() {
+	function startNextRound(): void {
 		revealSolution = false;
 		if (currentGame.roundNumber + 1 > MAX_ROUNDS) {
-			setTimeout(() => {
+			setTimeout((): void => {
 				currentGame.gameOver = true;
 			}, 200);
 			return;
@@ -212,12 +212,12 @@
 		loadPic();
 	}
 
-	function resetGuessBoxes() {
+	function resetGuessBoxes(): void {
 		currentGame.guesses = ['', '', ''];
 		currentGame.guessResults = [null, null, null];
 	}
 
-	function handleGlobalKeydown(event) {
+	function handleGlobalKeydown(event: KeyboardEvent): void {
 		if (event.key != 'Enter') {
 			return;
 		}
