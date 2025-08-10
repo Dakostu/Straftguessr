@@ -74,12 +74,13 @@
 		min-width: 70%;
 	}
 
-	section h1 {
+	h1 {
+		margin-block: 0.67em;
 		font-size: 3rem;
 	}
 
 	@media (max-width: 720px) {
-		section h1 {
+		h1 {
 			font-size: 2rem;
 		}
 
