@@ -9,7 +9,7 @@ export const ALMOST_CORRECT_STRING = 'almost_correct';
 export const CORRECT_STRING = 'correct';
 export const HINTS_PER_GAME = 3;
 export const MAX_HINTS_PER_ROUND = 2;
-export const RESPONSE_STRINGS = {
+export const RESPONSE_STRINGS: Record<string, readonly string[]> = {
 	[INCORRECT_STRING]: [
 		'No',
 		'Nope',
@@ -28,14 +28,14 @@ export const RESPONSE_STRINGS = {
 		'learn',
 		'Yeah... no.',
 		'YOU BIG BABY!!!'
-	],
+	] as const,
 	[ALMOST_CORRECT_STRING]: [
 		'Almost!',
 		'So close...',
 		'Getting warmer...',
 		'Not quite...',
 		"Don't give up!"
-	],
+	] as const,
 	[CORRECT_STRING]: [
 		'Wow!',
 		'Good job!',
@@ -51,5 +51,5 @@ export const RESPONSE_STRINGS = {
 		'Brilliant!',
 		'Wonderful!',
 		'I love you!'
-	]
+	] as const
 };

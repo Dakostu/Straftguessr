@@ -1,20 +1,20 @@
-<script>
+<script lang="ts">
 	import { fade } from 'svelte/transition';
 	import Game from './game/+page.svelte';
 
 	let startFade = false;
 	let gameStarted = false;
-	setTimeout(() => {
+	setTimeout((): void => {
 		startFade = true;
 	}, 10);
 
-	function startGame() {
+	function startGame(): void {
 		setTimeout(() => {
 			gameStarted = true;
 		}, 10);
 	}
 
-	function handleGlobalKeydown(event) {
+	function handleGlobalKeydown(event: KeyboardEvent): void {
 		if (event.key != 'Enter') {
 			return;
 		}

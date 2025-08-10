@@ -20,7 +20,7 @@
 	} from '$lib/constants';
 	import { MAP_LIST } from '$lib/map_list';
 
-	let floatingTexts = $state([]);
+	let floatingTexts: FloatingText[] = $state([]);
 	let revealSolution = $state(false);
 	let loadingStringDots = $state('');
 	const addLoadingStringDots = () =>
@@ -52,8 +52,19 @@
 		}
 	};
 
+	interface RoundInfoJSON {
+		correct: string[];
+		desc: string;
+		fileURI: string;
+	}
+
+	interface FloatingText {
+		id: number;
+		text: string;
+	}
+
 	class RoundInfo {
-		infoJSON = $state({});
+		infoJSON = $state({} as RoundInfoJSON);
 		img = $state('');
 		hintsUsed = $state(0);
 		fileURI = $state('');
@@ -70,9 +81,9 @@
 		loading = $state(true);
 		roundOver = $state(false);
 		gameOver = $state(false);
-		guesses = $state(['', '', '']);
-		guessResults = $state(['', '', '']);
-		fileCache = $state([]);
+		guesses = $state(['', '', ''] as [string, string, string]);
+		guessResults = $state(['', '', ''] as [string, string, string]);
+		fileCache: Record<string, { default: RoundInfoJSON }> = $state({});
 		hintsRemaining = $state(HINTS_PER_GAME);
 	}
 
@@ -86,8 +97,8 @@
 
 	async function loadPic(): Promise<void> {
 		currentGame.loading = true;
-		let fileURI;
-		if (currentGame.fileCache.length === 0) {
+		let fileURI: string = '';
+		if (Object.keys(currentGame.fileCache).length === 0) {
 			switch (currentGame.currentDifficulty) {
 				case EASY_STRING:
 					currentGame.fileCache = import.meta.glob('./round_infos/Easy/*.json', { eager: true });
@@ -124,7 +135,7 @@
 
 	function createFloatingText(guessCategory: string) {
 		const id = Math.random();
-		const possibleTexts = RESPONSE_STRINGS[guessCategory];
+		const possibleTexts: readonly string[] = RESPONSE_STRINGS[guessCategory];
 
 		const floatingText = possibleTexts[Math.floor(Math.random() * possibleTexts.length)];
 		floatingTexts.push({ id, text: floatingText });
@@ -202,10 +213,10 @@
 		++currentGame.roundNumber;
 		currentGame.roundInfo = new RoundInfo();
 		if (currentGame.roundNumber >= HARD_LIMIT_ROUND) {
-			currentGame.fileCache = [];
+			currentGame.fileCache = {};
 			currentGame.currentDifficulty = HARD_STRING;
 		} else if (currentGame.roundNumber >= MEDIUM_START_ROUND) {
-			currentGame.fileCache = [];
+			currentGame.fileCache = {};
 			currentGame.currentDifficulty = MEDIUM_STRING;
 		}
 		resetGuessBoxes();
@@ -214,7 +225,7 @@
 
 	function resetGuessBoxes(): void {
 		currentGame.guesses = ['', '', ''];
-		currentGame.guessResults = [null, null, null];
+		currentGame.guessResults = ['', '', ''];
 	}
 
 	function handleGlobalKeydown(event: KeyboardEvent): void {
@@ -382,7 +393,7 @@
 				id="nextRoundButton"
 				ontouchmove={handleButtonTouchMove}
 				onclick={startNextRound}
-				disabled={currentGame.revealEnding}
+				disabled={!revealSolution}
 			>
 				NEXT ROUND
 			</button>

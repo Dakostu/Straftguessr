@@ -1,4 +1,4 @@
-export const MAP_LIST = [
+export const MAP_LIST: readonly string[] = [
 	'Adobe_00',
 	'Adobe_00_Alt',
 	'Adobe_01',

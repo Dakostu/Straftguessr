@@ -39,12 +39,6 @@ Great! Here's the easiest way to get your screenshots in the game:
 
 Keep in mind that not every `Easy` screenshot has to be very easy, vice versa for `Medium`, but this should be a good first guide!
 
-# TODO
-
-- Some code cleanup and refactoring
-- Error handling
-- Add more screenshots!
-
 # Thank You
 
 - Sneaky_Kestrel for providing the `HideUI.dll`
