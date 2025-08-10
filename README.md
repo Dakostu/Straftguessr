@@ -8,7 +8,7 @@ This repo contains the front-end code and static files (screenshots and JSON fil
 
 * For each screenshot, there must be a corresponding JSON file (schema below) that delivers the correct answer(s) and description.
 * Both filenames of the JSON and the image files must be identical, so the game can deduce which image belongs to which JSON data.
-* The JSON files are stored according to the difficulty of the round inside the file. See below for each difficulty's meaning.
+* The JSON files are stored according to the difficulty of the round that the file describes. The JSON file needs to be stored in `src/routes/game/round_infos/{DIFFICULTY}` for that. See below for each difficulty's meaning.
 
 # I Want to Submit Screenshots!
 
@@ -51,3 +51,4 @@ Keep in mind that not every `Easy` screenshot has to be very easy, vice versa fo
 
 * Sneaky_Kestrel for providing the `HideUI.dll`
 * Coal for providing map thumbnails
+* Gabe Classon (https://gabeclasson.com) for the `Gontserrat` font
