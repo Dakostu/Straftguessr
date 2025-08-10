@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_13_Alt"],
-"diff": "Medium",
-"desc": "This is the view from the center of the map. The lighting and skybox reveal that this is the Alt version."
+	"correct": ["Arena_13_Alt"],
+	"diff": "Medium",
+	"desc": "This is the view from the center of the map. The lighting and skybox reveal that this is the Alt version."
 }

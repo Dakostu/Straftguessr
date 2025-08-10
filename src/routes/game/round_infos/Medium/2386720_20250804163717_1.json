@@ -1,4 +1,4 @@
 {
-"correct": ["Corridor_02_Alt"],
-"desc": "This is a hidden corridor at the top level of the map. The lighting reveals that this is the Alt version."
+	"correct": ["Corridor_02_Alt"],
+	"desc": "This is a hidden corridor at the top level of the map. The lighting reveals that this is the Alt version."
 }

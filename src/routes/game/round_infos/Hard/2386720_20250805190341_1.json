@@ -1,4 +1,4 @@
 {
-"correct": ["Dragonfly_Tunnel_Alt"],
-"desc": "This is the tunnel at each end of the main corridor that you can visit by rocket-jumping."
+	"correct": ["Dragonfly_Tunnel_Alt"],
+	"desc": "This is the tunnel at each end of the main corridor that you can visit by rocket-jumping."
 }

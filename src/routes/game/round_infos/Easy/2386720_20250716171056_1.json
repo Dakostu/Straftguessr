@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_04"],
-"diff": "Easy",
-"desc": "This is the central lane of the map."
+	"correct": ["Arena_04"],
+	"diff": "Easy",
+	"desc": "This is the central lane of the map."
 }

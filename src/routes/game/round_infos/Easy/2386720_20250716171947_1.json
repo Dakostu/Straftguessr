@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_06"],
-"diff": "Easy",
-"desc": "This is the top level of the map. The SNG spawn in the lower right corner reveals that this is not the Alt version."
+	"correct": ["Arena_06"],
+	"diff": "Easy",
+	"desc": "This is the top level of the map. The SNG spawn in the lower right corner reveals that this is not the Alt version."
 }

@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_21"],
-"diff": "Hard",
-"desc": "This is inside one of the bushes near a spawn point."
+	"correct": ["Arena_21"],
+	"diff": "Hard",
+	"desc": "This is inside one of the bushes near a spawn point."
 }

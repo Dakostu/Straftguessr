@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_13"],
-"diff": "Easy",
-"desc": "This is one of the corner alleyways. The AK spawn reveals that this is not the Alt version."
+	"correct": ["Arena_13"],
+	"diff": "Easy",
+	"desc": "This is one of the corner alleyways. The AK spawn reveals that this is not the Alt version."
 }

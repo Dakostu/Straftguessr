@@ -1,4 +1,4 @@
 {
-"correct": ["Corridor_04_Alt"],
-"desc": "This is the alley behind the big gate at the edge of the map. The textures and skybox reveal that this is the Alt version."
+	"correct": ["Corridor_04_Alt"],
+	"desc": "This is the alley behind the big gate at the edge of the map. The textures and skybox reveal that this is the Alt version."
 }

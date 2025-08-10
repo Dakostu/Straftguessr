@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_09", "Arena_09_Alt"],
-"diff": "Hard",
-"desc": "This is what you see when you look inside the decorative tube mounted at the wall near the center of the map."
+	"correct": ["Arena_09", "Arena_09_Alt"],
+	"diff": "Hard",
+	"desc": "This is what you see when you look inside the decorative tube mounted at the wall near the center of the map."
 }

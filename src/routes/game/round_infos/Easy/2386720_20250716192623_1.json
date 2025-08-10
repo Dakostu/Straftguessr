@@ -1,5 +1,5 @@
 {
-"correct": ["Bazaar_00"],
-"diff": "Easy",
-"desc": "This is a pathway at one of the map's corners."
+	"correct": ["Bazaar_00"],
+	"diff": "Easy",
+	"desc": "This is a pathway at one of the map's corners."
 }

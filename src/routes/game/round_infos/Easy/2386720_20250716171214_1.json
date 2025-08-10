@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_04_Alt"],
-"diff": "Easy",
-"desc": "This is the central lane of the map. The missing roof and weapon spawns reveal that this is the Alt version."
+	"correct": ["Arena_04_Alt"],
+	"diff": "Easy",
+	"desc": "This is the central lane of the map. The missing roof and weapon spawns reveal that this is the Alt version."
 }

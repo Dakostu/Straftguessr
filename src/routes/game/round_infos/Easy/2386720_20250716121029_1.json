@@ -1,5 +1,5 @@
 {
-"correct": ["Aquatic_01"],
-"diff": "Easy",
-"desc": "This is the view from one of the walkable pillars. The other pillars and the water view reveal that this is Aquatic_01."
+	"correct": ["Aquatic_01"],
+	"diff": "Easy",
+	"desc": "This is the view from one of the walkable pillars. The other pillars and the water view reveal that this is Aquatic_01."
 }

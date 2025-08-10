@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_06"],
-"diff": "Easy",
-"desc": "This is the ground floor of the central lane. The shotgun spawn reveals that this is not the Alt version."
+	"correct": ["Arena_06"],
+	"diff": "Easy",
+	"desc": "This is the ground floor of the central lane. The shotgun spawn reveals that this is not the Alt version."
 }

@@ -1,4 +1,4 @@
 {
-"correct": ["Corridor_10","Corridor_11"],
-"desc": "This is a dead end that you can by reach by getting on the high ledge next to the stairs at each end of the map."
+	"correct": ["Corridor_10", "Corridor_11"],
+	"desc": "This is a dead end that you can by reach by getting on the high ledge next to the stairs at each end of the map."
 }

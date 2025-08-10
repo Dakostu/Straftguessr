@@ -1,4 +1,4 @@
 {
-"correct": ["TheSamePlace_02"],
-"desc": "This is on top of the big blocks of the map, reachable by wall-jumping with the FG42."
+	"correct": ["TheSamePlace_02"],
+	"desc": "This is on top of the big blocks of the map, reachable by wall-jumping with the FG42."
 }

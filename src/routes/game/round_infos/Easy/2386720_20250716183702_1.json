@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_29"],
-"diff": "Easy",
-"desc": "This is the center of the map's highest level."
+	"correct": ["Arena_29"],
+	"diff": "Easy",
+	"desc": "This is the center of the map's highest level."
 }

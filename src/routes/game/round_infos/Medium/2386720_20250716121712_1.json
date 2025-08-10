@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_01_Alt"],
-"diff": "Medium",
-"desc": "This is the view from the main blocks in the center of the map. Arena_01_Alt is one of the few, if not only map with this kind of ground texture."
+	"correct": ["Arena_01_Alt"],
+	"diff": "Medium",
+	"desc": "This is the view from the main blocks in the center of the map. Arena_01_Alt is one of the few, if not only map with this kind of ground texture."
 }

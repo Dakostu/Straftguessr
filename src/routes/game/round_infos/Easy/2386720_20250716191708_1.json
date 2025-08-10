@@ -1,5 +1,5 @@
 {
-"correct": ["Basket_00"],
-"diff": "Easy",
-"desc": "This is on top of the pillars that only appear on this map."
+	"correct": ["Basket_00"],
+	"diff": "Easy",
+	"desc": "This is on top of the pillars that only appear on this map."
 }

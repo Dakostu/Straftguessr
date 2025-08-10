@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_29"],
-"diff": "Easy",
-"desc": "This is near a spawn point. The lack of a window above the slope reveals that this is Arena_29."
+	"correct": ["Arena_29"],
+	"diff": "Easy",
+	"desc": "This is near a spawn point. The lack of a window above the slope reveals that this is Arena_29."
 }

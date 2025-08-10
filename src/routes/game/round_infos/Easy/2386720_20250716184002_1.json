@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_30"],
-"diff": "Easy",
-"desc": "This is the roof, reachable via Flamberge."
+	"correct": ["Arena_30"],
+	"diff": "Easy",
+	"desc": "This is the roof, reachable via Flamberge."
 }

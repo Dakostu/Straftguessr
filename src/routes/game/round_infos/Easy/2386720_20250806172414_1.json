@@ -1,4 +1,4 @@
 {
-"correct": ["HK_03_Alt"],
-"desc": "This is the inside of the upper building at the center of the map. The lighting and weapon spawns reveal that this is the Alt version."
+	"correct": ["HK_03_Alt"],
+	"desc": "This is the inside of the upper building at the center of the map. The lighting and weapon spawns reveal that this is the Alt version."
 }

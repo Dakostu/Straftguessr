@@ -1,5 +1,5 @@
 {
-"correct": ["Aquatic_00"],
-"diff": "Medium",
-"desc": "This is an ice pool on top of the map's buildings."
+	"correct": ["Aquatic_00"],
+	"diff": "Medium",
+	"desc": "This is an ice pool on top of the map's buildings."
 }

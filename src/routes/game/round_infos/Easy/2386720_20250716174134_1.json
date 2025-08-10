@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_10_Alt"],
-"diff": "Easy",
-"desc": "This is one of the map's higher-level alleys. The mapbox and lighting reveal that this is the Alt version."
+	"correct": ["Arena_10_Alt"],
+	"diff": "Easy",
+	"desc": "This is one of the map's higher-level alleys. The mapbox and lighting reveal that this is the Alt version."
 }

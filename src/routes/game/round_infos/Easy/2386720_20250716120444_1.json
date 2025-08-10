@@ -1,5 +1,5 @@
 {
-"correct": ["Appartment_00"],
-"diff": "Easy",
-"desc": "This is the main alleyway of the map."
+	"correct": ["Appartment_00"],
+	"diff": "Easy",
+	"desc": "This is the main alleyway of the map."
 }

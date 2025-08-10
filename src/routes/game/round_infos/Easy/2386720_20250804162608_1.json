@@ -1,4 +1,4 @@
 {
-"correct": ["Corridor_01"],
-"desc": "This is the center of the map. The textures reveal that this is Corridor_01."
+	"correct": ["Corridor_01"],
+	"desc": "This is the center of the map. The textures reveal that this is Corridor_01."
 }

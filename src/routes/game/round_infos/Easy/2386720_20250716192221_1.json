@@ -1,5 +1,5 @@
 {
-"correct": ["Basket_01_Alt"],
-"diff": "Easy",
-"desc": "This is the center of the map. The lighting reveals that this is the Alt version."
+	"correct": ["Basket_01_Alt"],
+	"diff": "Easy",
+	"desc": "This is the center of the map. The lighting reveals that this is the Alt version."
 }

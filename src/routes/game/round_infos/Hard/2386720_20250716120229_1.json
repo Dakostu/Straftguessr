@@ -1,5 +1,5 @@
 {
-"correct": ["Adread_00"],
-"diff": "Hard",
-"desc": "This is a hidden vending machine at the edge of the map. The gray skybox reveals that this is Adread_00."
+	"correct": ["Adread_00"],
+	"diff": "Hard",
+	"desc": "This is a hidden vending machine at the edge of the map. The gray skybox reveals that this is Adread_00."
 }

@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_Shadow_08"],
-"diff": "Medium",
-"desc": "This is on top of the giant stone blocks at the edges of the map."
+	"correct": ["Arena_Shadow_08"],
+	"diff": "Medium",
+	"desc": "This is on top of the giant stone blocks at the edges of the map."
 }

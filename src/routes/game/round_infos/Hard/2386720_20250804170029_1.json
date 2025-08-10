@@ -1,4 +1,4 @@
 {
-"correct": ["Corridor_07_Alt"],
-"desc": "This is the inside of the tiny sewer, near the center of the map. The lighting reveals that this is Corridor_07_Alt."
+	"correct": ["Corridor_07_Alt"],
+	"desc": "This is the inside of the tiny sewer, near the center of the map. The lighting reveals that this is Corridor_07_Alt."
 }

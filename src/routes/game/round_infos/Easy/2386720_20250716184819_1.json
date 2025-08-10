@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_Shadow_04", "Arena_Shadow_04_Alt"],
-"diff": "Easy",
-"desc": "This is one of the map's corrido(o)rs that appears identically in both versions."
+	"correct": ["Arena_Shadow_04", "Arena_Shadow_04_Alt"],
+	"diff": "Easy",
+	"desc": "This is one of the map's corrido(o)rs that appears identically in both versions."
 }

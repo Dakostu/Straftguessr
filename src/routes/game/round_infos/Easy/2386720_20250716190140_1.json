@@ -1,5 +1,5 @@
 {
-"correct": ["Autobahn_00"],
-"diff": "Easy",
-"desc": "This is the decorative skyline at the edge of the map."
+	"correct": ["Autobahn_00"],
+	"diff": "Easy",
+	"desc": "This is the decorative skyline at the edge of the map."
 }

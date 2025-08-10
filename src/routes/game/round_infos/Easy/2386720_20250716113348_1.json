@@ -1,6 +1,6 @@
 {
-"correct": ["Adobe_00"],
-"almost_correct": ["Adobe_00_Alt", "Adobe_01", "Adobe_01_Alt"],
-"diff": "Easy",
-"desc": "These are the rooftops of Adobe_00, the Havoc is an unique spawn on the map."
+	"correct": ["Adobe_00"],
+	"almost_correct": ["Adobe_00_Alt", "Adobe_01", "Adobe_01_Alt"],
+	"diff": "Easy",
+	"desc": "These are the rooftops of Adobe_00, the Havoc is an unique spawn on the map."
 }

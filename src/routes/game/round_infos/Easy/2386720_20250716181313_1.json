@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_20"],
-"diff": "Easy",
-"desc": "This is one of the map's teleporters."
+	"correct": ["Arena_20"],
+	"diff": "Easy",
+	"desc": "This is one of the map's teleporters."
 }

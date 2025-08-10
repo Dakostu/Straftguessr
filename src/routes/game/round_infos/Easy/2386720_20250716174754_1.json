@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_11_Alt"],
-"diff": "Easy",
-"desc": "This is a ladder that you reach the top of the map's pillars with. The lighting reveals that this is the Alt version."
+	"correct": ["Arena_11_Alt"],
+	"diff": "Easy",
+	"desc": "This is a ladder that you reach the top of the map's pillars with. The lighting reveals that this is the Alt version."
 }

@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_03"],
-"diff": "Easy",
-"desc": "This is the top level of the map, reachable via the sloped outer walls."
+	"correct": ["Arena_03"],
+	"diff": "Easy",
+	"desc": "This is the top level of the map, reachable via the sloped outer walls."
 }

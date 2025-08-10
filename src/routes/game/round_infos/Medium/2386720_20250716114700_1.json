@@ -1,6 +1,6 @@
 {
-"correct": ["Adobe_01_Alt"],
-"almost_correct": ["Adobe_00", "Adobe_00_Alt", "Adobe_01"],
-"diff": "Medium",
-"desc": "This is the small tunnel in the center of Adobe_01. The ultra-low lighting reveals that this is the Alt version."
+	"correct": ["Adobe_01_Alt"],
+	"almost_correct": ["Adobe_00", "Adobe_00_Alt", "Adobe_01"],
+	"diff": "Medium",
+	"desc": "This is the small tunnel in the center of Adobe_01. The ultra-low lighting reveals that this is the Alt version."
 }

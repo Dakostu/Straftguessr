@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_14"],
-"diff": "Easy",
-"desc": "This is one of the map's corners. The Bender spawn reveals that this is not the Alt version."
+	"correct": ["Arena_14"],
+	"diff": "Easy",
+	"desc": "This is one of the map's corners. The Bender spawn reveals that this is not the Alt version."
 }

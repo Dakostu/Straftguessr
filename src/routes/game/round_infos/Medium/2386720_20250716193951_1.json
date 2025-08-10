@@ -1,5 +1,5 @@
 {
-"correct": ["Cage_Fight_00_Sunset"],
-"diff": "Medium",
-"desc": "This is the sunset cage fight map from below."
+	"correct": ["Cage_Fight_00_Sunset"],
+	"diff": "Medium",
+	"desc": "This is the sunset cage fight map from below."
 }

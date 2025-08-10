@@ -1,4 +1,4 @@
 {
-"correct": ["Corridor_08_Alt"],
-"desc": "This is one of the corners of the map. The Beam Load spawn reveals that this is the Alt version."
+	"correct": ["Corridor_08_Alt"],
+	"desc": "This is one of the corners of the map. The Beam Load spawn reveals that this is the Alt version."
 }

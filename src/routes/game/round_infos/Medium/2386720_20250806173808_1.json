@@ -1,4 +1,4 @@
 {
-"correct": ["ICE_03", "ICE_05"],
-"desc": "ICE_03 and ICE_05 are the only ice stages where the ice platforms are gone at the end."
+	"correct": ["ICE_03", "ICE_05"],
+	"desc": "ICE_03 and ICE_05 are the only ice stages where the ice platforms are gone at the end."
 }

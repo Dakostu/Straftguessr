@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_22"],
-"diff": "Easy",
-"desc": "This is the view from a spawn point."
+	"correct": ["Arena_22"],
+	"diff": "Easy",
+	"desc": "This is the view from a spawn point."
 }

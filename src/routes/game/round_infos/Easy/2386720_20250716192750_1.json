@@ -1,5 +1,5 @@
 {
-"correct": ["Bazaar_00"],
-"diff": "Easy",
-"desc": "This is the center of the map, from below."
+	"correct": ["Bazaar_00"],
+	"diff": "Easy",
+	"desc": "This is the center of the map, from below."
 }

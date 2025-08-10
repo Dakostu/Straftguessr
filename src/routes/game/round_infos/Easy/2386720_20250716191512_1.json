@@ -1,5 +1,5 @@
 {
-"correct": ["Backrooms_02"],
-"diff": "Easy",
-"desc": "This is one of the dark dead-ends on the map."
+	"correct": ["Backrooms_02"],
+	"diff": "Easy",
+	"desc": "This is one of the dark dead-ends on the map."
 }

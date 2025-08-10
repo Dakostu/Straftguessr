@@ -1,5 +1,5 @@
 {
-"correct": ["Cage_Fight_00_Night"],
-"diff": "Easy",
-"desc": "This is the night-time cage fight map."
+	"correct": ["Cage_Fight_00_Night"],
+	"diff": "Easy",
+	"desc": "This is the night-time cage fight map."
 }

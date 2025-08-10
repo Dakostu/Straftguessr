@@ -1,5 +1,5 @@
 {
-"correct": ["Bazaar_01_Alt"],
-"diff": "Medium",
-"desc": "This is a billboard found on a wall of the topmost walls at the edge of the map. The lighting reveals that this is the Alt version."
+	"correct": ["Bazaar_01_Alt"],
+	"diff": "Medium",
+	"desc": "This is a billboard found on a wall of the topmost walls at the edge of the map. The lighting reveals that this is the Alt version."
 }

@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_02_Alt"],
-"diff": "Easy",
-"desc": "This is the top of the center of the map, easily reachable via walljumping between the slope shown in the middle and the thin pillar next to it. The skybox and ground textures reveal that this is the Alt version."
+	"correct": ["Arena_02_Alt"],
+	"diff": "Easy",
+	"desc": "This is the top of the center of the map, easily reachable via walljumping between the slope shown in the middle and the thin pillar next to it. The skybox and ground textures reveal that this is the Alt version."
 }

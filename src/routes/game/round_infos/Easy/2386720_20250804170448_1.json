@@ -1,4 +1,4 @@
 {
-"correct": ["Corridor_07_Alt"],
-"desc": "This is the center of the map. The skybox, lighting and weapon spawns reveal that this is the Alt version."
+	"correct": ["Corridor_07_Alt"],
+	"desc": "This is the center of the map. The skybox, lighting and weapon spawns reveal that this is the Alt version."
 }

@@ -1,6 +1,6 @@
 {
-"correct": ["Adobe_00_Alt"],
-"almost_correct": ["Adobe_00", "Adobe_01", "Adobe_01_Alt"],
-"diff": "Easy",
-"desc": "These are the rooftops of Adobe_00_Alt. The more subdued lighting, cloudy skybox and Tazer spawner reveal that this is the Alt version."
+	"correct": ["Adobe_00_Alt"],
+	"almost_correct": ["Adobe_00", "Adobe_01", "Adobe_01_Alt"],
+	"diff": "Easy",
+	"desc": "These are the rooftops of Adobe_00_Alt. The more subdued lighting, cloudy skybox and Tazer spawner reveal that this is the Alt version."
 }

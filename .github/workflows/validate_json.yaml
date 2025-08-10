@@ -2,156 +2,156 @@ name: Validate JSON and Image Files
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 env:
-  JSON_FOLDER: "./src/routes/game/round_infos/"
-  JPG_FOLDER: "./static/round_screens/"
+  JSON_FOLDER: './src/routes/game/round_infos/'
+  JPG_FOLDER: './static/round_screens/'
 
 jobs:
   validate-json:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-              
-    - name: Install jq
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y jq
-        
-    - name: Validate JSON files
-      run: |
-        JSON_FILES=$(find "$JSON_FOLDER" -name "*.json" -type f)
-        
-        if [ -z "$JSON_FILES" ]; then
-          echo "No JSON files found in $JSON_FOLDER"
-          exit 0
-        fi
-        
-        echo "Found JSON files in $JSON_FOLDER:"
-        echo "$JSON_FILES"
-        echo ""
-        
-        FAILED=0
-        for file in $JSON_FILES; do
-          echo "Validating: $file"
-          
-          if jq empty "$file"; then
-            echo "$file - Valid JSON"
-          else
-            echo "$file - Invalid JSON"
-            FAILED=1
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Validate JSON files
+        run: |
+          JSON_FILES=$(find "$JSON_FOLDER" -name "*.json" -type f)
+
+          if [ -z "$JSON_FILES" ]; then
+            echo "No JSON files found in $JSON_FOLDER"
+            exit 0
           fi
-          
+
+          echo "Found JSON files in $JSON_FOLDER:"
+          echo "$JSON_FILES"
           echo ""
-        done
-        
-        if [ $FAILED -eq 1 ]; then
-          echo "JSON validation failed"
-          exit 1
-        else
-          echo "All JSON files are valid"
-        fi
+
+          FAILED=0
+          for file in $JSON_FILES; do
+            echo "Validating: $file"
+            
+            if jq empty "$file"; then
+              echo "$file - Valid JSON"
+            else
+              echo "$file - Invalid JSON"
+              FAILED=1
+            fi
+            
+            echo ""
+          done
+
+          if [ $FAILED -eq 1 ]; then
+            echo "JSON validation failed"
+            exit 1
+          else
+            echo "All JSON files are valid"
+          fi
 
   check-file-matching:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Check JSON-JPG file matching
-      run: |
-        declare -A json_files
-        declare -A jpg_files
-        declare -A all_basenames
+      - name: Check JSON-JPG file matching
+        run: |
+          declare -A json_files
+          declare -A jpg_files
+          declare -A all_basenames
 
-        echo "Checking file matching between:"
-        echo "JSON folder: $JSON_FOLDER"
-        echo "JPG folder: $JPG_FOLDER"
-        echo ""
+          echo "Checking file matching between:"
+          echo "JSON folder: $JSON_FOLDER"
+          echo "JPG folder: $JPG_FOLDER"
+          echo ""
 
-        JSON_COUNT=0
-        while IFS= read -r -d '' json_file; do
-          basename_json=$(basename "$json_file" .json)
-          json_files["$basename_json"]="$json_file"
-          all_basenames["$basename_json"]=1
-          JSON_COUNT=$((JSON_COUNT + 1))
-        done < <(find "$JSON_FOLDER" -name "*.json" -type f -print0)
+          JSON_COUNT=0
+          while IFS= read -r -d '' json_file; do
+            basename_json=$(basename "$json_file" .json)
+            json_files["$basename_json"]="$json_file"
+            all_basenames["$basename_json"]=1
+            JSON_COUNT=$((JSON_COUNT + 1))
+          done < <(find "$JSON_FOLDER" -name "*.json" -type f -print0)
 
-        JPG_COUNT=0
-        while IFS= read -r -d '' jpg_file; do
-          basename_jpg=$(basename "$jpg_file" .jpg)
-          jpg_files["$basename_jpg"]="$jpg_file"
-          all_basenames["$basename_jpg"]=1
-          JPG_COUNT=$((JPG_COUNT + 1))
-        done < <(find "$JPG_FOLDER" -name "*.jpg" -type f -print0)
+          JPG_COUNT=0
+          while IFS= read -r -d '' jpg_file; do
+            basename_jpg=$(basename "$jpg_file" .jpg)
+            jpg_files["$basename_jpg"]="$jpg_file"
+            all_basenames["$basename_jpg"]=1
+            JPG_COUNT=$((JPG_COUNT + 1))
+          done < <(find "$JPG_FOLDER" -name "*.jpg" -type f -print0)
 
-        if [ $JSON_COUNT -eq 0 ] && [ $JPG_COUNT -eq 0 ]; then
-          echo "No JSON or JPG files found in either folder"
-          exit 0
-        fi
-
-        if [ $JSON_COUNT -eq 0 ]; then
-          echo "No JSON files found in $JSON_FOLDER"
-        fi
-
-        if [ $JPG_COUNT -eq 0 ]; then
-          echo "No JPG files found in $JPG_FOLDER"
-        fi
-
-        echo "Found $JSON_COUNT JSON files and $JPG_COUNT JPG files"
-        echo ""
-
-        MISSING_COUNT=0
-        MATCHED_COUNT=0
-
-        for basename in "${!all_basenames[@]}"; do
-          echo "Checking: $basename"
-
-          has_json=false
-          has_jpg=false
-
-          if [[ -n "${json_files[$basename]:-}" ]]; then
-            echo "  JSON: ${json_files[$basename]}"
-            has_json=true
-          else
-            echo "  JSON: MISSING"
+          if [ $JSON_COUNT -eq 0 ] && [ $JPG_COUNT -eq 0 ]; then
+            echo "No JSON or JPG files found in either folder"
+            exit 0
           fi
 
-          if [[ -n "${jpg_files[$basename]:-}" ]]; then
-            echo "  JPG: ${jpg_files[$basename]}"
-            has_jpg=true
-          else
-            echo "  JPG: MISSING"
+          if [ $JSON_COUNT -eq 0 ]; then
+            echo "No JSON files found in $JSON_FOLDER"
           fi
 
-          if $has_json && $has_jpg; then
-            echo "  Status: Complete match"
-            MATCHED_COUNT=$((MATCHED_COUNT + 1))
-          else
-            echo "  Status: INCOMPLETE - missing files"
-            MISSING_COUNT=$((MISSING_COUNT + 1))
+          if [ $JPG_COUNT -eq 0 ]; then
+            echo "No JPG files found in $JPG_FOLDER"
           fi
 
+          echo "Found $JSON_COUNT JSON files and $JPG_COUNT JPG files"
           echo ""
-        done
 
-        echo "========== SUMMARY =========="
-        echo "Total unique basenames: ${#all_basenames[@]}"
-        echo "Complete matches: $MATCHED_COUNT"
-        echo "Incomplete matches: $MISSING_COUNT"
+          MISSING_COUNT=0
+          MATCHED_COUNT=0
 
-        if [ $MISSING_COUNT -gt 0 ]; then
-          echo ""
-          echo "ERROR: $MISSING_COUNT basename(s) do not have both JSON and JPG files"
-          echo "Every file must have both a .json and .jpg version"
-          exit 1
-        else
-          echo ""
-          echo "SUCCESS: All files have complete JSON-JPG pairs"
-        fi
+          for basename in "${!all_basenames[@]}"; do
+            echo "Checking: $basename"
+
+            has_json=false
+            has_jpg=false
+
+            if [[ -n "${json_files[$basename]:-}" ]]; then
+              echo "  JSON: ${json_files[$basename]}"
+              has_json=true
+            else
+              echo "  JSON: MISSING"
+            fi
+
+            if [[ -n "${jpg_files[$basename]:-}" ]]; then
+              echo "  JPG: ${jpg_files[$basename]}"
+              has_jpg=true
+            else
+              echo "  JPG: MISSING"
+            fi
+
+            if $has_json && $has_jpg; then
+              echo "  Status: Complete match"
+              MATCHED_COUNT=$((MATCHED_COUNT + 1))
+            else
+              echo "  Status: INCOMPLETE - missing files"
+              MISSING_COUNT=$((MISSING_COUNT + 1))
+            fi
+
+            echo ""
+          done
+
+          echo "========== SUMMARY =========="
+          echo "Total unique basenames: ${#all_basenames[@]}"
+          echo "Complete matches: $MATCHED_COUNT"
+          echo "Incomplete matches: $MISSING_COUNT"
+
+          if [ $MISSING_COUNT -gt 0 ]; then
+            echo ""
+            echo "ERROR: $MISSING_COUNT basename(s) do not have both JSON and JPG files"
+            echo "Every file must have both a .json and .jpg version"
+            exit 1
+          else
+            echo ""
+            echo "SUCCESS: All files have complete JSON-JPG pairs"
+          fi

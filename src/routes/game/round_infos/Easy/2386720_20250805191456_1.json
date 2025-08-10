@@ -1,4 +1,4 @@
 {
-"correct": ["Dragonfly_Waterway_Alt"],
-"desc": "This is the edge of the map. The lighting, skybox and weapon spawns reveal that this is the Alt version."
+	"correct": ["Dragonfly_Waterway_Alt"],
+	"desc": "This is the edge of the map. The lighting, skybox and weapon spawns reveal that this is the Alt version."
 }

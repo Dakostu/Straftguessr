@@ -1,4 +1,4 @@
 {
-"correct": ["Prison_00"],
-"desc": "This is out-of-bounds geometry, reachable by barrel-pushing yourself past a dead end on the top level."
+	"correct": ["Prison_00"],
+	"desc": "This is out-of-bounds geometry, reachable by barrel-pushing yourself past a dead end on the top level."
 }

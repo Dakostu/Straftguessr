@@ -1,12 +1,11 @@
 <script lang="ts">
-	import "../app.css";
-	import github from "$lib/images/github.svg";
+	import '../app.css';
+	import github from '$lib/images/github.svg';
 
 	let { children } = $props();
 </script>
 
 <div class="app">
-
 	<main>
 		{@render children()}
 	</main>
@@ -84,5 +83,4 @@
 			max-width: 80vw;
 		}
 	}
-
 </style>

@@ -1,4 +1,4 @@
 {
-"correct": ["Corridor_00", "Corridor_00_Alt", "Corridor_01"],
-"desc": "This is the view from one of the windows on this map."
+	"correct": ["Corridor_00", "Corridor_00_Alt", "Corridor_01"],
+	"desc": "This is the view from one of the windows on this map."
 }

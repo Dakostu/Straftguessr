@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_01_Alt"],
-"diff": "Medium",
-"desc": "This is above the Tromblonj spawn in the center of the map."
+	"correct": ["Arena_01_Alt"],
+	"diff": "Medium",
+	"desc": "This is above the Tromblonj spawn in the center of the map."
 }

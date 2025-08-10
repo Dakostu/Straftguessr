@@ -1,4 +1,4 @@
 {
-"correct": ["Corridor_01"],
-"desc": "This is the plenum that you can get up to via jumping on a door. The wall textures reveal that this is Corridor_01."
+	"correct": ["Corridor_01"],
+	"desc": "This is the plenum that you can get up to via jumping on a door. The wall textures reveal that this is Corridor_01."
 }

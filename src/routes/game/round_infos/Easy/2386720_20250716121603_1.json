@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_01_Alt"],
-"diff": "Easy",
-"desc": "This is the center of the map. The Tromblonj spawn and textures reveal that this is the Alt version."
+	"correct": ["Arena_01_Alt"],
+	"diff": "Easy",
+	"desc": "This is the center of the map. The Tromblonj spawn and textures reveal that this is the Alt version."
 }

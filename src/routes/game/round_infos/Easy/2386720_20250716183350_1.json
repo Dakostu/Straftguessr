@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_27_Alt"],
-"diff": "Easy",
-"desc": "This is pretty much the center of the map, on the second floor. The textures reveal that this is the Alt version."
+	"correct": ["Arena_27_Alt"],
+	"diff": "Easy",
+	"desc": "This is pretty much the center of the map, on the second floor. The textures reveal that this is the Alt version."
 }

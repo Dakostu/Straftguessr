@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_11"],
-"diff": "Easy",
-"desc": "This is a ladder that you reach the top of the map's pillars with."
+	"correct": ["Arena_11"],
+	"diff": "Easy",
+	"desc": "This is a ladder that you reach the top of the map's pillars with."
 }

@@ -1,4 +1,4 @@
 {
-"correct": ["TheSamePlace_11"],
-"desc": "This is the outer edge of the map, reachable by walljumping from the central top platform."
+	"correct": ["TheSamePlace_11"],
+	"desc": "This is the outer edge of the map, reachable by walljumping from the central top platform."
 }

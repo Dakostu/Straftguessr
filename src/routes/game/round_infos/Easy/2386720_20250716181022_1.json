@@ -1,5 +1,5 @@
 {
-"correct": ["Arena_16"],
-"diff": "Easy",
-"desc": "This is from the bottom of the map (first phase)."
+	"correct": ["Arena_16"],
+	"diff": "Easy",
+	"desc": "This is from the bottom of the map (first phase)."
 }

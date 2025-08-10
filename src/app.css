@@ -1,8 +1,6 @@
-
 :root {
-	--font-body:
-		'Gontserrat', sans-serif;
-	--font-mono: monospace;	
+	--font-body: 'Gontserrat', sans-serif;
+	--font-mono: monospace;
 	--straftat-green: #46ff4f;
 	--incorrect: red;
 	--almost-correct: yellow;
@@ -16,9 +14,9 @@
 }
 
 @font-face {
-    font-family: 'Gontserrat';
-    font-style: italic;
-    src: url('/fonts/Gontserrat-MediumItalic.ttf');    
+	font-family: 'Gontserrat';
+	font-style: italic;
+	src: url('/fonts/Gontserrat-MediumItalic.ttf');
 }
 
 body {
@@ -33,7 +31,6 @@ h2,
 p {
 	font-weight: 500;
 }
-
 
 h2 {
 	color: white;
@@ -73,7 +70,6 @@ pre {
 	overflow-x: auto;
 	color: var(--color-text);
 }
-
 
 button {
 	font-size: inherit;
