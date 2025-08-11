@@ -56,7 +56,7 @@
 <svelte:window on:keydown={handleGlobalKeydown} />
 
 <div>
-	{#if displayStart && !startTheGame}
+	{#if displayStart && !startGame}
 		<section>
 			<h1 in:fade={{ duration: 500 }}>STRAFTGUESSR</h1>
 
