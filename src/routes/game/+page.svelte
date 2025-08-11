@@ -22,12 +22,35 @@
 	} from '$lib/constants';
 	import { MAP_LIST } from '$lib/map_list';
 
+	/**
+	 * Array of floating text animations to display feedback to the user.
+	 * @type {FloatingText[]}
+	 */
 	let floatingTexts: FloatingText[] = $state([]);
+
+	/**
+	 * Animated dots string for loading indicator.
+	 * @type string
+	 */
 	let loadingStringDots = $state('');
+
+	/**
+	 * Creates a visual loading indicator that resets every 4 cycles.
+	 *
+	 * @returns {void}
+	 */
 	const addLoadingStringDots = () =>
 		loadingStringDots.length === 4 ? (loadingStringDots = '') : (loadingStringDots += '.');
 	setInterval(addLoadingStringDots, 150);
 
+	/**
+	 * Custom renderer function for the Svelecte dropdown component.
+	 *
+	 * @param {any} item - The map item being rendered
+	 * @param {any} _isSelection - Whether this is rendering the selected value
+	 * @param {any} _inputValue - The current input value (unused)
+	 * @returns {string} HTML string for rendering the item
+	 */
 	function dropBoxRenderer(item: any, _isSelection: any, _inputValue: any): string {
 		if (_isSelection) {
 			return `${item.text}`;
@@ -36,6 +59,12 @@
 		return `<div class="thumbnail-text"> <img src="/thumbnails/${item.text}.jpg"> ${item.text} </div>`;
 	}
 
+	/**
+	 * Preloads all map thumbnail images for better performance and smoother visuals.
+	 * Runs when the component mounts to prevent loading delays during gameplay.
+	 *
+	 * @returns {void}
+	 */
 	onMount((): void => {
 		for (const map of MAP_LIST) {
 			const img = new Image();
@@ -44,6 +73,12 @@
 		}
 	});
 
+	/**
+	 * Prevents accidental page reload on smartphones when touching buttons and pulling down
+	 *
+	 * @param {Event} e - The touch move event
+	 * @returns {void}
+	 */
 	const handleButtonTouchMove = (e: Event) => {
 		if (window.scrollY === 0) {
 			// Prevent accidentally reloading the page
@@ -53,43 +88,81 @@
 		}
 	};
 
-	interface RoundInfoJSON {
-		correct: string[];
-		desc: string;
-		fileURI: string;
-	}
-
+	/**
+	 * Represents a floating text animation with unique identifier.
+	 */
 	interface FloatingText {
+		/** Unique identifier for the floating text */
 		id: number;
+		/** Text content to display */
 		text: string;
 	}
 
+	/**
+	 * JSON structure for round information loaded from files.
+	 */
+	interface RoundInfoJSON {
+		/** Array of correct map names for this round */
+		correct: string[];
+		/** Description text explaining the correct answer */
+		desc: string;
+	}
+
+	/**
+	 * Manages information and state for a single game round.
+	 */
 	class RoundInfo {
+		/** JSON data containing round information */
 		infoJSON = $state({} as RoundInfoJSON);
+		/** Image source URL for the current round */
 		img = $state('');
+		/** Number of hints used in this round */
 		hintsUsed = $state(0);
+		/** File URI of the current round's screenshot file */
 		fileURI = $state('');
+		/** Current guess attempt index */
 		tryIndex = $state(0);
+		/** Controls whether the solution reveal UI should be displayed for this round */
 		revealSolution = $state(false);
 	}
 
+	/**
+	 * Manages the current overall game state and progression.
+	 */
 	class GameInfo {
+		/** Current round number */
 		roundNumber = $state(1);
+		/** Information about the current round */
 		roundInfo = $state(new RoundInfo());
+		/** Count of successfully completed rounds */
 		successfulRounds = $state(0);
-		failedRounds = $state(0);
+		/** Current difficulty level string */
 		currentDifficulty = $state(EASY_STRING);
+		/** Player's current score */
 		currentScore = $state(0);
+		/** Whether the game is currently loading */
 		loading = $state(true);
+		/** Whether the current round is over */
 		roundOver = $state(false);
+		/** Whether the entire game is over */
 		gameOver = $state(false);
+		/** Player's guesses for current round [guess1, guess2, guess3] */
 		guesses = $state(['', '', ''] as [string, string, string]);
+		/** Results of each guess (correct/incorrect/almost-correct) */
 		guessResults = $state(['', '', ''] as [string, string, string]);
+		/** Cache of loaded round data files to avoid reloading at each round*/
 		fileCache: Record<string, { default: RoundInfoJSON }> = $state({});
+		/** Number of hints remaining for the entire game */
 		hintsRemaining = $state(HINTS_PER_GAME);
 	}
 
 	let currentGame = $state(new GameInfo());
+
+	/**
+	 * Initializes a new game by resetting all state and loading the first picture.
+	 *
+	 * @returns {void}
+	 */
 	function startNewGame(): void {
 		currentGame = new GameInfo();
 
@@ -97,6 +170,12 @@
 		loadPic();
 	}
 
+	/**
+	 * Loads a random picture for the current round based on difficulty.
+	 * Handles file caching, image loading, and error recovery.
+	 *
+	 * @returns {Promise<void>}
+	 */
 	async function loadPic(): Promise<void> {
 		currentGame.loading = true;
 		let fileURI: string = '';
@@ -135,6 +214,12 @@
 		img.src = imgURI;
 	}
 
+	/**
+	 * Creates and displays a floating text animation for guess feedback.
+	 *
+	 * @param {string} guessCategory - The category of guess result
+	 * @returns {void}
+	 */
 	function createFloatingText(guessCategory: string) {
 		const id = Math.random();
 		const possibleTexts: readonly string[] = RESPONSE_STRINGS[guessCategory];
@@ -158,16 +243,24 @@
 		}, 10);
 	}
 
+	/**
+	 * Processes the player's current guess and updates game state accordingly.
+	 * Handles correct guesses, partial matches, and incorrect guesses.
+	 * Manages round progression and scoring.
+	 *
+	 * @returns {void}
+	 */
 	function submitGuess(): void {
 		const guess = currentGame.guesses[currentGame.roundInfo.tryIndex];
 		if (!guess) {
 			return;
 		}
 		const correctMaps = currentGame.roundInfo.infoJSON.correct;
-		const revealSolution = ((): void=> {
+		const revealSolution = (): void => {
 			setTimeout((): void => {
 				currentGame.roundInfo.revealSolution = true;
-			}, REVEAL_SOLUTION_WINDOW_TIMEOUT);});
+			}, REVEAL_SOLUTION_WINDOW_TIMEOUT);
+		};
 
 		if (correctMaps.includes(guess)) {
 			currentGame.guessResults[currentGame.roundInfo.tryIndex] = CORRECT_STRING;
@@ -194,15 +287,27 @@
 		}
 		currentGame.roundOver = true;
 		revealSolution();
-		++currentGame.failedRounds;
 	}
 
+	/**
+	 * Update hint and guess slot states when user requests a hint.
+	 * Advances to the next guess slot automatically.
+	 *
+	 * @returns {void}
+	 */
 	function getAHint(): void {
 		--currentGame.hintsRemaining;
 		++currentGame.roundInfo.hintsUsed;
 		++currentGame.roundInfo.tryIndex;
 	}
 
+	/**
+	 * Advances to the next round or ends the game if all rounds are complete.
+	 * Handles difficulty progression, round initialization, and game over state.
+	 * Uses configurable timeout for smooth game over transition.
+	 *
+	 * @returns {void}
+	 */
 	function startNextRound(): void {
 		if (currentGame.roundNumber + 1 > MAX_ROUNDS) {
 			setTimeout((): void => {
@@ -224,11 +329,23 @@
 		loadPic();
 	}
 
+	/**
+	 * Resets all guess input box contents and colors for a new round.
+	 *
+	 * @returns {void}
+	 */
 	function resetGuessBoxes(): void {
 		currentGame.guesses = ['', '', ''];
 		currentGame.guessResults = ['', '', ''];
 	}
 
+	/**
+	 * Handles global keyboard events for game navigation.
+	 * Enter key progresses through game states or submits guesses.
+	 *
+	 * @param {KeyboardEvent} event - The keyboard event
+	 * @returns {void}
+	 */
 	function handleGlobalKeydown(event: KeyboardEvent): void {
 		if (event.key != 'Enter') {
 			return;

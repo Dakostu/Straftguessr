@@ -2,23 +2,49 @@
 	import { fade } from 'svelte/transition';
 	import Game from './game/+page.svelte';
 
-	let startFade = false;
-	let gameStarted = false;
+	/**
+	 * Controls whether the splash screen should be displayed.
+	 * @default false
+	 */
+	let displayStart = false;
+
+	/**
+	 * Indicates whether to render the Game element.
+	 * @default false
+	 */
+	let startGame = false;
+
+	/**
+	 * Initializes the fade-in animation after a brief delay to ensure smoother rendering.
+	 */
 	setTimeout((): void => {
-		startFade = true;
+		displayStart = true;
 	}, 10);
 
-	function startGame(): void {
+	/**
+	 * Initiates the game start sequence with a small delay.
+	 * The delay allows for smooth transition animations between menu and game states.
+	 *
+	 * @returns {void}
+	 */
+	function startTheGame(): void {
 		setTimeout(() => {
-			gameStarted = true;
+			startGame = true;
 		}, 10);
 	}
 
+	/**
+	 * Handles global keydown events to allow starting the game with the Enter key.
+	 * Only responds to the Enter key, ignoring all other keyboard input.
+	 *
+	 * @param {KeyboardEvent} event - The keyboard event containing key information
+	 * @returns {void}
+	 */
 	function handleGlobalKeydown(event: KeyboardEvent): void {
 		if (event.key != 'Enter') {
 			return;
 		}
-		startGame();
+		startTheGame();
 	}
 </script>
 
@@ -30,7 +56,7 @@
 <svelte:window on:keydown={handleGlobalKeydown} />
 
 <div>
-	{#if startFade && !gameStarted}
+	{#if displayStart && !startTheGame}
 		<section>
 			<h1 in:fade={{ duration: 500 }}>STRAFTGUESSR</h1>
 
@@ -46,15 +72,15 @@
 			<button
 				in:fade={{ duration: 500 }}
 				id="startButton"
-				onclick={startGame}
-				disabled={gameStarted}
+				onclick={startTheGame}
+				disabled={startGame}
 			>
 				<h2 style="color:black;font-size: 2rem;">START</h2>
 			</button>
 		</section>
 	{/if}
 </div>
-{#if gameStarted}
+{#if startGame}
 	<div in:fade><Game /></div>
 {/if}
 
