@@ -16,12 +16,13 @@
 		INCORRECT_STRING,
 		ALMOST_CORRECT_STRING,
 		CORRECT_STRING,
-		RESPONSE_STRINGS
+		RESPONSE_STRINGS,
+		REVEAL_GAME_OVER_WINDOW_TIMEOUT,
+		REVEAL_SOLUTION_WINDOW_TIMEOUT
 	} from '$lib/constants';
 	import { MAP_LIST } from '$lib/map_list';
 
 	let floatingTexts: FloatingText[] = $state([]);
-	let revealSolution = $state(false);
 	let loadingStringDots = $state('');
 	const addLoadingStringDots = () =>
 		loadingStringDots.length === 4 ? (loadingStringDots = '') : (loadingStringDots += '.');
@@ -69,6 +70,7 @@
 		hintsUsed = $state(0);
 		fileURI = $state('');
 		tryIndex = $state(0);
+		revealSolution = $state(false);
 	}
 
 	class GameInfo {
@@ -162,20 +164,22 @@
 			return;
 		}
 		const correctMaps = currentGame.roundInfo.infoJSON.correct;
+		const revealSolution = ((): void=> {
+			setTimeout((): void => {
+				currentGame.roundInfo.revealSolution = true;
+			}, REVEAL_SOLUTION_WINDOW_TIMEOUT);});
 
 		if (correctMaps.includes(guess)) {
 			currentGame.guessResults[currentGame.roundInfo.tryIndex] = CORRECT_STRING;
 			createFloatingText(CORRECT_STRING);
 			currentGame.currentScore += 3 - currentGame.roundInfo.tryIndex;
 			currentGame.roundOver = true;
-			setTimeout((): void => {
-				revealSolution = true;
-			}, 500);
+			revealSolution();
 			++currentGame.successfulRounds;
 			return;
 		} else if (
 			correctMaps.some(
-				(correctMap) => correctMap.indexOf(guess.substring(0, guess.indexOf('_'))) == 0
+				(correctMap: string) => correctMap.indexOf(guess.substring(0, guess.indexOf('_'))) === 0
 			)
 		) {
 			createFloatingText(ALMOST_CORRECT_STRING);
@@ -189,9 +193,7 @@
 			return;
 		}
 		currentGame.roundOver = true;
-		setTimeout((): void => {
-			revealSolution = true;
-		}, 500);
+		revealSolution();
 		++currentGame.failedRounds;
 	}
 
@@ -202,11 +204,10 @@
 	}
 
 	function startNextRound(): void {
-		revealSolution = false;
 		if (currentGame.roundNumber + 1 > MAX_ROUNDS) {
 			setTimeout((): void => {
 				currentGame.gameOver = true;
-			}, 200);
+			}, REVEAL_GAME_OVER_WINDOW_TIMEOUT);
 			return;
 		}
 		currentGame.roundOver = false;
@@ -232,7 +233,7 @@
 		if (event.key != 'Enter') {
 			return;
 		}
-		if (revealSolution) {
+		if (currentGame.roundInfo.revealSolution) {
 			startNextRound();
 		} else if (currentGame.gameOver) {
 			startNewGame();
@@ -369,7 +370,7 @@
 		</div>
 	</div>
 
-	{#if revealSolution}
+	{#if currentGame.roundInfo.revealSolution}
 		<div
 			class="flex-box game-box answer-box"
 			use:draggable={{ cancel: '#nextRoundButton' }}
@@ -393,7 +394,7 @@
 				id="nextRoundButton"
 				ontouchmove={handleButtonTouchMove}
 				onclick={startNextRound}
-				disabled={!revealSolution}
+				disabled={!currentGame.roundInfo.revealSolution}
 			>
 				NEXT ROUND
 			</button>
