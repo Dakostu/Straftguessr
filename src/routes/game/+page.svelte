@@ -309,6 +309,7 @@
 	 * @returns {void}
 	 */
 	function startNextRound(): void {
+		currentGame.roundInfo.revealSolution = false;
 		if (currentGame.roundNumber + 1 > MAX_ROUNDS) {
 			setTimeout((): void => {
 				currentGame.gameOver = true;
