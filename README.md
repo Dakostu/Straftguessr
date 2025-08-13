@@ -33,7 +33,7 @@ Great! Refer to the [CONTRIBUTING](https://github.com/Dakostu/Straftguessr/blob/
 ```
 
 - `correct` is an array of correct answers for this screenshot, meaning that a screenshot allows for multiple correct answers.
-- `desc` should be a helpful descrption of the scene depicted in the screenshot.
+- `desc` should be a helpful description of the scene depicted in the screenshot.
 
 ## Back-end
 
