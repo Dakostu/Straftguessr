@@ -82,7 +82,7 @@
 	const handleButtonTouchMove = (e: Event) => {
 		if (window.scrollY === 0) {
 			// Prevent accidentally reloading the page
-			// when pressing a button and pulling the page.
+			// when pressing a button and pulling the page on smartphones.
 			// It's annoying.
 			e.preventDefault();
 		}
