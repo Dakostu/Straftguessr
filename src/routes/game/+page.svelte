@@ -197,17 +197,18 @@
 		let json = await currentGame.fileCache[fileURI];
 		currentGame.roundInfo.infoJSON = json.default;
 		currentGame.roundInfo.fileURI = fileURI;
-		delete currentGame.fileCache[fileURI];
 		fileURI = fileURI.substring(fileURI.lastIndexOf('/') + 1, fileURI.lastIndexOf('.'));
 		const imgURI = 'round_screens/' + fileURI + '.jpg';
 		const img = new Image();
 		img.onload = () => {
+			delete currentGame.fileCache[currentGame.roundInfo.fileURI];
 			currentGame.roundInfo.img = imgURI;
 			currentGame.loading = false;
 		};
 		img.onerror = () => {
-			console.error('Failed to load image:', imgURI);
+			console.error('Failed to load image:', currentGame.roundInfo.fileURI);
 			console.error('Loading new image instead');
+			delete currentGame.fileCache[currentGame.roundInfo.fileURI];
 			loadPic();
 			return;
 		};
