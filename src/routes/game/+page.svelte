@@ -22,6 +22,9 @@
 	} from '$lib/constants';
 	import { MAP_LIST } from '$lib/map_list';
 
+	/** Disable map thumbnails and double the score per round. Passed on by parent component. */
+	let {compMode: compMode} = $props();
+
 	/**
 	 * Array of floating text animations to display feedback to the user.
 	 * @type {FloatingText[]}
@@ -56,7 +59,12 @@
 			return `${item.text}`;
 		}
 
-		return `<div class="thumbnail-text"> <img src="/thumbnails/${item.text}.jpg"> ${item.text} </div>`;
+		let dropDownHTML = '<div class="thumbnail-text"> ';
+		if (!compMode) {
+			dropDownHTML += `<img src="/thumbnails/${item.text}.jpg">`;
+		}
+
+		return dropDownHTML + `${item.text} </div>`;
 	}
 
 	/**
@@ -66,6 +74,9 @@
 	 * @returns {void}
 	 */
 	onMount((): void => {
+		if (compMode) {
+			return;
+		}
 		for (const map of MAP_LIST) {
 			const img = new Image();
 			img.src = '/thumbnails/' + map + '.jpg';
@@ -266,7 +277,11 @@
 		if (correctMaps.includes(guess)) {
 			currentGame.guessResults[currentGame.roundInfo.tryIndex] = CORRECT_STRING;
 			createFloatingText(CORRECT_STRING);
-			currentGame.currentScore += 3 - currentGame.roundInfo.tryIndex;
+			let newScore = 3 - currentGame.roundInfo.tryIndex;
+			if (compMode) {
+				newScore *= 2;
+			}
+			currentGame.currentScore += newScore;
 			currentGame.roundOver = true;
 			revealSolution();
 			++currentGame.successfulRounds;
@@ -532,6 +547,12 @@
 				You got {currentGame.successfulRounds} out of {MAX_ROUNDS} questions right!<br />Your score: {currentGame.currentScore}
 			</h2>
 			<hr />
+			<h2>
+				<label>
+					<input type="checkbox" bind:checked={compMode}/>
+					Comp Mode
+				</label>
+			</h2>
 			<button id="newGameButton" ontouchmove={handleButtonTouchMove} onclick={startNewGame}>
 				NEW GAME
 			</button>

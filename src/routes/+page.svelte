@@ -15,6 +15,13 @@
 	let startGame = false;
 
 	/**
+	 * Indicates whether to enable Comp Mode.
+	 * Comp Mode disables all map preview thumbnails for double the points per round.
+	 * @default false
+	 */
+	let compModeOn = false;
+
+	/**
 	 * Initializes the fade-in animation after a brief delay to ensure smoother rendering.
 	 */
 	setTimeout((): void => {
@@ -69,6 +76,13 @@
 				<a target="_blank" href="https://store.steampowered.com/app/2386720/STRAFTAT/">STRAFTAT</a> map
 				based on the screenshot?
 			</h2>
+			<label>
+				<input type="checkbox" bind:checked={compModeOn}/>
+				Comp Mode
+			</label>
+			<div style="font-size:x-small; text-align:center">
+					(disable map thumbnails in map selection menu, double points per round)
+			</div>
 			<button
 				in:fade={{ duration: 500 }}
 				id="startButton"
@@ -81,7 +95,7 @@
 	{/if}
 </div>
 {#if startGame}
-	<div in:fade><Game /></div>
+	<div in:fade><Game compMode={compModeOn}/></div>
 {/if}
 
 <style>
