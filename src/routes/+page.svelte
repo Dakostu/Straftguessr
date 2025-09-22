@@ -64,10 +64,10 @@
 
 <div>
 	{#if displayStart && !startGame}
-		<section>
-			<h1 in:fade={{ duration: 500 }}>STRAFTGUESSR</h1>
+		<section in:fade={{ duration: 500 }}>
+			<h1>STRAFTGUESSR</h1>
 
-			<h2 in:fade={{ duration: 500 }}>
+			<h2>
 				15 screenshots.
 				<br />
 				3 tries per screenshot.
@@ -84,7 +84,6 @@
 					(disable map thumbnails in map selection menu, double points per round)
 			</div>
 			<button
-				in:fade={{ duration: 500 }}
 				id="startButton"
 				onclick={startTheGame}
 				disabled={startGame}
