@@ -70,13 +70,12 @@
 	/**
 	 * Preloads all map thumbnail images for better performance and smoother visuals.
 	 * Runs when the component mounts to prevent loading delays during gameplay.
+	 * Also preload them when Comp Mode has been activated
+	 * - they do not appear in the drop-down but they do appear in the result popup.
 	 *
 	 * @returns {void}
 	 */
 	onMount((): void => {
-		if (compMode) {
-			return;
-		}
 		for (const map of MAP_LIST) {
 			const img = new Image();
 			img.src = '/thumbnails/' + map + '.jpg';
