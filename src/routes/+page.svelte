@@ -72,7 +72,7 @@
 			processedData = processData(data);
 			leaderboardLoaded = true;
 		};
-		setInterval(f, 1000);
+		setInterval(f, 10000);
 		await f();
 	});
 
