@@ -60,6 +60,7 @@
 
 	let data = $state({});
 	let processedData = $state({});
+	let leaderboardLoaded = $state(false);
 
 	onMount(async (): Promise<void> => {
 		let f = async () => {
@@ -69,6 +70,7 @@
 			let res = await fetch('leaderboard/load');
 			data = await res.json();
 			processedData = processData(data);
+			leaderboardLoaded = true;
 		};
 		setInterval(f, 1000);
 		await f();
@@ -114,34 +116,35 @@
 			<button id="startButton" onclick={startTheGame} disabled={startGame}>
 				<h2 style="color:black;font-size: 2rem;">START</h2>
 			</button>
-
-			<div class="flex-box game-box">
-				<h1>LEADERBOARD</h1>
-				<table>
-					<thead>
-						<tr>
-							<th>Rank</th>
-							<th>Name</th>
-							<th>Points</th>
-							<th>Date</th>
-						</tr>
-					</thead>
-					<tbody>
-						{#each processedData as entry, i}
+			{#if leaderboardLoaded}
+				<div class="flex-box game-box" in:fade>
+					<h1>LEADERBOARD</h1>
+					<table>
+						<thead>
 							<tr>
-								<td>{i + 1}</td>
-								<td>{entry.name}</td>
-								<td>{entry.points}</td>
-								<td>{entry.created_at}</td>
+								<th>Rank</th>
+								<th>Name</th>
+								<th>Points</th>
+								<th>Date</th>
 							</tr>
-						{/each}
-					</tbody>
-				</table>
-				<h2>
-					Leaderboard gets cleared every 1st and 15th of the month.<br />Nasty names will be
-					removed.
-				</h2>
-			</div>
+						</thead>
+						<tbody>
+							{#each processedData as entry, i}
+								<tr>
+									<td>{i + 1}</td>
+									<td>{entry.name}</td>
+									<td>{entry.points}</td>
+									<td>{entry.created_at}</td>
+								</tr>
+							{/each}
+						</tbody>
+					</table>
+					<h2>
+						Leaderboard gets cleared every 1st and 15th of the month.<br />Nasty names will be
+						removed.
+					</h2>
+				</div>
+			{/if}
 		</section>
 	{/if}
 </div>
