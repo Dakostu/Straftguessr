@@ -17,8 +17,8 @@ OK, here's a quick-start guide.
 
 Requirements:
 
-* Node.js
-* `pnpm` or `npm`
+- Node.js
+- `pnpm` or `npm`
 
 Get the game running locally in just a few steps:
 
