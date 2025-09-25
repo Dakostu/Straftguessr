@@ -99,13 +99,37 @@
 			<div style="font-size:x-small; text-align:center">
 					(disable map thumbnails in map selection menu, double points per round)
 			</div>
-			<button
-				id="startButton"
-				onclick={startTheGame}
-				disabled={startGame}
-			>
+			<button id="startButton" onclick={startTheGame} disabled={startGame}>
 				<h2 style="color:black;font-size: 2rem;">START</h2>
 			</button>
+
+			<div class="flex-box game-box">
+				<h1>LEADERBOARD</h1>
+				<table>
+					<thead>
+						<tr>
+							<th>Rank</th>
+							<th>Name</th>
+							<th>Points</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each data.leaderboardEntries as entry, i}
+							<tr>
+								<td>{i + 1}</td>
+								<td>{entry.name}</td>
+								<td>{entry.points}</td>
+								<td>{entry.created_at}</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+				<h2>
+					Leaderboard gets cleared every 1st and 15th of the month.<br />Nasty names will be
+					removed.
+				</h2>
+			</div>
 		</section>
 	{/if}
 </div>
@@ -132,6 +156,28 @@
 	h1 {
 		margin-block: 0.67em;
 		font-size: 3rem;
+	}
+
+	th {
+		border-bottom: 1px solid var(--straftat-green);
+		color: var(--straftat-green);
+	}
+
+	td {
+		color: white;
+	}
+
+	th:nth-child(2) {
+		padding-left: 5vw;
+		padding-right: 5vw;
+	}
+
+	tbody {
+		text-align: center;
+	}
+
+	input {
+		align-items: center;
 	}
 
 	@media (max-width: 720px) {
