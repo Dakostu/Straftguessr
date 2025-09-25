@@ -15,6 +15,7 @@ refreshLeaderboard();
 
 export async function load() {
 	const { data } = await supabase.from(SUPABASE_TABLE_NAME).select();
+    console.log(data);
 	return {
 		leaderboardEntries: data ?? []
 	};
