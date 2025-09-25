@@ -18,12 +18,13 @@
 		CORRECT_STRING,
 		RESPONSE_STRINGS,
 		REVEAL_GAME_OVER_WINDOW_TIMEOUT,
-		REVEAL_SOLUTION_WINDOW_TIMEOUT
+		REVEAL_SOLUTION_WINDOW_TIMEOUT,
+		LEADERBOARD_STRING_WHITELIST
 	} from '$lib/constants';
 	import { MAP_LIST } from '$lib/map_list';
 
 	/** Disable map thumbnails and double the score per round. Passed on by parent component. */
-	let {compMode: compMode} = $props();
+	let { compMode: compMode } = $props();
 
 	/**
 	 * Array of floating text animations to display feedback to the user.
@@ -164,6 +165,8 @@
 		fileCache: Record<string, { default: RoundInfoJSON }> = $state({});
 		/** Number of hints remaining for the entire game */
 		hintsRemaining = $state(HINTS_PER_GAME);
+		submitState = $state(0);
+		playerName = $state('');
 	}
 
 	let currentGame = $state(new GameInfo());
@@ -178,6 +181,18 @@
 
 		resetGuessBoxes();
 		loadPic();
+	}
+
+	async function submitScore(): Promise<void> {
+		currentGame.submitState = 1;
+		const response = await fetch('leaderboard/save', {
+			method: 'POST',
+			body: JSON.stringify({ name: currentGame.playerName, points: currentGame.currentScore }),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		currentGame.submitState = 2;
 	}
 
 	/**
@@ -355,6 +370,10 @@
 		currentGame.guessResults = ['', '', ''];
 	}
 
+	function validateLeaderboardName(name: string): boolean {
+		return LEADERBOARD_STRING_WHITELIST.test(name);
+	}
+
 	/**
 	 * Handles global keyboard events for game navigation.
 	 * Enter key progresses through game states or submits guesses.
@@ -369,7 +388,11 @@
 		if (currentGame.roundInfo.revealSolution) {
 			startNextRound();
 		} else if (currentGame.gameOver) {
-			startNewGame();
+			if (currentGame.submitState === 0 && validateLeaderboardName(currentGame.playerName)) {
+				submitScore();
+			} else if (currentGame.submitState > 0 || currentGame.playerName.length === 0) {
+				startNewGame();
+			}
 		} else if (
 			!currentGame.loading &&
 			!currentGame.roundOver &&
@@ -545,6 +568,30 @@
 			<h2>
 				You got {currentGame.successfulRounds} out of {MAX_ROUNDS} questions right!<br />Your score: {currentGame.currentScore}
 			</h2>
+			{#if currentGame.submitState === 0}
+				<div>
+					<input
+						class:incorrect={currentGame.playerName.length > 0 &&
+							!validateLeaderboardName(currentGame.playerName)}
+						maxlength="20"
+						placeholder="Your leaderboard name"
+						bind:value={currentGame.playerName}
+					/>
+				</div>
+
+				<button
+					id="submitScoreButton"
+					ontouchmove={handleButtonTouchMove}
+					onclick={submitScore}
+					disabled={!validateLeaderboardName(currentGame.playerName) || currentGame.submitState > 0}
+				>
+					SUBMIT SCORE TO LEADERBOARD
+				</button>
+			{:else if currentGame.submitState === 1}
+				<h2>Submitting score{loadingStringDots}</h2>
+			{:else if currentGame.submitState === 2}
+				<h2>Done!</h2>
+			{/if}
 			<hr />
 			<h2>
 				<label>
@@ -628,6 +675,20 @@
 		background-color: black;
 		cursor: move;
 		user-select: none;
+	}
+
+	input {
+		background-color: black;
+		border: 1px var(--straftat-green) solid;
+		border-radius: 5px;
+		color: white;
+		max-width: 15vw;
+		display: block;
+		margin: 0 auto;
+	}
+
+	input.incorrect {
+		background-color: var(--incorrect);
 	}
 
 	@media (max-width: 720px) {

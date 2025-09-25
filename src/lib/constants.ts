@@ -11,6 +11,7 @@ export const HINTS_PER_GAME = 3;
 export const MAX_HINTS_PER_ROUND = 2;
 export const REVEAL_SOLUTION_WINDOW_TIMEOUT = 500;
 export const REVEAL_GAME_OVER_WINDOW_TIMEOUT = 200;
+export const LEADERBOARD_STRING_WHITELIST = /^[\w\s\!\?@\.,_\-]+$/;
 export const RESPONSE_STRINGS: Record<string, readonly string[]> = {
 	[INCORRECT_STRING]: [
 		'No',
