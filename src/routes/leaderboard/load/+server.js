@@ -6,7 +6,7 @@ export async function GET() {
 		.from(SUPABASE_TABLE_NAME)
 		.select()
 		.order('points', { ascending: false })
-		.order('created_at', { ascending: false });
+		.order('created_at', { ascending: true });
 
 	return new Response(
 		JSON.stringify({
