@@ -3,6 +3,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import { fade } from 'svelte/transition';
 	import Game from './game/+page.svelte';
+	import { onMount } from 'svelte';
 
 	/**
 	 * Controls whether the splash screen should be displayed.
@@ -57,14 +58,24 @@
 	}
 
 	let { data } = $props();
+	let processedData = $derived(processData(data.leaderboardEntries));
 
-	setInterval(() => {
-		if (browser) {
-			// Small hack to force reloading of server contents (leaderboard).
-			// TODO: Move sorting from server to client side.
-			invalidateAll();
-		}
-	}, 10000);
+	onMount((): void => {
+		setInterval(() => {
+			if (browser) {
+				invalidateAll();
+				console.log(data);
+			}
+		}, 10000);
+	});
+
+	function processData(leaderboardEntries) {
+		let processed = [...leaderboardEntries];
+		processed.forEach((entry) => {
+			entry.created_at = new Date(entry.created_at).toLocaleString();
+		});
+		return processed;
+	}
 </script>
 
 <svelte:head>
@@ -111,7 +122,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each data.leaderboardEntries as entry, i}
+						{#each processedData as entry, i}
 							<tr>
 								<td>{i + 1}</td>
 								<td>{entry.name}</td>

@@ -13,23 +13,20 @@ let refreshLeaderboard = async () => {
 setInterval(refreshLeaderboard, 1000 * 60 * 60 * 24);
 refreshLeaderboard();
 
-export async function load() {
-	const { data } = await supabase.from(SUPABASE_TABLE_NAME).select();
-	data?.sort(function sortEntries(a, b) {
-		return a.points > b.points
-			? -1
-			: a.points < b.points
-				? 1
-				: a.created_at < b.created_at
-					? -1
-					: a.created_at > b.crated_at
-						? 1
-						: 0;
+export async function load({setHeaders}) {
+    setHeaders({
+		'cache-control': 'no-store'
 	});
-	data?.forEach((entry) => {
-		entry.created_at = new Date(entry.created_at).toLocaleString();
-	});
+    let newData;
+	const { data } = await supabase
+		.from(SUPABASE_TABLE_NAME)
+		.select()
+		.order('points', { ascending: false })
+		.order('created_at', { ascending: false });
+
+    newData = data;
 	return {
-		leaderboardEntries: data ?? []
+		leaderboardEntries: newData || [],
+        createdAt: new Date()
 	};
 }
