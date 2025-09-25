@@ -560,6 +560,24 @@
 {/if}
 
 <style>
+	h1 {
+		margin: 1% 5%;
+		font-size: 3rem;
+	}
+
+	:global(.thumbnail-text) {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 15px;
+	}
+
+	:global(.thumbnail-text img) {
+		object-fit: cover;
+		max-width: 100px;
+		user-select: none;
+	}
+
 	:global(.svelecte) {
 		--sv-bg: var(--black);
 		--sv-disabled-bg: gray;
@@ -587,51 +605,6 @@
 
 	:global(.svelte-lightbox-main) {
 		cursor: zoom-out;
-	}
-
-	h1 {
-		margin: 1% 5%;
-		font-size: 3rem;
-	}
-
-	.flex-box {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		margin: 0;
-		max-width: none;
-	}
-
-	.game-box {
-		border-radius: 20px;
-		border-color: var(--straftat-green);
-		border-style: solid;
-		border-width: thin;
-		padding-left: 20px;
-		padding-right: 20px;
-		margin: 0;
-		width: 100%;
-		box-sizing: border-box;
-	}
-
-	.sub-ui-element-box {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		margin: 1% 20%;
-	}
-
-	:global(.thumbnail-text) {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 15px;
-	}
-
-	:global(.thumbnail-text img) {
-		object-fit: cover;
-		max-width: 100px;
-		user-select: none;
 	}
 
 	#failFly {
