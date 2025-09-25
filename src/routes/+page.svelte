@@ -6,20 +6,20 @@
 	 * Controls whether the splash screen should be displayed.
 	 * @default false
 	 */
-	let displayStart = false;
+	let displayStart = $state(false);
 
 	/**
 	 * Indicates whether to render the Game element.
 	 * @default false
 	 */
-	let startGame = false;
+	let startGame = $state(false);
 
 	/**
 	 * Indicates whether to enable Comp Mode.
 	 * Comp Mode disables all map preview thumbnails for double the points per round.
 	 * @default false
 	 */
-	let compModeOn = false;
+	let compModeOn = $state(false);
 
 	/**
 	 * Initializes the fade-in animation after a brief delay to ensure smoother rendering.
@@ -94,7 +94,7 @@
 	{/if}
 </div>
 {#if startGame}
-	<div in:fade><Game compMode={compModeOn}/></div>
+	<div in:fade><Game compMode={compModeOn} /></div>
 {/if}
 
 <style>
