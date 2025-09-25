@@ -595,8 +595,8 @@
 			<hr />
 			<h2>
 				<label>
-					<input type="checkbox" bind:checked={compMode}/>
-					Comp Mode
+					<input type="checkbox" bind:checked={compMode} />
+					Enable Comp Mode
 				</label>
 			</h2>
 			<button id="newGameButton" ontouchmove={handleButtonTouchMove} onclick={startNewGame}>
