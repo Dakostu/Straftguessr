@@ -15,9 +15,21 @@ refreshLeaderboard();
 
 export async function load() {
 	const { data } = await supabase.from(SUPABASE_TABLE_NAME).select();
+	data?.sort(function sortEntries(a, b) {
+		return a.points > b.points
+			? -1
+			: a.points < b.points
+				? 1
+				: a.created_at < b.created_at
+					? -1
+					: a.created_at > b.crated_at
+						? 1
+						: 0;
+	});
+	data?.forEach((entry) => {
+		entry.created_at = new Date(entry.created_at).toLocaleString();
+	});
 	return {
 		leaderboardEntries: data ?? []
 	};
 }
-
-setInterval(load, 10000);

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
+	import { invalidateAll } from '$app/navigation';
 	import { fade } from 'svelte/transition';
 	import Game from './game/+page.svelte';
 
@@ -55,20 +57,14 @@
 	}
 
 	let { data } = $props();
-	data.leaderboardEntries.sort(function sortEntries(a, b) {
-		return a.points > b.points
-			? -1
-			: a.points < b.points
-				? 1
-				: a.created_at < b.created_at
-					? -1
-					: a.created_at > b.crated_at
-						? 1
-						: 0;
-	});
-	data.leaderboardEntries.forEach((entry) => {
-		entry.created_at = new Date(entry.created_at).toLocaleString();
-	});
+
+	setInterval(() => {
+		if (browser) {
+			// Small hack to force reloading of server contents (leaderboard).
+			// TODO: Move sorting from server to client side.
+			invalidateAll();
+		}
+	}, 10000);
 </script>
 
 <svelte:head>
