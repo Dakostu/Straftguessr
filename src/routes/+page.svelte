@@ -4,6 +4,7 @@
 	import { fade } from 'svelte/transition';
 	import Game from './game/+page.svelte';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 
 	/**
 	 * Controls whether the splash screen should be displayed.
@@ -57,20 +58,24 @@
 		startTheGame();
 	}
 
-	let { data } = $props();
-	let processedData = $derived(processData(data.leaderboardEntries));
+	let data = $state({});
+	let processedData = $state({});
 
-	onMount((): void => {
-		setInterval(() => {
-			if (browser) {
-				invalidateAll();
-				console.log(data);
+	onMount(async (): Promise<void> => {
+		let f = async () => {
+			if (startGame) {
+				return;
 			}
-		}, 10000);
+			let res = await fetch('leaderboard/load');
+			data = await res.json();
+			processedData = processData(data);
+		};
+		setInterval(f, 1000);
+		await f();
 	});
 
-	function processData(leaderboardEntries) {
-		let processed = [...leaderboardEntries];
+	function processData(data) {
+		let processed = [...data.leaderboardEntries];
 		processed.forEach((entry) => {
 			entry.created_at = new Date(entry.created_at).toLocaleString();
 		});
