@@ -63,17 +63,10 @@
 	let leaderboardLoaded = $state(false);
 
 	onMount(async (): Promise<void> => {
-		let f = async () => {
-			if (startGame) {
-				return;
-			}
-			let res = await fetch('leaderboard/load');
-			data = await res.json();
-			processedData = processData(data);
-			leaderboardLoaded = true;
-		};
-		setInterval(f, 10000);
-		await f();
+		let res = await fetch('leaderboard/load');
+		data = await res.json();
+		processedData = processData(data);
+		leaderboardLoaded = true;
 	});
 
 	function processData(data) {
