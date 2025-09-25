@@ -117,7 +117,7 @@
 				<h2 style="color:black;font-size: 2rem;">START</h2>
 			</button>
 			{#if leaderboardLoaded}
-				<div class="flex-box game-box" in:fade>
+				<div class="flex-box game-box leaderboard-box" in:fade>
 					<h1>LEADERBOARD</h1>
 					<table>
 						<thead>
@@ -195,6 +195,10 @@
 		align-items: center;
 	}
 
+	.leaderboard-box {
+		max-width: 65%;
+	}
+
 	@media (max-width: 720px) {
 		h1 {
 			font-size: 2rem;
@@ -202,6 +206,23 @@
 
 		button {
 			min-width: 80%;
+		}
+
+		td {
+			font-size: 0.5rem;
+		}
+
+		.leaderboard-box {
+			max-width: 100%;
+		}
+	}
+
+	@media (min-width: 720px) and (max-width: 1080px) {
+		td {
+			font-size: 0.75rem;
+		}
+		.leaderboard-box {
+			max-width: 100%;
 		}
 	}
 </style>
