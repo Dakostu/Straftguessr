@@ -104,7 +104,7 @@
 				Enable Comp Mode
 			</label>
 			<div style="font-size:x-small; text-align:center">
-				(disable map thumbnails in map selection menu, double points per round)
+				(hide map thumbnails in map selection menu, double points per round)
 			</div>
 			<button id="startButton" onclick={startTheGame} disabled={startGame}>
 				<h2 style="color:black;font-size: 2rem;">START</h2>
