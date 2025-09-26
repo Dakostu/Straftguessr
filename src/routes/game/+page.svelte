@@ -600,6 +600,7 @@
 						maxlength="20"
 						placeholder="Your leaderboard name"
 						bind:value={currentGame.playerName}
+						disabled={leaderboardPopupOpen}
 					/>
 				</div>
 
