@@ -2,9 +2,15 @@
 	import { fade } from 'svelte/transition';
 	import { onMount } from 'svelte';
 
-	let data = $state({});
-	let processedData = $state({});
+	let data = $state<{ leaderboardEntries?: LeaderboardEntry[] }>({});
+	let processedData = $state<LeaderboardEntry[]>([]);
 	let leaderboardLoaded = $state(false);
+
+	interface LeaderboardEntry {
+		name: string;
+		points: number;
+		created_at: string;
+	}
 
 	onMount(async (): Promise<void> => {
 		let res = await fetch('leaderboard/load');
@@ -13,7 +19,11 @@
 		leaderboardLoaded = true;
 	});
 
-	function processData(data) {
+	function processData(data: { leaderboardEntries?: LeaderboardEntry[] }): LeaderboardEntry[] {
+		if (!data.leaderboardEntries) {
+			return [];
+		}
+
 		let processed = [...data.leaderboardEntries];
 		processed.forEach((entry) => {
 			entry.created_at = new Date(entry.created_at).toLocaleString();
