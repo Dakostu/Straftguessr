@@ -426,8 +426,9 @@
 		<hr />
 		<div class="sub-ui-element-box">
 			<h2>
-				Round {currentGame.roundNumber}/{MAX_ROUNDS}
-				<br />Difficulty: {currentGame.currentDifficulty}
+				Round {currentGame.roundNumber}/{MAX_ROUNDS}<br />
+				Difficulty: {currentGame.currentDifficulty}<br />
+				Current Score: {currentGame.currentScore}<br />
 				{#if currentGame.roundInfo.hintsUsed > 0}
 					<br />Map name starts with {currentGame.roundInfo.infoJSON.correct[0][0]}
 				{/if}
