@@ -7,11 +7,13 @@ This is the source code for STRAFTGUESSR, a GeoGuessr/Wordle-like game where you
 ## Features
 
 - 1,100+ screenshots from STRAFTAT maps
+- A leaderboard for more competition
 - Guess which map the screenshot depicts
 - Three difficulty levels:
   - **Easy**: obvious locations reachable by foot without tricks
   - **Medium**: harder to reach/discern locations that require intermediate map familiarity
   - **Hard**: obscure, hard-to-reach areas for expert players/Movement Monsters
+- Comp Mode: Make your game harder, but gain more points
 
 ## How to Play
 
@@ -37,7 +39,7 @@ Great! Refer to the [CONTRIBUTING](https://github.com/Dakostu/Straftguessr/blob/
 
 ## Back-end
 
-This repo contains the front-end code and static files (screenshots and JSON files) for the back-end.
+This repo contains the front-end code and static files (screenshots and JSON files) for the back-end as well as API calls to a Supabase database instnace.
 
 - For each screenshot, there must be a corresponding JSON file (schema below) that delivers the correct answer(s) and description.
 - Both filenames of the JSON and the image files must be identical, so the game can deduce which image belongs to which JSON data.
@@ -51,5 +53,5 @@ MIT License. See LICENSE for details.
 ## Thank You
 
 - **Sneaky_Kestrel** for providing the `HideUI.dll`
-- **Coal** for providing map thumbnails
+- **Coal** for providing map thumbnails and the Comp Mode idea
 - **Gabe Classon** (https://gabeclasson.com) for the `Gontserrat` font

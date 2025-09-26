@@ -2,16 +2,26 @@
 	import { fade } from 'svelte/transition';
 	import { onMount } from 'svelte';
 
+	/** Raw data from the database API payload. */
 	let data = $state<{ leaderboardEntries?: LeaderboardEntry[] }>({});
+	/** Processed leaderboard entries ready for display. */
 	let processedData = $state<LeaderboardEntry[]>([]);
+	/** Flag to control when the leaderboard should be rendered. */
 	let leaderboardLoaded = $state(false);
 
+	/**
+	 * Represents a single leaderboard entry from the database (without ID).
+	 */
 	interface LeaderboardEntry {
 		name: string;
 		points: number;
 		created_at: string;
 	}
 
+	/**
+	 * Fetches leaderboard data from the server on component mount.
+	 * Sets up the processed data and triggers the display.
+	 */
 	onMount(async (): Promise<void> => {
 		let res = await fetch('leaderboard/load');
 		data = await res.json();
@@ -19,6 +29,14 @@
 		leaderboardLoaded = true;
 	});
 
+	/**
+	 * Processes raw leaderboard data for display.
+	 * - Converts ISO date strings to localized date/time strings.
+	 * - Creates a copy of the data to avoid mutating the original.
+	 *
+	 * @param data - Raw leaderboard response from the API
+	 * @returns Processed array of leaderboard entries ready for display
+	 */
 	function processData(data: { leaderboardEntries?: LeaderboardEntry[] }): LeaderboardEntry[] {
 		if (!data.leaderboardEntries) {
 			return [];

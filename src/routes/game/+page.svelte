@@ -39,6 +39,10 @@
 	 */
 	let loadingStringDots = $state('');
 
+	/**
+	 * Flag for displaying the leaderboard popup at the end of the game.
+	 * @type boolean
+	 */
 	let leaderboardPopupOpen = $state(false);
 
 	/**
@@ -168,7 +172,13 @@
 		fileCache: Record<string, { default: RoundInfoJSON }> = $state({});
 		/** Number of hints remaining for the entire game */
 		hintsRemaining = $state(HINTS_PER_GAME);
-		submitState = $state(0);
+		/** Current state of submitting the score to the leaderboard. Mainly for updating UI stuff.
+		 * 0: Not submitted.
+		 * 1: Currently submitting.
+		 * 2: Submitted.
+		 */
+		leaderboardSubmitState = $state(0);
+		/** Leaderboard name of the player. */
 		playerName = $state('');
 	}
 
@@ -186,8 +196,13 @@
 		loadPic();
 	}
 
+	/**
+	 * Submits the game's score and player name to the leaderboard.
+	 *
+	 * @returns {Promise<void>}
+	 */
 	async function submitScore(): Promise<void> {
-		currentGame.submitState = 1;
+		currentGame.leaderboardSubmitState = 1;
 		const response = await fetch('leaderboard/save', {
 			method: 'POST',
 			body: JSON.stringify({ name: currentGame.playerName, points: currentGame.currentScore }),
@@ -195,7 +210,7 @@
 				'Content-Type': 'application/json'
 			}
 		});
-		currentGame.submitState = 2;
+		currentGame.leaderboardSubmitState = 2;
 	}
 
 	/**
@@ -393,9 +408,12 @@
 		} else if (currentGame.gameOver) {
 			if (leaderboardPopupOpen) {
 				leaderboardPopupOpen = false;
-			} else if (currentGame.submitState === 0 && validateLeaderboardName(currentGame.playerName)) {
+			} else if (
+				currentGame.leaderboardSubmitState === 0 &&
+				validateLeaderboardName(currentGame.playerName)
+			) {
 				submitScore();
-			} else if (currentGame.submitState > 0 || currentGame.playerName.length === 0) {
+			} else if (currentGame.leaderboardSubmitState > 0 || currentGame.playerName.length === 0) {
 				startNewGame();
 			}
 		} else if (
@@ -574,7 +592,7 @@
 			<h2>
 				You got {currentGame.successfulRounds} out of {MAX_ROUNDS} questions right!<br />Your score: {currentGame.currentScore}
 			</h2>
-			{#if currentGame.submitState === 0}
+			{#if currentGame.leaderboardSubmitState === 0}
 				<div>
 					<input
 						class:incorrect={currentGame.playerName.length > 0 &&
@@ -591,14 +609,14 @@
 					ontouchmove={handleButtonTouchMove}
 					onclick={submitScore}
 					disabled={!validateLeaderboardName(currentGame.playerName) ||
-						currentGame.submitState > 0 ||
+						currentGame.leaderboardSubmitState > 0 ||
 						leaderboardPopupOpen}
 				>
 					SUBMIT SCORE TO LEADERBOARD
 				</button>
-			{:else if currentGame.submitState === 1}
+			{:else if currentGame.leaderboardSubmitState === 1}
 				<h2>Submitting score{loadingStringDots}</h2>
-			{:else if currentGame.submitState === 2}
+			{:else if currentGame.leaderboardSubmitState === 2}
 				<h2>Done!</h2>
 			{/if}
 			<button
