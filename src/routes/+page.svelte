@@ -88,7 +88,7 @@
 				<h2 style="color:black;font-size: 2rem;">START</h2>
 			</button>
 		</section>
-		<section style="min-height:0vh;">
+		<section in:fade={{ duration: 500 }} style="min-height:0vh;">
 			<div>
 				<Leaderboard />
 			</div>
