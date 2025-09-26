@@ -1,10 +1,7 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
-	import { invalidateAll } from '$app/navigation';
 	import { fade } from 'svelte/transition';
 	import Game from './game/+page.svelte';
-	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
+	import Leaderboard from './leaderboard/Leaderboard.svelte';
 
 	/**
 	 * Controls whether the splash screen should be displayed.
@@ -57,25 +54,6 @@
 		}
 		startTheGame();
 	}
-
-	let data = $state({});
-	let processedData = $state({});
-	let leaderboardLoaded = $state(false);
-
-	onMount(async (): Promise<void> => {
-		let res = await fetch('leaderboard/load');
-		data = await res.json();
-		processedData = processData(data);
-		leaderboardLoaded = true;
-	});
-
-	function processData(data) {
-		let processed = [...data.leaderboardEntries];
-		processed.forEach((entry) => {
-			entry.created_at = new Date(entry.created_at).toLocaleString();
-		});
-		return processed;
-	}
 </script>
 
 <svelte:head>
@@ -109,35 +87,9 @@
 			<button id="startButton" onclick={startTheGame} disabled={startGame}>
 				<h2 style="color:black;font-size: 2rem;">START</h2>
 			</button>
-			{#if leaderboardLoaded}
-				<div class="flex-box game-box leaderboard-box" in:fade>
-					<h1>LEADERBOARD</h1>
-					<table>
-						<thead>
-							<tr>
-								<th>Rank</th>
-								<th>Name</th>
-								<th>Points</th>
-								<th>Date</th>
-							</tr>
-						</thead>
-						<tbody>
-							{#each processedData as entry, i}
-								<tr>
-									<td>{i + 1}</td>
-									<td>{entry.name}</td>
-									<td>{entry.points}</td>
-									<td>{entry.created_at}</td>
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-					<h2>
-						Leaderboard gets cleared every 1st and 15th of the month.<br />Nasty names will be
-						removed.
-					</h2>
-				</div>
-			{/if}
+			<div>
+				<Leaderboard />
+			</div>
 		</section>
 	{/if}
 </div>
@@ -166,30 +118,8 @@
 		font-size: 3rem;
 	}
 
-	th {
-		border-bottom: 1px solid var(--straftat-green);
-		color: var(--straftat-green);
-	}
-
-	td {
-		color: white;
-	}
-
-	th:nth-child(2) {
-		padding-left: 5vw;
-		padding-right: 5vw;
-	}
-
-	tbody {
-		text-align: center;
-	}
-
 	input {
 		align-items: center;
-	}
-
-	.leaderboard-box {
-		max-width: 65%;
 	}
 
 	@media (max-width: 720px) {
@@ -199,23 +129,6 @@
 
 		button {
 			min-width: 80%;
-		}
-
-		td {
-			font-size: 0.5rem;
-		}
-
-		.leaderboard-box {
-			max-width: 100%;
-		}
-	}
-
-	@media (min-width: 720px) and (max-width: 1080px) {
-		td {
-			font-size: 0.75rem;
-		}
-		.leaderboard-box {
-			max-width: 100%;
 		}
 	}
 </style>
