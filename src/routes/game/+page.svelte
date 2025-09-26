@@ -4,6 +4,7 @@
 	import { Lightbox } from 'svelte-lightbox';
 	import { onMount } from 'svelte';
 	import Svelecte from 'svelecte';
+	import Leaderboard from '../leaderboard/Leaderboard.svelte';
 	import {
 		MAX_ROUNDS,
 		MEDIUM_START_ROUND,
@@ -37,6 +38,8 @@
 	 * @type string
 	 */
 	let loadingStringDots = $state('');
+
+	let leaderboardPopupOpen = $state(false);
 
 	/**
 	 * Creates a visual loading indicator that resets every 4 cycles.
@@ -388,7 +391,9 @@
 		if (currentGame.roundInfo.revealSolution) {
 			startNextRound();
 		} else if (currentGame.gameOver) {
-			if (currentGame.submitState === 0 && validateLeaderboardName(currentGame.playerName)) {
+			if (leaderboardPopupOpen) {
+				leaderboardPopupOpen = false;
+			} else if (currentGame.submitState === 0 && validateLeaderboardName(currentGame.playerName)) {
 				submitScore();
 			} else if (currentGame.submitState > 0 || currentGame.playerName.length === 0) {
 				startNewGame();
@@ -560,7 +565,7 @@
 	{#if currentGame.gameOver}
 		<div
 			class="flex-box game-box answer-box"
-			use:draggable={{ cancel: '#newGameButton' }}
+			use:draggable={{ cancel: '.cancelDrag' }}
 			in:fade
 			out:fade
 		>
@@ -581,10 +586,13 @@
 				</div>
 
 				<button
+					class="cancelDrag"
 					id="submitScoreButton"
 					ontouchmove={handleButtonTouchMove}
 					onclick={submitScore}
-					disabled={!validateLeaderboardName(currentGame.playerName) || currentGame.submitState > 0}
+					disabled={!validateLeaderboardName(currentGame.playerName) ||
+						currentGame.submitState > 0 ||
+						leaderboardPopupOpen}
 				>
 					SUBMIT SCORE TO LEADERBOARD
 				</button>
@@ -593,6 +601,17 @@
 			{:else if currentGame.submitState === 2}
 				<h2>Done!</h2>
 			{/if}
+			<button
+				class="cancelDrag"
+				id="viewLeaderboardButton"
+				ontouchmove={handleButtonTouchMove}
+				onclick={() => {
+					leaderboardPopupOpen = true;
+				}}
+				disabled={leaderboardPopupOpen}
+			>
+				VIEW LEADERBOARD
+			</button>
 			<hr />
 			<h2>
 				<label>
@@ -600,8 +619,37 @@
 					Enable Comp Mode
 				</label>
 			</h2>
-			<button id="newGameButton" ontouchmove={handleButtonTouchMove} onclick={startNewGame}>
+			<button
+				class="cancelDrag"
+				id="newGameButton"
+				ontouchmove={handleButtonTouchMove}
+				onclick={startNewGame}
+				disabled={leaderboardPopupOpen}
+			>
 				NEW GAME
+			</button>
+		</div>
+	{/if}
+
+	{#if leaderboardPopupOpen}
+		<div
+			class="flex-box game-box answer-box leaderboard-popup"
+			use:draggable={{ cancel: '.cancelDrag' }}
+			in:fade
+			out:fade
+		>
+			<div class="leaderboard-overflow-box">
+				<Leaderboard />
+			</div>
+			<button
+				class="cancelDrag"
+				id="closeLeaderboardButton"
+				ontouchmove={handleButtonTouchMove}
+				onclick={() => {
+					leaderboardPopupOpen = false;
+				}}
+			>
+				CLOSE LEADERBOARD
 			</button>
 		</div>
 	{/if}
@@ -683,7 +731,7 @@
 		border: 1px var(--straftat-green) solid;
 		border-radius: 5px;
 		color: white;
-		max-width: 15vw;
+		max-width: 25vw;
 		display: block;
 		margin: 0 auto;
 	}
@@ -692,11 +740,26 @@
 		background-color: var(--incorrect);
 	}
 
+	.leaderboard-popup {
+		min-width: 370px;
+	}
+
+	.leaderboard-overflow-box {
+		padding-top: 10px;
+		min-width: 310px;
+		max-height: 60vh;
+		overflow: hidden;
+		overflow-y: auto;
+		overflow-x: auto;
+	}
+
 	@media (max-width: 720px) {
+		:global(h1),
 		h1 {
 			font-size: 1.5rem;
 		}
 
+		:global(h2),
 		h2 {
 			font-size: small;
 		}
@@ -704,6 +767,10 @@
 		:global(.svelecte) {
 			font-size: small;
 			--sv-dropdown-width: 180px;
+		}
+
+		input {
+			max-width: 40vw;
 		}
 
 		#failFly {
