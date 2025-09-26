@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 	import Game from './game/+page.svelte';
-	import Leaderboard from './leaderboard/Leaderboard.svelte';
+	import Leaderboard from '$lib/components/Leaderboard.svelte';
 
 	/**
 	 * Controls whether the splash screen should be displayed.

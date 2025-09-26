@@ -4,7 +4,7 @@
 	import { Lightbox } from 'svelte-lightbox';
 	import { onMount } from 'svelte';
 	import Svelecte from 'svelecte';
-	import Leaderboard from '../leaderboard/Leaderboard.svelte';
+	import Leaderboard from '$lib/components/Leaderboard.svelte';
 	import {
 		MAX_ROUNDS,
 		MEDIUM_START_ROUND,

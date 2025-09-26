@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 	import { onMount } from 'svelte';
+	import DotLoadingIndicator from '$lib/components/DotLoadingIndicator.svelte';
 
 	/** Raw data from the database API payload. */
 	let data = $state<{ leaderboardEntries?: LeaderboardEntry[] }>({});
@@ -79,6 +80,8 @@
 			</h2>
 		</div>
 	</section>
+{:else}
+	Loading leaderboard<DotLoadingIndicator />
 {/if}
 
 <style>
