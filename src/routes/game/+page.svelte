@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte';
 	import Svelecte from 'svelecte';
 	import Leaderboard from '$lib/components/Leaderboard.svelte';
+	import DotLoadingIndicator from '$lib/components/DotLoadingIndicator.svelte';
 	import {
 		MAX_ROUNDS,
 		MEDIUM_START_ROUND,
@@ -34,25 +35,10 @@
 	let floatingTexts: FloatingText[] = $state([]);
 
 	/**
-	 * Animated dots string for loading indicator.
-	 * @type string
-	 */
-	let loadingStringDots = $state('');
-
-	/**
 	 * Flag for displaying the leaderboard popup at the end of the game.
 	 * @type boolean
 	 */
 	let leaderboardPopupOpen = $state(false);
-
-	/**
-	 * Creates a visual loading indicator that resets every 4 cycles.
-	 *
-	 * @returns {void}
-	 */
-	const addLoadingStringDots = () =>
-		loadingStringDots.length === 4 ? (loadingStringDots = '') : (loadingStringDots += '.');
-	setInterval(addLoadingStringDots, 150);
 
 	/**
 	 * Custom renderer function for the Svelecte dropdown component.
@@ -437,7 +423,7 @@
 
 {#if currentGame.loading}
 	<div class="answer-box">
-		<h2 in:fade={{ duration: 1500 }}>Loading screenshot{loadingStringDots}</h2>
+		<h2 in:fade={{ duration: 1500 }}>Loading screenshot<DotLoadingIndicator /></h2>
 	</div>
 {:else if !currentGame.loading}
 	<div class="flex-box game-box" in:fade={{ duration: 200 }}>
@@ -616,7 +602,7 @@
 					SUBMIT SCORE TO LEADERBOARD
 				</button>
 			{:else if currentGame.leaderboardSubmitState === 1}
-				<h2>Submitting score{loadingStringDots}</h2>
+				<h2>Submitting score<DotLoadingIndicator /></h2>
 			{:else if currentGame.leaderboardSubmitState === 2}
 				<h2>Done!</h2>
 			{/if}
