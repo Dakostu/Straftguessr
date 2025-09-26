@@ -87,6 +87,8 @@
 			<button id="startButton" onclick={startTheGame} disabled={startGame}>
 				<h2 style="color:black;font-size: 2rem;">START</h2>
 			</button>
+		</section>
+		<section style="min-height:0vh;">
 			<div>
 				<Leaderboard />
 			</div>
