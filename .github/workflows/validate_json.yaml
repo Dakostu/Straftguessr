@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 env:
-  JSON_FOLDER: './src/routes/game/round_infos/'
-  JPG_FOLDER: './src/routes/game/round_screens/'
+  JSON_FOLDER: './src/lib/assets/round_infos/'
+  JPG_FOLDER: './src/lib/assets/round_screens/'
 
 jobs:
   validate-json:

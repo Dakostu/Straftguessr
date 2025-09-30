@@ -4,7 +4,7 @@ Here's the easiest way to get your screenshots in the game:
 
 - (Optional but recommended) Install the no-HUD mod from the `HideUI.dll` file in the root folder of this repository. This allows you to disable the HUD and `Exploration Mode` text so you can have full view of whatever you're looking at. Perfect for taking screenshots.
 - Screenshots in 16:9 are recommended as to keep a constant aspect ratio throughout the game.
-- Submit a GitHub pull request with the new screenshots in the subfolder `src/routes/game/round_screens`, the corresponding JSON description in `src/routes/game/round_infos/{DIFFICULTY}`. I will then take a look at it and if anything goes right, approve and merge it, making it public instantly.
+- Submit a GitHub pull request with the new screenshots in the subfolder `src/lib/assets/round_screens`, the corresponding JSON description in `src/lib/assets/round_infos/{DIFFICULTY}`. I will then take a look at it and if anything goes right, approve and merge it, making it public instantly.
 - A map can have multiple screenshots! Go bananas; I especially want to see medium and hard screenshots!
 
 # I Found a Bug/Wrong Answer!
