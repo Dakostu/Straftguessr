@@ -156,6 +156,8 @@
 		guessResults = $state(['', '', ''] as [string, string, string]);
 		/** Cache of loaded round data files to avoid reloading at each round*/
 		fileCache: Record<string, { default: RoundInfoJSON }> = $state({});
+		/** Cache of loaded screenshot images */
+		screenshotCache: Record<string, string> = $state({});
 		/** Number of hints remaining for the entire game */
 		hintsRemaining = $state(HINTS_PER_GAME);
 		/** Current state of submitting the score to the leaderboard. Mainly for updating UI stuff.
@@ -166,6 +168,19 @@
 		leaderboardSubmitState = $state(0);
 		/** Leaderboard name of the player. */
 		playerName = $state('');
+
+		constructor() {
+			const screenshotFiles = import.meta.glob('../../lib/assets/round_screens/*.jpg', {
+				eager: true
+			});
+
+			for (const path in screenshotFiles) {
+				const fileName = path.split('/').pop()?.replace('.jpg', '') || '';
+				if (fileName.length > 0) {
+					this.screenshotCache[fileName] = screenshotFiles[path] as string;
+				}
+			}
+		}
 	}
 
 	let currentGame = $state(new GameInfo());
@@ -211,13 +226,19 @@
 		if (Object.keys(currentGame.fileCache).length === 0) {
 			switch (currentGame.currentDifficulty) {
 				case EASY_STRING:
-					currentGame.fileCache = import.meta.glob('./round_infos/Easy/*.json', { eager: true });
+					currentGame.fileCache = import.meta.glob('../../lib/assets/round_infos/Easy/*.json', {
+						eager: true
+					});
 					break;
 				case MEDIUM_STRING:
-					currentGame.fileCache = import.meta.glob('./round_infos/Medium/*.json', { eager: true });
+					currentGame.fileCache = import.meta.glob('../../lib/assets/round_infos/Medium/*.json', {
+						eager: true
+					});
 					break;
 				case HARD_STRING:
-					currentGame.fileCache = import.meta.glob('./round_infos/Hard/*.json', { eager: true });
+					currentGame.fileCache = import.meta.glob('../../lib/assets/round_infos/Hard/*.json', {
+						eager: true
+					});
 					break;
 			}
 		}
@@ -227,10 +248,11 @@
 		currentGame.roundInfo.infoJSON = json.default;
 		currentGame.roundInfo.fileURI = fileURI;
 		fileURI = fileURI.substring(fileURI.lastIndexOf('/') + 1, fileURI.lastIndexOf('.'));
-		const imgURI = 'round_screens/' + fileURI + '.jpg';
+		const imgURI = currentGame.screenshotCache[fileURI]['default'];
 		const img = new Image();
 		img.onload = () => {
 			delete currentGame.fileCache[currentGame.roundInfo.fileURI];
+			delete currentGame.screenshotCache[fileURI];
 			currentGame.roundInfo.img = imgURI;
 			currentGame.loading = false;
 		};
@@ -238,6 +260,7 @@
 			console.error('Failed to load image:', currentGame.roundInfo.fileURI);
 			console.error('Loading new image instead');
 			delete currentGame.fileCache[currentGame.roundInfo.fileURI];
+			delete currentGame.screenshotCache[fileURI];
 			loadPic();
 			return;
 		};
