@@ -170,7 +170,7 @@
 		playerName = $state('');
 
 		constructor() {
-			const screenshotFiles = import.meta.glob('../../lib/assets/round_screens/*.jpg', {
+			const screenshotFiles = import.meta.glob('$lib/assets/round_screens/*.jpg', {
 				eager: true
 			});
 
@@ -226,17 +226,17 @@
 		if (Object.keys(currentGame.fileCache).length === 0) {
 			switch (currentGame.currentDifficulty) {
 				case EASY_STRING:
-					currentGame.fileCache = import.meta.glob('../../lib/assets/round_infos/Easy/*.json', {
+					currentGame.fileCache = import.meta.glob('$lib/assets/round_infos/Easy/*.json', {
 						eager: true
 					});
 					break;
 				case MEDIUM_STRING:
-					currentGame.fileCache = import.meta.glob('../../lib/assets/round_infos/Medium/*.json', {
+					currentGame.fileCache = import.meta.glob('$lib/assets/round_infos/Medium/*.json', {
 						eager: true
 					});
 					break;
 				case HARD_STRING:
-					currentGame.fileCache = import.meta.glob('../../lib/assets/round_infos/Hard/*.json', {
+					currentGame.fileCache = import.meta.glob('$lib/assets/round_infos/Hard/*.json', {
 						eager: true
 					});
 					break;
