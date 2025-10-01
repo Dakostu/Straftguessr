@@ -9,24 +9,26 @@ import path from 'path';
 import crypto from 'crypto';
 
 const assetsRoot = path.join(process.cwd(), 'src/lib/assets');
+let jpgFiles = [];
+let jsonFiles = [];
 
 function getFilesRecursively(dir) {
-	let results = [];
 	const list = fs.readdirSync(dir, { withFileTypes: true });
 	for (const entry of list) {
 		const fullPath = path.join(dir, entry.name);
 		if (entry.isDirectory()) {
-			results = results.concat(getFilesRecursively(fullPath));
+			getFilesRecursively(fullPath);
 		} else {
-			results.push(fullPath);
+			if (fullPath.endsWith('.jpg')) {
+				jpgFiles.push(fullPath);
+			} else if (fullPath.endsWith('.json')) {
+				jsonFiles.push(fullPath);
+			}
 		}
 	}
-	return results;
 }
 
-const allFiles = getFilesRecursively(assetsRoot);
-const jpgFiles = allFiles.filter((f) => f.endsWith('.jpg'));
-const jsonFiles = allFiles.filter((f) => f.endsWith('.json'));
+getFilesRecursively(assetsRoot);
 
 jpgFiles.forEach((jpgPath) => {
 	const base = path.basename(jpgPath, '.jpg');
