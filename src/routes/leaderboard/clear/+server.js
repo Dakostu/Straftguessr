@@ -4,6 +4,10 @@ import { json } from '@sveltejs/kit';
 
 export async function GET() {
 	let result = null;
+	if (!supabase) {
+		console.error('unable to clear leaderboard: missing Supabase client instance');
+		return json({ success: false, result: null });
+	}
 
 	result = await supabase.from(SUPABASE_TABLE_NAME).delete().neq('id', 0);
 	console.log(new Date());
